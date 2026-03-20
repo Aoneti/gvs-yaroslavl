@@ -348,75 +348,91 @@
 
 <script>
 // ─── Состояние ────────────────────────────────────────────────────────
-let DATA         = [];   // заполняется из data.json
-let filtered     = [];
-let currentPage  = 1;
-const PER_PAGE   = 20;
+let DATA        = [];
+let filtered    = [];
+let currentPage = 1;
+const PER_PAGE  = 20;
 
-// ─── DOM-элементы ─────────────────────────────────────────────────────
-const searchInput = document.getElementById('searchInput');
-const clearBtn    = document.getElementById('clearBtn');
-const resultsEl   = document.getElementById('results');
-const statsBar    = document.getElementById('statsBar');
-const foundCount  = document.getElementById('foundCount');
-const paginationEl= document.getElementById('pagination');
+// ─── DOM ──────────────────────────────────────────────────────────────
+const searchInput  = document.getElementById('searchInput');
+const clearBtn     = document.getElementById('clearBtn');
+const resultsEl    = document.getElementById('results');
+const statsBar     = document.getElementById('statsBar');
+const foundCount   = document.getElementById('foundCount');
+const paginationEl = document.getElementById('pagination');
 
-// ─── Хелперы ──────────────────────────────────────────────────────────
-function hl(text, q) {
-  if (!q) return text;
-  return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),
-    '<mark>$1</mark>');
+// ─── Нормализация для поиска ──────────────────────────────────────────
+// Убираем знаки препинания, "д.", "д", лишние пробелы — чтобы
+// "Толбухина 6" находило "Толбухина, д.6" и "Толбухина д. 6"
+function normalizeQuery(s) {
+  return s.toLowerCase()
+    .replace(/[,\.]/g, ' ')       // запятые и точки → пробел
+    .replace(/\bд\b/g, ' ')       // отдельное "д" → пробел
+    .replace(/\bул\b/g, ' ')      // "ул" → пробел
+    .replace(/\bпр-кт\b/g, ' ')   // "пр-кт" → пробел
+    .replace(/\bпр\b/g, ' ')      // "пр" → пробел
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
+// ─── Подсветка совпадений ─────────────────────────────────────────────
+function hl(text, q) {
+  if (!q) return text;
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
+// ─── Карточка адреса (без потребителя и без плашки района) ────────────
 function renderCard(d, q) {
   const periods = [
-    d.repair   ? `<div class="period-item repair">
-                    <div class="period-label">Текущий ремонт</div>
-                    <div class="period-dates">${d.repair}</div>
-                    ${d.repair_on ? `<div class="period-on">✓ включение: ${d.repair_on}</div>` : ''}
-                  </div>` : '',
-    d.hydro1   ? `<div class="period-item hydro1">
-                    <div class="period-label">Гидроиспытания 1</div>
-                    <div class="period-dates">${d.hydro1}</div>
-                    ${d.hydro1_on ? `<div class="period-on">✓ включение: ${d.hydro1_on}</div>` : ''}
-                  </div>` : '',
-    d.hydro2   ? `<div class="period-item hydro2">
-                    <div class="period-label">Гидроиспытания 2</div>
-                    <div class="period-dates">${d.hydro2}</div>
-                    ${d.hydro2_on ? `<div class="period-on">✓ включение: ${d.hydro2_on}</div>` : ''}
-                  </div>` : '',
+    d.repair
+      ? `<div class="period-item repair">
+           <div class="period-label">Текущий ремонт</div>
+           <div class="period-dates">${d.repair}</div>
+           ${d.repair_on ? `<div class="period-on">✓ включение: ${d.repair_on}</div>` : ''}
+         </div>` : '',
+    d.hydro1
+      ? `<div class="period-item hydro1">
+           <div class="period-label">Гидроиспытания 1</div>
+           <div class="period-dates">${d.hydro1}</div>
+           ${d.hydro1_on ? `<div class="period-on">✓ включение: ${d.hydro1_on}</div>` : ''}
+         </div>` : '',
+    d.hydro2
+      ? `<div class="period-item hydro2">
+           <div class="period-label">Гидроиспытания 2</div>
+           <div class="period-dates">${d.hydro2}</div>
+           ${d.hydro2_on ? `<div class="period-on">✓ включение: ${d.hydro2_on}</div>` : ''}
+         </div>` : '',
   ].filter(Boolean).join('') || '<div class="period-empty">Нет данных о периодах</div>';
 
   return `
     <div class="result-card">
       <div class="card-header">
         <div class="address-badge">${hl(d.address, q)}</div>
-        <div class="district-tag">${d.sheet}</div>
-      </div>
-      <div class="consumer-name">
-        <span style="color:var(--muted);font-weight:600;">Потребитель:</span> ${hl(d.consumer, q)}
       </div>
       <div class="periods-grid">${periods}</div>
       ${d.source ? `<div class="card-footer"><span class="source-tag">🔥 ${d.source}</span></div>` : ''}
     </div>`;
 }
 
+// ─── Рендер страницы результатов ──────────────────────────────────────
 function renderPage() {
-  const q     = searchInput.value.trim().toLowerCase();
+  const q     = searchInput.value.trim();
   const start = (currentPage - 1) * PER_PAGE;
   const page  = filtered.slice(start, start + PER_PAGE);
 
   resultsEl.innerHTML = page.length
     ? page.map(d => renderCard(d, q)).join('')
     : `<div class="state-message">
-         <span class="emoji">🔍</span>
+         <span class="emoji">🤔</span>
          <h3>Ничего не найдено</h3>
-         <p>Попробуй другой адрес или сокращение улицы</p>
+         <p>Попробуйте другое написание адреса</p>
        </div>`;
 
   renderPagination();
 }
 
+// ─── Пагинация ────────────────────────────────────────────────────────
 function renderPagination() {
   const total = Math.ceil(filtered.length / PER_PAGE);
 
@@ -427,29 +443,24 @@ function renderPagination() {
 
   paginationEl.style.display = 'flex';
 
-  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>← Назад</button>`;
-
-  // Показываем не более 7 кнопок страниц
   let pages = [];
   if (total <= 7) {
     pages = Array.from({length: total}, (_, i) => i + 1);
   } else {
     pages = [1];
     if (currentPage > 3) pages.push('…');
-    for (let p = Math.max(2, currentPage-1); p <= Math.min(total-1, currentPage+1); p++) pages.push(p);
+    for (let p = Math.max(2, currentPage - 1); p <= Math.min(total - 1, currentPage + 1); p++) pages.push(p);
     if (currentPage < total - 2) pages.push('…');
     pages.push(total);
   }
 
+  let html = `<button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>← Назад</button>`;
   pages.forEach(p => {
-    if (p === '…') {
-      html += `<span class="page-info">…</span>`;
-    } else {
-      html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
-    }
+    html += p === '…'
+      ? `<span class="page-info">…</span>`
+      : `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
   });
-
-  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>Вперёд →</button>`;
+  html += `<button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === total ? 'disabled' : ''}>Вперёд →</button>`;
   html += `<span class="page-info">${currentPage} / ${total}</span>`;
 
   paginationEl.innerHTML = html;
@@ -462,26 +473,31 @@ function goPage(n) {
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
+// ─── Поиск ────────────────────────────────────────────────────────────
 function applySearch() {
-  const q = searchInput.value.trim().toLowerCase();
-  clearBtn.classList.toggle('visible', q.length > 0);
+  const raw = searchInput.value.trim();
+  clearBtn.classList.toggle('visible', raw.length > 0);
 
-  if (!q) {
+  if (!raw) {
     filtered = [];
     resultsEl.innerHTML = `<div class="state-message">
-      <span class="emoji">🔥</span>
-      <h3>Найди свой адрес</h3>
-      <p>Введи улицу и номер дома — покажем даты отключения горячей воды</p>
+      <span class="emoji">🏡</span>
+      <h3>Найдите свой адрес</h3>
+      <p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>
     </div>`;
     statsBar.style.display = 'none';
     paginationEl.style.display = 'none';
     return;
   }
 
-  filtered = DATA.filter(d =>
-    d.address.toLowerCase().includes(q) ||
-    d.consumer.toLowerCase().includes(q)
-  );
+  // Нормализуем запрос и ищем по нормализованному адресу
+  const q = normalizeQuery(raw);
+  const tokens = q.split(' ').filter(Boolean);   // все слова запроса
+
+  filtered = DATA.filter(d => {
+    const addr = normalizeQuery(d.address);
+    return tokens.every(token => addr.includes(token));  // все слова должны присутствовать
+  });
 
   currentPage = 1;
   statsBar.style.display = 'flex';
@@ -498,7 +514,6 @@ clearBtn.addEventListener('click', () => {
   searchInput.focus();
 });
 
-// Подсказки (hints)
 document.querySelectorAll('.hint').forEach(btn => {
   btn.addEventListener('click', () => {
     searchInput.value = btn.textContent;
@@ -506,7 +521,7 @@ document.querySelectorAll('.hint').forEach(btn => {
   });
 });
 
-// ─── Загрузка данных из data.json ────────────────────────────────────
+// ─── Загрузка data.json ───────────────────────────────────────────────
 resultsEl.innerHTML = `<div class="state-message">
   <span class="emoji">⏳</span>
   <h3>Загрузка данных…</h3>
@@ -515,16 +530,15 @@ resultsEl.innerHTML = `<div class="state-message">
 
 fetch('data.json')
   .then(r => {
-    if (!r.ok) throw new Error('Ошибка загрузки data.json: ' + r.status);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   })
   .then(json => {
     DATA = json;
-    // Показываем начальное состояние после загрузки
     resultsEl.innerHTML = `<div class="state-message">
-      <span class="emoji">🔥</span>
-      <h3>Найди свой адрес</h3>
-      <p>Введи улицу и номер дома — покажем даты отключения горячей воды</p>
+      <span class="emoji">🏡</span>
+      <h3>Найдите свой адрес</h3>
+      <p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>
     </div>`;
   })
   .catch(err => {
@@ -532,7 +546,6 @@ fetch('data.json')
     resultsEl.innerHTML = `<div class="state-message">
       <span class="emoji">❌</span>
       <h3>Не удалось загрузить данные</h3>
-      <p>Убедись, что файл data.json загружен в репозиторий рядом с index.html</p>
     </div>`;
   });
 </script>
@@ -541,5 +554,6 @@ fetch('data.json')
   Все права соблюдены. Сетевое издание <a href="https://yarcube.ru/" target="_blank" style="color:var(--accent2);text-decoration:none;">«Яркуб»</a> — 2026.
   Автор: <a href="https://t.me/xoroshik" target="_blank" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a>
 </footer>
+
 </body>
 </html>
