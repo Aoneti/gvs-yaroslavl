@@ -150,7 +150,7 @@
 // Позволяет совместить ключи geo.json с адресами data.json
 // даже если формат написания отличается (запятые, пробелы).
 function normKey(s) {
-  return s.toLowerCase().replace(/,/g, '').replace(/\s+/g, ' ').trim();
+  return s.toLowerCase().replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 // ── Склонение «адрес» ────────────────────────────────────────
