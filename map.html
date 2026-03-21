@@ -296,7 +296,7 @@ function renderAll() {
   }
 
   if (shown === 0) {
-    listEl.innerHTML = '<div class="empty-list"><span class="big">🔍</span>Ничего не найдено</div>';
+    listEl.innerHTML = '<div class="empty-list"><span class="big">🔍</span>Ничего не найдено. Попробуйте другое написание или воспользуйтесь основным поиском</div>';
   }
   document.getElementById('counterChip').textContent = pluralAddr(shown);
 }
