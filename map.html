@@ -136,27 +136,15 @@ function normKey(s) {
 }
 
 // ── Карта ─────────────────────────────────────────────────────
-const map = L.map('map', { center:[57.6261,39.8845], zoom:12, zoomControl:false });
+// attributionControl:false — отключаем стандартный, у него в prefix вшит флаг 🇺🇦 (Leaflet 1.9.x)
+const map = L.map('map', { center:[57.6261,39.8845], zoom:12, zoomControl:false, attributionControl:false });
 L.control.zoom({ position:'bottomright' }).addTo(map);
+// Добавляем attribution вручную с чистым prefix без эмодзи
+L.control.attribution({ prefix:'<a href="https://leafletjs.com">Leaflet</a>' }).addTo(map);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution:'© <a href="https://www.openstreetmap.org/copyright" style="color:#7d8590">OpenStreetMap</a>',
   maxZoom:19,
 }).addTo(map);
-
-// Убираем эмодзи флагов из attribution (Leaflet добавляет их сам после рендера)
-map.on('load', cleanAttribution);
-setTimeout(cleanAttribution, 500);
-function cleanAttribution() {
-  document.querySelectorAll('.leaflet-control-attribution *,.leaflet-control-attribution').forEach(el => {
-    el.childNodes.forEach(node => {
-      if (node.nodeType === 3) { // текстовый узел
-        node.textContent = node.textContent.replace(
-          /[\u{1F1E0}-\u{1F1FF}\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, ''
-        ).replace(/\s{2,}/g, ' ').trim();
-      }
-    });
-  });
-}
 
 const clusterGroup = L.markerClusterGroup({
   maxClusterRadius:50, spiderfyOnMaxZoom:true,
