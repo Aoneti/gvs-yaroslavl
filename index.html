@@ -85,6 +85,33 @@
     font-weight: 500;
   }
 
+  /* Map button */
+  .header-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: 'Golos Text', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: border-color .2s, color .2s, background .2s;
+  }
+  .map-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent2);
+    background: rgba(232,93,47,0.06);
+  }
+
   /* Search box */
   .search-wrap {
     margin: 40px 0 32px;
@@ -346,6 +373,9 @@
   <header>
     <div class="logo-icon">🔥</div>
     <h1>Отключение <span>горячей воды</span><br>в Ярославле 2026</h1>
+    <div class="header-actions">
+      <a href="map.html" class="map-btn">🗺️ Смотреть на карте</a>
+    </div>
   </header>
 
   <div class="search-wrap">
