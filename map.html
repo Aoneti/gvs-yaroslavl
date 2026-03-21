@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Карта отключений ГВС — Ярославль 2026</title>
+<title>Карта отключений ГВС в Ярославле — 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -46,9 +46,9 @@
   .filter-dot.hydro2{background:var(--blue)}
   .filter-text{font-size:12px;color:var(--muted);transition:color .2s}
   .filter-item input:checked~.filter-dot+.filter-text{color:var(--text)}
-
   .addr-list{flex:1;overflow-y:auto;padding:8px}
   .addr-list::-webkit-scrollbar{width:4px}
+  .addr-list::-webkit-scrollbar-track{background:transparent}
   .addr-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
   .addr-item{padding:9px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;margin-bottom:4px}
   .addr-item:hover{background:var(--surface2);border-color:var(--border)}
@@ -93,14 +93,17 @@
 </style>
 </head>
 <body>
+
 <div class="topbar">
   <a href="index.html" class="back-btn">← Поиск</a>
   <div class="topbar-title">Карта отключений <span>ГВС</span> · Ярославль 2026</div>
   <div class="topbar-sep"></div>
   <div class="counter-chip" id="counterChip">…</div>
 </div>
+
 <div class="main">
   <div class="panel">
+
     <div class="panel-section">
       <div class="panel-label">Поиск</div>
       <div class="search-wrap">
@@ -108,53 +111,83 @@
         <button class="search-clear" id="searchClear" title="Очистить">✕</button>
       </div>
     </div>
+
     <div class="panel-section panel-filters">
       <div class="panel-label">Тип отключения</div>
       <div class="filters">
-        <label class="filter-item"><input type="checkbox" id="fRepair" checked><div class="filter-dot repair"></div><span class="filter-text">Ремонтные работы</span></label>
-        <label class="filter-item"><input type="checkbox" id="fHydro1" checked><div class="filter-dot hydro1"></div><span class="filter-text">Гидроиспытание 1</span></label>
-        <label class="filter-item"><input type="checkbox" id="fHydro2" checked><div class="filter-dot hydro2"></div><span class="filter-text">Гидроиспытание 2</span></label>
+        <label class="filter-item">
+          <input type="checkbox" id="fRepair" checked>
+          <div class="filter-dot repair"></div>
+          <span class="filter-text">Ремонтные работы</span>
+        </label>
+        <label class="filter-item">
+          <input type="checkbox" id="fHydro1" checked>
+          <div class="filter-dot hydro1"></div>
+          <span class="filter-text">Гидроиспытание 1</span>
+        </label>
+        <label class="filter-item">
+          <input type="checkbox" id="fHydro2" checked>
+          <div class="filter-dot hydro2"></div>
+          <span class="filter-text">Гидроиспытание 2</span>
+        </label>
       </div>
     </div>
+
     <div class="addr-list" id="addrList"></div>
   </div>
+
   <div id="map"></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
-// ── Нормализация ключа для сопоставления адресов ─────────────
-// Убирает запятые, лишние пробелы, приводит к нижнему регистру.
-// Благодаря этому "ул. Ляпидевского д. 17" найдёт ключ "ул. Ляпидевского, д.17"
+
+// ── Нормализация ключа ───────────────────────────────────────
+// Позволяет совместить ключи geo.json с адресами data.json
+// даже если формат написания отличается (запятые, пробелы).
 function normKey(s) {
-  return s
-    .toLowerCase()
-    .replace(/,/g, '')        // убираем все запятые
-    .replace(/\s+/g, ' ')     // схлопываем пробелы
-    .trim();
+  return s.toLowerCase().replace(/,/g, '').replace(/\s+/g, ' ').trim();
+}
+
+// ── Склонение «адрес» ────────────────────────────────────────
+function pluralAddr(n) {
+  const mod10 = n % 10, mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 19) return n + ' адресов';
+  if (mod10 === 1)                   return n + ' адрес';
+  if (mod10 >= 2 && mod10 <= 4)      return n + ' адреса';
+  return n + ' адресов';
 }
 
 // ── Карта ─────────────────────────────────────────────────────
-// attributionControl:false — отключаем стандартный, у него в prefix вшит флаг 🇺🇦 (Leaflet 1.9.x)
-const map = L.map('map', { center:[57.6261,39.8845], zoom:12, zoomControl:false, attributionControl:false });
-L.control.zoom({ position:'bottomright' }).addTo(map);
-// Добавляем attribution вручную с чистым prefix без эмодзи
-L.control.attribution({ prefix:'<a href="https://leafletjs.com">Leaflet</a>' }).addTo(map);
+// attributionControl:false — в Leaflet 1.9.x в стандартный prefix
+// жёстко вшит флаг 🇺🇦, убрать его иначе невозможно.
+const map = L.map('map', {
+  center: [57.6261, 39.8845],
+  zoom: 12,
+  zoomControl: false,
+  attributionControl: false,
+});
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+L.control.attribution({ prefix: '<a href="https://leafletjs.com">Leaflet</a>' }).addTo(map);
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution:'© <a href="https://www.openstreetmap.org/copyright" style="color:#7d8590">OpenStreetMap</a>',
-  maxZoom:19,
+  attribution: '© <a href="https://www.openstreetmap.org/copyright" style="color:#7d8590">OpenStreetMap</a>',
+  maxZoom: 19,
 }).addTo(map);
 
+// ── Кластерный слой ──────────────────────────────────────────
 const clusterGroup = L.markerClusterGroup({
-  maxClusterRadius:50, spiderfyOnMaxZoom:true,
-  showCoverageOnHover:false, zoomToBoundsOnClick:true,
+  maxClusterRadius: 50,
+  spiderfyOnMaxZoom: true,
+  showCoverageOnHover: false,
+  zoomToBoundsOnClick: true,
 });
 map.addLayer(clusterGroup);
 
 let allPoints = [], activeAddr = null;
 
-// ── Загрузка ──────────────────────────────────────────────────
+// ── Загрузка данных ──────────────────────────────────────────
 async function loadData() {
   const [dataRes, geoRes] = await Promise.all([
     fetch('data.json'),
@@ -163,8 +196,7 @@ async function loadData() {
   const data  = await dataRes.json();
   const geoDb = await geoRes.json();
 
-  // Строим нормализованный индекс geo.json один раз
-  // ключ: normKey(оригинальный адрес) → объект с координатами
+  // Нормализованный индекс geo.json
   const geoIdx = {};
   for (const [k, v] of Object.entries(geoDb)) {
     if (v) geoIdx[normKey(k)] = v;
@@ -177,30 +209,33 @@ async function loadData() {
     byAddr[item.address].push(item);
   }
 
+  // Совмещаем по нормализованному ключу
   let matched = 0, missed = 0;
   for (const [addr, records] of Object.entries(byAddr)) {
-    const geo = geoIdx[normKey(addr)];  // ищем по нормализованному ключу
+    const geo = geoIdx[normKey(addr)];
     if (!geo) { missed++; continue; }
     matched++;
-    allPoints.push({ address:addr, lat:geo.lat, lng:geo.lng, records });
+    allPoints.push({ address: addr, lat: geo.lat, lng: geo.lng, records });
   }
-  console.log(`Адресов совпало: ${matched}, не нашлось в geo.json: ${missed}`);
+  console.log('geo.json совпало:', matched, '/ не найдено:', missed);
 
-  buildDistricts();
   renderAll();
+}
 
+// ── Иконки и попапы ─────────────────────────────────────────
 function getTypeColor(records) {
-  if (records.some(r => r.repair))  return '#e85d2f';
-  if (records.some(r => r.hydro2))  return '#58a6ff';
-  if (records.some(r => r.hydro1))  return '#d29922';
+  if (records.some(r => r.repair)) return '#e85d2f';
+  if (records.some(r => r.hydro2)) return '#58a6ff';
+  if (records.some(r => r.hydro1)) return '#d29922';
   return '#7d8590';
 }
 
 function makeIcon(color) {
   return L.divIcon({
-    className:'',
-    html:`<div class="mc-dot" style="background:${color}"></div>`,
-    iconSize:[18,18], iconAnchor:[9,9],
+    className: '',
+    html: '<div class="mc-dot" style="background:' + color + '"></div>',
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
   });
 }
 
@@ -208,12 +243,13 @@ function makePopup(pt) {
   const r = pt.records[0];
   const uniq = [...new Set(pt.records.map(x => x.consumer))].filter(Boolean).join('; ');
   let rows = '';
-  if (r.repair) rows += `<div class="popup-row"><div class="popup-badge repair">Ремонт</div><div class="popup-dates">${r.repair}<br><span class="popup-on">▲ Подключение: ${r.repair_on||'—'}</span></div></div>`;
-  if (r.hydro1) rows += `<div class="popup-row"><div class="popup-badge hydro1">Гидро 1</div><div class="popup-dates">${r.hydro1}<br><span class="popup-on">▲ Подключение: ${r.hydro1_on||'—'}</span></div></div>`;
-  if (r.hydro2) rows += `<div class="popup-row"><div class="popup-badge hydro2">Гидро 2</div><div class="popup-dates">${r.hydro2}<br><span class="popup-on">▲ Подключение: ${r.hydro2_on||'—'}</span></div></div>`;
-  return `<div class="popup-inner"><div class="popup-addr">${pt.address}</div>${uniq ? `<div class="popup-consumer">${uniq}</div>` : ''}${rows}</div>`;
+  if (r.repair) rows += '<div class="popup-row"><div class="popup-badge repair">Ремонт</div><div class="popup-dates">' + r.repair + '<br><span class="popup-on">▲ Подключение: ' + (r.repair_on || '—') + '</span></div></div>';
+  if (r.hydro1) rows += '<div class="popup-row"><div class="popup-badge hydro1">Гидро 1</div><div class="popup-dates">' + r.hydro1 + '<br><span class="popup-on">▲ Подключение: ' + (r.hydro1_on || '—') + '</span></div></div>';
+  if (r.hydro2) rows += '<div class="popup-row"><div class="popup-badge hydro2">Гидро 2</div><div class="popup-dates">' + r.hydro2 + '<br><span class="popup-on">▲ Подключение: ' + (r.hydro2_on || '—') + '</span></div></div>';
+  return '<div class="popup-inner"><div class="popup-addr">' + pt.address + '</div>' + (uniq ? '<div class="popup-consumer">' + uniq + '</div>' : '') + rows + '</div>';
 }
 
+// ── Рендер ───────────────────────────────────────────────────
 function renderAll() {
   const query = document.getElementById('panelSearch').value.toLowerCase().trim();
   const fRep  = document.getElementById('fRepair').checked;
@@ -221,8 +257,8 @@ function renderAll() {
   const fH2   = document.getElementById('fHydro2').checked;
 
   clusterGroup.clearLayers();
-  const addrListEl = document.getElementById('addrList');
-  addrListEl.innerHTML = '';
+  const listEl = document.getElementById('addrList');
+  listEl.innerHTML = '';
   let shown = 0;
 
   for (const pt of allPoints) {
@@ -230,55 +266,47 @@ function renderAll() {
     const hasRep = pt.records.some(r => r.repair);
     const hasH1  = pt.records.some(r => r.hydro1);
     const hasH2  = pt.records.some(r => r.hydro2);
-    if (!((fRep&&hasRep)||(fH1&&hasH1)||(fH2&&hasH2))) continue;
+    if (!((fRep && hasRep) || (fH1 && hasH1) || (fH2 && hasH2))) continue;
 
     shown++;
-    const color  = getTypeColor(pt.records);
-    const marker = L.marker([pt.lat, pt.lng], { icon:makeIcon(color) });
-    marker.bindPopup(makePopup(pt), { maxWidth:320 });
+
+    const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(getTypeColor(pt.records)) });
+    marker.bindPopup(makePopup(pt), { maxWidth: 320 });
     marker.on('click', () => selectAddr(pt.address));
     clusterGroup.addLayer(marker);
     pt._marker = marker;
 
     const item = document.createElement('div');
-    item.className = 'addr-item' + (pt.address===activeAddr?' active':'');
+    item.className = 'addr-item' + (pt.address === activeAddr ? ' active' : '');
     item.dataset.addr = pt.address;
-    const dots = [
-      hasRep?'<div class="dot repair"></div>':'',
-      hasH1 ?'<div class="dot hydro1"></div>':'',
-      hasH2 ?'<div class="dot hydro2"></div>':'',
-    ].join('');
-    item.innerHTML = `<div class="addr-street">${pt.address}</div><div class="addr-dots">${dots}</div>`;
+    item.innerHTML = '<div class="addr-street">' + pt.address + '</div><div class="addr-dots">'
+      + (hasRep ? '<div class="dot repair"></div>' : '')
+      + (hasH1  ? '<div class="dot hydro1"></div>' : '')
+      + (hasH2  ? '<div class="dot hydro2"></div>' : '')
+      + '</div>';
     item.onclick = () => {
       selectAddr(pt.address);
-      map.setView([pt.lat, pt.lng], 16, { animate:true });
-      pt._marker?.openPopup();
+      map.setView([pt.lat, pt.lng], 16, { animate: true });
+      pt._marker && pt._marker.openPopup();
     };
-    addrListEl.appendChild(item);
+    listEl.appendChild(item);
   }
 
   if (shown === 0) {
-    addrListEl.innerHTML = '<div class="empty-list"><span class="big">🔍</span>Ничего не найдено</div>';
+    listEl.innerHTML = '<div class="empty-list"><span class="big">🔍</span>Ничего не найдено</div>';
   }
   document.getElementById('counterChip').textContent = pluralAddr(shown);
 }
 
-function pluralAddr(n) {
-  const mod10 = n % 10, mod100 = n % 100;
-  if (mod100 >= 11 && mod100 <= 19) return `${n} адресов`;
-  if (mod10 === 1)  return `${n} адрес`;
-  if (mod10 >= 2 && mod10 <= 4) return `${n} адреса`;
-  return `${n} адресов`;
-}
-
 function selectAddr(address) {
   activeAddr = address;
-  document.querySelectorAll('.addr-item').forEach(el => {
+  document.querySelectorAll('.addr-item').forEach(function(el) {
     el.classList.toggle('active', el.dataset.addr === address);
-    if (el.dataset.addr === address) el.scrollIntoView({ block:'nearest' });
+    if (el.dataset.addr === address) el.scrollIntoView({ block: 'nearest' });
   });
 }
 
+// ── События ──────────────────────────────────────────────────
 document.getElementById('panelSearch').addEventListener('input', function() {
   document.getElementById('searchClear').classList.toggle('vis', this.value.length > 0);
   renderAll();
@@ -288,13 +316,13 @@ document.getElementById('searchClear').addEventListener('click', function() {
   this.classList.remove('vis');
   renderAll();
 });
-['fRepair','fHydro1','fHydro2'].forEach(id => {
+['fRepair', 'fHydro1', 'fHydro2'].forEach(function(id) {
   document.getElementById(id).addEventListener('change', renderAll);
 });
 
-loadData().catch(err => {
+loadData().catch(function(err) {
   document.getElementById('addrList').innerHTML =
-    `<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки.<br>${err.message}</div>`;
+    '<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.<br>' + err.message + '</div>';
   console.error(err);
 });
 </script>
