@@ -146,11 +146,31 @@
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 
-// ── Нормализация ключа ───────────────────────────────────────
-// Позволяет совместить ключи geo.json с адресами data.json
-// даже если формат написания отличается (запятые, пробелы).
+// ── Нормализация ключа для сопоставления geo.json ↔ data.json ─
+// Убирает точки, запятые, лишние пробелы.
+// "ул. Панина д. 25" и "ул. Панина, д.25" → одно и то же
 function normKey(s) {
   return s.toLowerCase().replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// ── Нормализация поискового запроса ─────────────────────────
+// Убирает служебные слова (ул, д, пр-кт…) и пунктуацию,
+// возвращает массив токенов.
+// "Панина 25" → ["панина", "25"]
+// "ул. Панина, д.25" → ["панина", "25"]
+function normalizeQuery(s) {
+  return s.toLowerCase()
+    .replace(/[.,]/g, ' ')       // точки и запятые → пробел
+    .replace(/\bд\b/g, ' ')      // "д" как отдельное слово → пробел
+    .replace(/\bул\b/g, ' ')     // "ул" → пробел
+    .replace(/\bпр-кт\b/g, ' ') // "пр-кт" → пробел
+    .replace(/\bпр-д\b/g, ' ')  // "пр-д" → пробел
+    .replace(/\bпер\b/g, ' ')   // "пер" → пробел
+    .replace(/\bпр\b/g, ' ')    // "пр" → пробел
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .filter(Boolean);
 }
 
 // ── Склонение «адрес» ────────────────────────────────────────
@@ -259,13 +279,19 @@ function renderAll() {
   const fH1   = document.getElementById('fHydro1').checked;
   const fH2   = document.getElementById('fHydro2').checked;
 
+  const tokens = normalizeQuery(query);
+
   clusterGroup.clearLayers();
   const listEl = document.getElementById('addrList');
   listEl.innerHTML = '';
   let shown = 0;
 
   for (const pt of allPoints) {
-    if (query && !pt.address.toLowerCase().includes(query)) continue;
+    // Гибкий поиск: все токены запроса должны присутствовать в адресе
+    if (tokens.length > 0) {
+      const addrNorm = normalizeQuery(pt.address).join(' ');
+      if (!tokens.every(function(t) { return addrNorm.includes(t); })) continue;
+    }
     const hasRep = pt.records.some(r => r.repair);
     const hasH1  = pt.records.some(r => r.hydro1);
     const hasH2  = pt.records.some(r => r.hydro2);
