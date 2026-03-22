@@ -23,6 +23,70 @@
     --warn: #d29922;
     --blue: #58a6ff;
   }
+  html.light {
+    --bg: #f5f5f0;
+    --surface: #ffffff;
+    --surface2: #eeede8;
+    --border: #d8d6cf;
+    --accent: #e85d2f;
+    --accent2: #c44a20;
+    --text: #1a1a18;
+    --muted: #6b6b65;
+    --success: #2a8a3a;
+    --warn: #a07010;
+    --blue: #1a6abf;
+  }
+  html.light body::before {
+    background-image:
+      linear-gradient(rgba(232,93,47,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,93,47,0.06) 1px, transparent 1px);
+  }
+
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed;
+    top: 18px;
+    right: 20px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 30px;
+    padding: 4px 6px 4px 10px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    user-select: none;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .theme-emoji { font-size: 15px; line-height: 1; }
+  .theme-track {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    position: relative;
+    flex-shrink: 0;
+    transition: background .2s;
+  }
+  .theme-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: transform .2s, background .2s;
+  }
+  html.light .theme-thumb {
+    transform: translateX(16px);
+    background: var(--accent);
+  }
+  html.light .theme-track { background: rgba(232,93,47,0.12); border-color: rgba(232,93,47,0.3); }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: var(--bg);
@@ -363,6 +427,7 @@
     border-radius: 3px;
     padding: 0 2px;
   }
+  html.light mark { background: rgba(232,93,47,0.18); }
 
   /* Status badges */
   .status-badge {
@@ -431,6 +496,11 @@
 <!-- /Yandex.Metrika counter -->
 </head>
 <body>
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+  <span class="theme-emoji" id="themeEmoji">🌑</span>
+  <div class="theme-track"><div class="theme-thumb"></div></div>
+  <span class="theme-emoji">🌕</span>
+</button>
 <div class="container">
   <header>
     <div class="logo-icon">🔥</div>
@@ -464,6 +534,17 @@
 </div>
 
 <script>
+// ─── Тема ─────────────────────────────────────────────────────────────
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') document.documentElement.classList.add('light');
+})();
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+});
+
 // ─── Состояние ────────────────────────────────────────────────────────
 let DATA        = [];
 let filtered    = [];

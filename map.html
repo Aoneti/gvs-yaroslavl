@@ -18,6 +18,14 @@
     --accent:#e85d2f;--accent2:#ff8c5a;--text:#e6edf3;--muted:#7d8590;
     --success:#3fb950;--warn:#d29922;--blue:#58a6ff;--panel:280px;
   }
+  html.light {
+    --bg:#f5f5f0;--surface:#ffffff;--surface2:#eeede8;--border:#d8d6cf;
+    --accent:#e85d2f;--accent2:#c44a20;--text:#1a1a18;--muted:#6b6b65;
+    --success:#2a8a3a;--warn:#a07010;--blue:#1a6abf;--panel:280px;
+  }
+  html.light #map { background: #e8e4dc; }
+  html.light .leaflet-container { background: #e8e4dc; }
+  html.light .leaflet-tile-pane { filter: brightness(1.05) saturate(0.85); }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:'Golos Text',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
   .topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:1000}
@@ -166,6 +174,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
+// ── Тема (читаем из localStorage, кнопки нет — управление из index) ───
+(function() {
+  if (localStorage.getItem('theme') === 'light') {
+    document.documentElement.classList.add('light');
+  }
+})();
 
 // ── Нормализация ключа для сопоставления geo.json ↔ data.json ─
 // Убирает точки, запятые, лишние пробелы.
