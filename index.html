@@ -21,6 +21,7 @@
     --muted: #7d8590;
     --success: #3fb950;
     --warn: #d29922;
+    --blue: #58a6ff;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -166,24 +167,40 @@
   .clear-btn:hover { background: var(--accent); color: white; }
   .clear-btn.visible { display: flex; }
 
-  /* Hints */
-  .hints {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 32px;
+  /* Hints dropdown */
+  .hints-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--accent);
+    border-radius: 12px;
+    padding: 6px;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
   }
+  .hints-dropdown.open { display: flex; }
   .hint {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 13px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 14px;
     color: var(--muted);
     cursor: pointer;
-    transition: all 0.2s;
+    text-align: left;
+    font-family: 'Golos Text', sans-serif;
+    transition: background 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
-  .hint:hover { border-color: var(--accent); color: var(--accent2); }
+  .hint-icon { font-size: 12px; opacity: 0.5; flex-shrink: 0; }
+  .hint:hover { background: var(--surface2); color: var(--accent2); }
 
   /* Stats bar */
   .stats {
@@ -266,7 +283,7 @@
   }
   .period-item.repair { border-left-color: var(--accent); }
   .period-item.hydro1 { border-left-color: var(--warn); }
-  .period-item.hydro2 { border-left-color: #58a6ff; }
+  .period-item.hydro2 { border-left-color: var(--blue); }
   .period-label {
     font-size: 11px;
     font-weight: 600;
@@ -347,6 +364,51 @@
     padding: 0 2px;
   }
 
+  /* Status badges */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .status-badge.active {
+    background: rgba(232,93,47,0.18);
+    color: var(--accent2);
+    border: 1px solid rgba(232,93,47,0.4);
+    animation: pulse-badge 2s ease-in-out infinite;
+  }
+  .status-badge.soon {
+    background: rgba(210,153,34,0.18);
+    color: var(--warn);
+    border: 1px solid rgba(210,153,34,0.4);
+  }
+  .status-badge.past {
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    opacity: 0.6;
+  }
+  .result-card.status-active {
+    border-color: rgba(232,93,47,0.5);
+  }
+  .result-card.status-past {
+    opacity: 0.65;
+  }
+  .result-card.status-past:hover {
+    opacity: 1;
+  }
+  @keyframes pulse-badge {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.65; }
+  }
+
   /* Mobile */
   @media (max-width: 600px) {
     header { padding: 40px 0 28px; }
@@ -380,15 +442,24 @@
 
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="Введите улицу и дом..." autocomplete="off" spellcheck="false">
-    <button class="clear-btn" id="clearBtn" title="Очистить">✕</button>
+    <input type="text" id="searchInput" placeholder="Введите улицу и дом..." autocomplete="off" spellcheck="false"
+           aria-label="Поиск по адресу" aria-controls="results" aria-autocomplete="list">
+    <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска">✕</button>
+    <div class="hints-dropdown" id="hintsDropdown">
+      <button class="hint"><span class="hint-icon">🔍</span>Толбухина</button>
+      <button class="hint"><span class="hint-icon">🔍</span>Некрасова</button>
+      <button class="hint"><span class="hint-icon">🔍</span>Ленина</button>
+      <button class="hint"><span class="hint-icon">🔍</span>Чайковского</button>
+      <button class="hint"><span class="hint-icon">🔍</span>Свердлова</button>
+      <button class="hint"><span class="hint-icon">🔍</span>Угличская</button>
+    </div>
   </div>
 
-  <div id="statsBar" class="stats" style="display:none">
+  <div id="statsBar" class="stats" style="display:none" aria-live="polite">
     <div class="stat-chip">Найдено: <strong id="foundCount">0</strong></div>
   </div>
 
-  <div id="results"></div>
+  <div id="results" aria-live="polite" aria-atomic="false"></div>
   <div class="pagination" id="pagination" style="display:none"></div>
 </div>
 
@@ -421,43 +492,121 @@ function normalizeQuery(s) {
     .trim();
 }
 
-// ─── Подсветка совпадений ─────────────────────────────────────────────
+// ─── Экранирование HTML ───────────────────────────────────────
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ─── Подсветка совпадений ─────────────────────────────────────
 function hl(text, q) {
-  if (!q) return text;
+  const safe = escapeHtml(text);
+  if (!q) return safe;
   const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+  return safe.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
+// ─── Парсинг дат для статусных индикаторов ───────────────────
+function parseOneDate(s) {
+  const m = String(s).match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (!m) return null;
+  return new Date(+m[3], +m[2] - 1, +m[1]);
+}
+
+// Разбирает строку с диапазоном и дату включения → {start, end}
+// Форматы: "27.05.2025", "25.07-04.08.2025", "23-24.07.2025"
+function parsePeriod(rangeStr, onStr) {
+  if (!rangeStr) return null;
+  const clean = String(rangeStr).replace(/\.{2,}/g, '.').trim();
+  let start = null;
+
+  // "dd.mm-dd.mm.yyyy"
+  let m = clean.match(/^(\d{1,2})\.(\d{1,2})-\d{1,2}\.\d{1,2}\.(\d{4})/);
+  if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
+
+  // "dd-dd.mm.yyyy"
+  if (!start) {
+    m = clean.match(/^(\d{1,2})-\d{1,2}\.(\d{1,2})\.(\d{4})/);
+    if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
+  }
+
+  // "dd.mm.yyyy"
+  if (!start) start = parseOneDate(clean);
+  if (!start) return null;
+
+  const end = onStr ? parseOneDate(onStr) : null;
+  return { start, end: end || start };
+}
+
+// Возвращает статус карточки относительно сегодняшней даты
+function getStatus(d) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const soonLimit = new Date(today);
+  soonLimit.setDate(today.getDate() + 7);
+
+  const periods = [
+    parsePeriod(d.repair,  d.repair_on),
+    parsePeriod(d.hydro1,  d.hydro1_on),
+    parsePeriod(d.hydro2,  d.hydro2_on),
+  ].filter(Boolean);
+
+  if (!periods.length) return 'normal';
+
+  // Идёт прямо сейчас
+  if (periods.some(p => today >= p.start && today <= p.end)) return 'active';
+
+  // Начнётся в течение 7 дней
+  if (periods.some(p => p.start > today && p.start <= soonLimit)) return 'soon';
+
+  // Все периоды уже в прошлом
+  if (periods.every(p => p.end < today)) return 'past';
+
+  return 'normal';
 }
 
 // ─── Карточка адреса (без потребителя и без плашки района) ────────────
 function renderCard(d, q) {
+  const status = getStatus(d);
+  const statusBadge =
+    status === 'active' ? '<span class="status-badge active">● Нет воды</span>' :
+    status === 'soon'   ? '<span class="status-badge soon">⚡ Скоро</span>'    :
+    status === 'past'   ? '<span class="status-badge past">Завершено</span>'   : '';
+  const cardClass = status === 'active' ? ' status-active' :
+                    status === 'past'   ? ' status-past'   : '';
+
   const periods = [
     d.repair
       ? `<div class="period-item repair">
            <div class="period-label">Текущий ремонт</div>
-           <div class="period-dates">${d.repair}</div>
-           ${d.repair_on ? `<div class="period-on">✓ включение: ${d.repair_on}</div>` : ''}
+           <div class="period-dates">${escapeHtml(d.repair)}</div>
+           ${d.repair_on ? `<div class="period-on">✓ включение: ${escapeHtml(d.repair_on)}</div>` : ''}
          </div>` : '',
     d.hydro1
       ? `<div class="period-item hydro1">
            <div class="period-label">Гидроиспытания 1</div>
-           <div class="period-dates">${d.hydro1}</div>
-           ${d.hydro1_on ? `<div class="period-on">✓ включение: ${d.hydro1_on}</div>` : ''}
+           <div class="period-dates">${escapeHtml(d.hydro1)}</div>
+           ${d.hydro1_on ? `<div class="period-on">✓ включение: ${escapeHtml(d.hydro1_on)}</div>` : ''}
          </div>` : '',
     d.hydro2
       ? `<div class="period-item hydro2">
            <div class="period-label">Гидроиспытания 2</div>
-           <div class="period-dates">${d.hydro2}</div>
-           ${d.hydro2_on ? `<div class="period-on">✓ включение: ${d.hydro2_on}</div>` : ''}
+           <div class="period-dates">${escapeHtml(d.hydro2)}</div>
+           ${d.hydro2_on ? `<div class="period-on">✓ включение: ${escapeHtml(d.hydro2_on)}</div>` : ''}
          </div>` : '',
   ].filter(Boolean).join('') || '<div class="period-empty">Нет данных о периодах</div>';
 
   return `
-    <div class="result-card">
+    <div class="result-card${cardClass}">
       <div class="card-header">
         <div class="address-badge">${hl(d.address, q)}</div>
+        ${statusBadge}
       </div>
       <div class="periods-grid">${periods}</div>
-      ${d.source ? `<div class="card-footer"><span class="source-tag">🏘️ ${d.source}</span></div>` : ''}
+      ${d.source ? `<div class="card-footer"><span class="source-tag">🏘️ ${escapeHtml(d.source)}</span></div>` : ''}
     </div>`;
 }
 
@@ -500,13 +649,13 @@ function renderPagination() {
     pages.push(total);
   }
 
-  let html = `<button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>← Назад</button>`;
+  let html = `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>← Назад</button>`;
   pages.forEach(p => {
     html += p === '…'
       ? `<span class="page-info">…</span>`
-      : `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
+      : `<button class="page-btn ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`;
   });
-  html += `<button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === total ? 'disabled' : ''}>Вперёд →</button>`;
+  html += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === total ? 'disabled' : ''}>Вперёд →</button>`;
   html += `<span class="page-info">${currentPage} / ${total}</span>`;
 
   paginationEl.innerHTML = html;
@@ -540,10 +689,9 @@ function applySearch() {
   const q = normalizeQuery(raw);
   const tokens = q.split(' ').filter(Boolean);   // все слова запроса
 
-  filtered = DATA.filter(d => {
-    const addr = normalizeQuery(d.address);
-    return tokens.every(token => addr.includes(token));  // все слова должны присутствовать
-  });
+  filtered = DATA.filter(d =>
+    tokens.every(token => d._norm.includes(token))
+  );
 
   currentPage = 1;
   statsBar.style.display = 'flex';
@@ -552,7 +700,20 @@ function applySearch() {
 }
 
 // ─── События ──────────────────────────────────────────────────────────
-searchInput.addEventListener('input', applySearch);
+let _searchDebounce;
+searchInput.addEventListener('input', () => {
+  // скрываем подсказки как только пользователь начал печатать
+  if (searchInput.value) hintsDropdown.classList.remove('open');
+  else hintsDropdown.classList.add('open');
+  clearTimeout(_searchDebounce);
+  _searchDebounce = setTimeout(applySearch, 250);
+});
+
+// Делегирование событий пагинации (вместо inline onclick)
+paginationEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-page]');
+  if (btn && !btn.disabled) goPage(+btn.dataset.page);
+});
 
 clearBtn.addEventListener('click', () => {
   searchInput.value = '';
@@ -560,10 +721,30 @@ clearBtn.addEventListener('click', () => {
   searchInput.focus();
 });
 
+// ─── Hints dropdown ───────────────────────────────────────────
+const hintsDropdown = document.getElementById('hintsDropdown');
+
+function openHints() {
+  if (!searchInput.value) hintsDropdown.classList.add('open');
+}
+function closeHints() {
+  // небольшая задержка, чтобы клик по hint успел сработать
+  setTimeout(() => hintsDropdown.classList.remove('open'), 150);
+}
+
+searchInput.addEventListener('focus', openHints);
+searchInput.addEventListener('blur',  closeHints);
+
 document.querySelectorAll('.hint').forEach(btn => {
   btn.addEventListener('click', () => {
-    searchInput.value = btn.textContent;
+    // берём только текст, без иконки
+    const text = btn.querySelector('.hint-icon')
+      ? btn.textContent.replace(btn.querySelector('.hint-icon').textContent, '').trim()
+      : btn.textContent.trim();
+    searchInput.value = text;
+    hintsDropdown.classList.remove('open');
     applySearch();
+    searchInput.focus();
   });
 });
 
@@ -580,7 +761,7 @@ fetch('data.json')
     return r.json();
   })
   .then(json => {
-    DATA = json;
+    DATA = json.map(d => ({ ...d, _norm: normalizeQuery(d.address) }));
     resultsEl.innerHTML = `<div class="state-message">
       <span class="emoji">🏡</span>
       <h3>Найдите свой адрес</h3>

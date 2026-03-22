@@ -74,8 +74,11 @@
   .leaflet-popup-close-button:hover{color:var(--accent2)!important}
   .mc-dot{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--bg);box-shadow:0 2px 6px rgba(0,0,0,.5);cursor:pointer;transition:transform .15s}
   .mc-dot:hover{transform:scale(1.3)}
-  .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{background:rgba(232,93,47,.25)!important}
-  .marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{background:rgba(232,93,47,.75)!important;color:#fff!important;font-family:'Unbounded',sans-serif!important;font-size:11px!important;font-weight:700!important;width:34px!important;height:34px!important;margin:3px!important;line-height:34px!important;border-radius:50%!important}
+  /* Кластеры: цвет задаётся динамически через iconCreateFunction */
+  .marker-cluster{background:transparent!important;box-shadow:none!important}
+  .marker-cluster div{background:transparent!important}
+  .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{background:transparent!important}
+  .marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{background:transparent!important;color:transparent!important}
   .popup-inner{padding:16px}
   .popup-addr{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;line-height:1.3;margin-bottom:4px}
   .popup-consumer{font-size:11px;color:var(--muted);line-height:1.4;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
@@ -87,11 +90,27 @@
   .popup-badge.hydro2{background:rgba(88,166,255,.2);color:var(--blue)}
   .popup-dates{color:var(--text);line-height:1.5}
   .popup-on{color:var(--success);font-size:11px}
+  /* Sheet handle (только mobile) */
+  .sheet-handle{display:none;justify-content:center;align-items:center;height:22px;cursor:ns-resize;flex-shrink:0;touch-action:none}
+  .sheet-handle::after{content:'';width:36px;height:4px;border-radius:2px;background:var(--border)}
   @media(max-width:640px){
     .main{flex-direction:column-reverse}
-    .panel{width:100%;height:220px;border-right:none;border-top:1px solid var(--border)}
-    .panel-filters{display:none}
+    .panel{width:100%;height:30dvh;min-height:110px;max-height:85dvh;border-right:none;border-top:1px solid var(--border);transition:height .3s ease;flex-shrink:0}
+    .sheet-handle{display:flex}
     .topbar-title{font-size:11px}
+    /* Фильтры — горизонтальные чипы вместо скрытого блока */
+    .panel-filters{display:block;padding:6px 10px;border-bottom:1px solid var(--border)}
+    .panel-filters .panel-label{display:none}
+    .filters{flex-direction:row;overflow-x:auto;gap:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+    .filters::-webkit-scrollbar{display:none}
+    .filter-item{flex-shrink:0;border:1px solid var(--border);border-radius:20px;padding:5px 10px;background:var(--surface2)}
+    .filter-item input:checked~.filter-dot{opacity:1}
+    .filter-item input:checked~.filter-dot+.filter-text{color:var(--accent2)}
+    .filter-dot{width:8px;height:8px}
+    .filter-text{font-size:12px}
+    /* Увеличиваем touch target поля поиска */
+    .search-wrap input{font-size:15px;padding:12px 36px 12px 12px}
+    .search-clear{font-size:16px;right:10px}
   }
 </style>
 </head>
@@ -106,12 +125,14 @@
 
 <div class="main">
   <div class="panel">
+    <div class="sheet-handle" id="sheetHandle"></div>
 
     <div class="panel-section">
       <div class="panel-label">Поиск</div>
       <div class="search-wrap">
-        <input type="text" id="panelSearch" placeholder="Улица, дом…" autocomplete="off" spellcheck="false">
-        <button class="search-clear" id="searchClear" title="Очистить">✕</button>
+        <input type="text" id="panelSearch" placeholder="Улица, дом…" autocomplete="off" spellcheck="false"
+               aria-label="Поиск по адресу на карте">
+        <button class="search-clear" id="searchClear" title="Очистить" aria-label="Очистить поле поиска">✕</button>
       </div>
     </div>
 
@@ -189,10 +210,10 @@ const map = L.map('map', {
   center: [57.6261, 39.8845],
   zoom: 12,
   zoomControl: false,
-  attributionControl: false,
+  attributionControl: true,
 });
 L.control.zoom({ position: 'bottomleft' }).addTo(map);
-L.control.attribution({ prefix: '<a href="https://leafletjs.com">Leaflet</a>' }).addTo(map);
+map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© <a href="https://www.openstreetmap.org/copyright" style="color:#7d8590">OpenStreetMap</a>',
@@ -205,6 +226,29 @@ const clusterGroup = L.markerClusterGroup({
   spiderfyOnMaxZoom: true,
   showCoverageOnHover: false,
   zoomToBoundsOnClick: true,
+  iconCreateFunction: function(cluster) {
+    const color = getClusterColor(cluster.getAllChildMarkers());
+    const count = cluster.getChildCount();
+    return L.divIcon({
+      html: '<div style="'
+        + 'background:' + color + ';'
+        + 'opacity:.82;'
+        + 'width:34px;height:34px;'
+        + 'border-radius:50%;'
+        + 'border:2.5px solid #0d1117;'
+        + 'box-shadow:0 2px 8px rgba(0,0,0,.55);'
+        + 'line-height:30px;'
+        + 'text-align:center;'
+        + 'color:#fff;'
+        + 'font-family:\'Unbounded\',sans-serif;'
+        + 'font-size:11px;'
+        + 'font-weight:700;'
+        + '">' + count + '</div>',
+      className: '',
+      iconSize: [40, 40],
+      iconAnchor: [20, 20],
+    });
+  },
 });
 map.addLayer(clusterGroup);
 
@@ -238,18 +282,82 @@ async function loadData() {
     const geo = geoIdx[normKey(addr)];
     if (!geo) { missed++; continue; }
     matched++;
-    allPoints.push({ address: addr, lat: geo.lat, lng: geo.lng, records });
+    allPoints.push({ address: addr, lat: geo.lat, lng: geo.lng, records,
+                     _norm: normalizeQuery(addr).join(' ') });
   }
   console.log('geo.json совпало:', matched, '/ не найдено:', missed);
 
   renderAll();
 }
 
+// ── Экранирование HTML ───────────────────────────────────────
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ── Парсинг дат для умной раскраски маркеров ─────────────────
+function parseOneDate(s) {
+  const m = String(s).match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (!m) return null;
+  return new Date(+m[3], +m[2] - 1, +m[1]);
+}
+
+// Форматы: "27.05.2025", "25.07-04.08.2025", "23-24.07.2025"
+function parsePeriod(rangeStr, onStr) {
+  if (!rangeStr) return null;
+  const clean = String(rangeStr).replace(/\.{2,}/g, '.').trim();
+  let start = null;
+  let m = clean.match(/^(\d{1,2})\.(\d{1,2})-\d{1,2}\.\d{1,2}\.(\d{4})/);
+  if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
+  if (!start) {
+    m = clean.match(/^(\d{1,2})-\d{1,2}\.(\d{1,2})\.(\d{4})/);
+    if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
+  }
+  if (!start) start = parseOneDate(clean);
+  if (!start) return null;
+  const end = onStr ? parseOneDate(onStr) : null;
+  return { start, end: end || start };
+}
+
 // ── Иконки и попапы ─────────────────────────────────────────
+// Возвращает цвет маркера с учётом текущей даты:
+//   красный/жёлтый/синий — если отключение идёт сейчас
+//   зелёный              — если все периоды уже завершены (вода есть)
+//   красный/жёлтый/синий — если отключение в будущем (по типу)
+//   серый                — нет данных
 function getTypeColor(records) {
-  if (records.some(r => r.repair)) return '#e85d2f';
-  if (records.some(r => r.hydro2)) return '#58a6ff';
-  if (records.some(r => r.hydro1)) return '#d29922';
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Проверяем, есть ли активное отключение прямо сейчас
+  for (const r of records) {
+    const checks = [
+      { period: parsePeriod(r.repair,  r.repair_on),  color: '#e85d2f' },
+      { period: parsePeriod(r.hydro1,  r.hydro1_on),  color: '#d29922' },
+      { period: parsePeriod(r.hydro2,  r.hydro2_on),  color: '#58a6ff' },
+    ];
+    for (const c of checks) {
+      if (c.period && today >= c.period.start && today <= c.period.end) return c.color;
+    }
+  }
+
+  // Все периоды уже завершены → вода подана, зелёный
+  const allPeriods = records.flatMap(r => [
+    parsePeriod(r.repair,  r.repair_on),
+    parsePeriod(r.hydro1,  r.hydro1_on),
+    parsePeriod(r.hydro2,  r.hydro2_on),
+  ]).filter(Boolean);
+
+  if (allPeriods.length > 0 && allPeriods.every(p => p.end < today)) return '#3fb950';
+
+  // Будущие отключения — по приоритету типа
+  if (records.some(r => r.repair))  return '#e85d2f';
+  if (records.some(r => r.hydro2))  return '#58a6ff';
+  if (records.some(r => r.hydro1))  return '#d29922';
   return '#7d8590';
 }
 
@@ -262,14 +370,30 @@ function makeIcon(color) {
   });
 }
 
+// Выбирает цвет кластера = наиболее приоритетный цвет среди дочерних маркеров
+const COLOR_PRIORITY = { '#e85d2f': 0, '#d29922': 1, '#58a6ff': 2, '#3fb950': 3, '#7d8590': 4 };
+function getClusterColor(children) {
+  let best = '#7d8590', bestRank = 99;
+  for (const m of children) {
+    const c = m._gvsColor || '#7d8590';
+    const rank = COLOR_PRIORITY[c] !== undefined ? COLOR_PRIORITY[c] : 99;
+    if (rank < bestRank) { best = c; bestRank = rank; }
+  }
+  return best;
+}
+
 function makePopup(pt) {
-  const r = pt.records[0];
   const uniq = [...new Set(pt.records.map(x => x.consumer))].filter(Boolean).join('; ');
   let rows = '';
-  if (r.repair) rows += '<div class="popup-row"><div class="popup-badge repair">Ремонт</div><div class="popup-dates">' + r.repair + '<br><span class="popup-on">▲ Подключение: ' + (r.repair_on || '—') + '</span></div></div>';
-  if (r.hydro1) rows += '<div class="popup-row"><div class="popup-badge hydro1">Гидро 1</div><div class="popup-dates">' + r.hydro1 + '<br><span class="popup-on">▲ Подключение: ' + (r.hydro1_on || '—') + '</span></div></div>';
-  if (r.hydro2) rows += '<div class="popup-row"><div class="popup-badge hydro2">Гидро 2</div><div class="popup-dates">' + r.hydro2 + '<br><span class="popup-on">▲ Подключение: ' + (r.hydro2_on || '—') + '</span></div></div>';
-  return '<div class="popup-inner"><div class="popup-addr">' + pt.address + '</div>' + (uniq ? '<div class="popup-consumer">' + uniq + '</div>' : '') + rows + '</div>';
+  for (const r of pt.records) {
+    if (r.repair) rows += '<div class="popup-row"><div class="popup-badge repair">Ремонт</div><div class="popup-dates">' + escapeHtml(r.repair) + '<br><span class="popup-on">▲ Подключение: ' + escapeHtml(r.repair_on || '—') + '</span></div></div>';
+    if (r.hydro1) rows += '<div class="popup-row"><div class="popup-badge hydro1">Гидро 1</div><div class="popup-dates">' + escapeHtml(r.hydro1) + '<br><span class="popup-on">▲ Подключение: ' + escapeHtml(r.hydro1_on || '—') + '</span></div></div>';
+    if (r.hydro2) rows += '<div class="popup-row"><div class="popup-badge hydro2">Гидро 2</div><div class="popup-dates">' + escapeHtml(r.hydro2) + '<br><span class="popup-on">▲ Подключение: ' + escapeHtml(r.hydro2_on || '—') + '</span></div></div>';
+  }
+  if (!rows) rows = '<div class="popup-dates" style="color:var(--muted);font-style:italic">Нет данных</div>';
+  return '<div class="popup-inner"><div class="popup-addr">' + escapeHtml(pt.address) + '</div>'
+    + (uniq ? '<div class="popup-consumer">' + escapeHtml(uniq) + '</div>' : '')
+    + rows + '</div>';
 }
 
 // ── Рендер ───────────────────────────────────────────────────
@@ -289,8 +413,7 @@ function renderAll() {
   for (const pt of allPoints) {
     // Гибкий поиск: все токены запроса должны присутствовать в адресе
     if (tokens.length > 0) {
-      const addrNorm = normalizeQuery(pt.address).join(' ');
-      if (!tokens.every(function(t) { return addrNorm.includes(t); })) continue;
+      if (!tokens.every(function(t) { return pt._norm.includes(t); })) continue;
     }
     const hasRep = pt.records.some(r => r.repair);
     const hasH1  = pt.records.some(r => r.hydro1);
@@ -299,7 +422,9 @@ function renderAll() {
 
     shown++;
 
-    const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(getTypeColor(pt.records)) });
+    const color = getTypeColor(pt.records);
+    const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color) });
+    marker._gvsColor = color;
     marker.bindPopup(makePopup(pt), { maxWidth: 320 });
     marker.on('click', () => selectAddr(pt.address));
     clusterGroup.addLayer(marker);
@@ -336,9 +461,11 @@ function selectAddr(address) {
 }
 
 // ── События ──────────────────────────────────────────────────
+let _mapSearchDebounce;
 document.getElementById('panelSearch').addEventListener('input', function() {
   document.getElementById('searchClear').classList.toggle('vis', this.value.length > 0);
-  renderAll();
+  clearTimeout(_mapSearchDebounce);
+  _mapSearchDebounce = setTimeout(renderAll, 250);
 });
 document.getElementById('searchClear').addEventListener('click', function() {
   document.getElementById('panelSearch').value = '';
@@ -349,11 +476,114 @@ document.getElementById('searchClear').addEventListener('click', function() {
   document.getElementById(id).addEventListener('change', renderAll);
 });
 
+// ── Bottom sheet (drag handle, только mobile) ─────────────────
+(function() {
+  const handle = document.getElementById('sheetHandle');
+  const panel  = handle.parentElement;
+  let dragging = false, startY = 0, startH = 0;
+
+  function isMobile() { return window.innerWidth <= 640; }
+
+  function snapHeight(h) {
+    const vh = window.innerHeight;
+    // снэппинг: 30% / 60% / 85%
+    const snaps = [0.30, 0.60, 0.85].map(r => Math.round(vh * r));
+    return snaps.reduce((a, b) => Math.abs(b - h) < Math.abs(a - h) ? b : a);
+  }
+
+  function onStart(e) {
+    if (!isMobile()) return;
+    dragging = true;
+    startY = (e.touches ? e.touches[0].clientY : e.clientY);
+    startH = panel.offsetHeight;
+    panel.style.transition = 'none';
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (!dragging) return;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY);
+    const delta = startY - y;           // тянем вверх → delta > 0 → панель растёт
+    const newH = Math.min(Math.max(startH + delta, 80), window.innerHeight * 0.88);
+    panel.style.height = newH + 'px';
+  }
+
+  function onEnd() {
+    if (!dragging) return;
+    dragging = false;
+    panel.style.transition = 'height .3s ease';
+    panel.style.height = snapHeight(panel.offsetHeight) + 'px';
+  }
+
+  handle.addEventListener('touchstart', onStart, { passive: false });
+  handle.addEventListener('mousedown',  onStart);
+  window.addEventListener('touchmove',  onMove, { passive: false });
+  window.addEventListener('mousemove',  onMove);
+  window.addEventListener('touchend',   onEnd);
+  window.addEventListener('mouseup',    onEnd);
+
+  // Инициализация высоты при загрузке
+  function initHeight() {
+    if (isMobile()) panel.style.height = Math.round(window.innerHeight * 0.30) + 'px';
+    else panel.style.height = '';
+  }
+  window.addEventListener('resize', initHeight);
+  initHeight();
+})();
+
 loadData().catch(function(err) {
   document.getElementById('addrList').innerHTML =
-    '<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.<br>' + err.message + '</div>';
+    '<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.</div>';
   console.error(err);
 });
+
+// ── Bottom sheet (drag handle) — только на мобильных ─────────
+(function() {
+  const handle = document.getElementById('sheetHandle');
+  const panel  = handle.parentElement;
+  let dragging = false, startY = 0, startH = 0;
+
+  function onStart(e) {
+    if (window.innerWidth > 640) return;
+    dragging = true;
+    startY = (e.touches ? e.touches[0].clientY : e.clientY);
+    startH = panel.offsetHeight;
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onEnd);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend',  onEnd);
+  }
+
+  function onMove(e) {
+    if (!dragging) return;
+    if (e.cancelable) e.preventDefault();
+    const y    = (e.touches ? e.touches[0].clientY : e.clientY);
+    const newH = startH - (y - startY);
+    const vh   = window.innerHeight;
+    panel.style.height = Math.min(Math.max(newH, 110), vh * 0.85) + 'px';
+    panel.style.transition = 'none';
+  }
+
+  function onEnd() {
+    if (!dragging) return;
+    dragging = false;
+    panel.style.transition = '';
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup',   onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend',  onEnd);
+    // Snap: ближайшая точка из 30% / 60% высоты экрана
+    const vh  = window.innerHeight;
+    const cur = panel.offsetHeight;
+    const snap30 = vh * 0.30;
+    const snap60 = vh * 0.60;
+    const target = Math.abs(cur - snap30) < Math.abs(cur - snap60) ? snap30 : snap60;
+    panel.style.height = target + 'px';
+  }
+
+  handle.addEventListener('mousedown',  onStart);
+  handle.addEventListener('touchstart', onStart, { passive: true });
+})();
 </script>
 </body>
 </html>
