@@ -9,33 +9,9 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💦</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Общие переменные и сброс -->
+<link rel="stylesheet" href="styles.css">
 <style>
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #1c2333;
-    --border: #30363d;
-    --accent: #e85d2f;
-    --accent2: #ff8c5a;
-    --text: #e6edf3;
-    --muted: #7d8590;
-    --success: #3fb950;
-    --warn: #d29922;
-    --blue: #58a6ff;
-  }
-  html.light {
-    --bg: #f5f5f0;
-    --surface: #ffffff;
-    --surface2: #eeede8;
-    --border: #d8d6cf;
-    --accent: #e85d2f;
-    --accent2: #c44a20;
-    --text: #1a1a18;
-    --muted: #6b6b65;
-    --success: #2a8a3a;
-    --warn: #a07010;
-    --blue: #1a6abf;
-  }
   html.light body::before {
     background-image:
       linear-gradient(rgba(232,93,47,0.06) 1px, transparent 1px),
@@ -87,7 +63,6 @@
   }
   html.light .theme-track { background: rgba(232,93,47,0.12); border-color: rgba(232,93,47,0.3); }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   /* overflow-x: hidden на body ломает position:fixed в iOS Safari —
      переносим на html, body оставляем с flex-колонкой */
   html { overflow-x: hidden; }
@@ -99,13 +74,13 @@
     display: flex;
     flex-direction: column;
   }
-  
+
   /* Background grid */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image: 
+    background-image:
       linear-gradient(rgba(232,93,47,0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(232,93,47,0.04) 1px, transparent 1px);
     background-size: 40px 40px;

@@ -12,21 +12,17 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+<!-- Общие переменные и сброс -->
+<link rel="stylesheet" href="styles.css">
 <style>
-  :root {
-    --bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#30363d;
-    --accent:#e85d2f;--accent2:#ff8c5a;--text:#e6edf3;--muted:#7d8590;
-    --success:#3fb950;--warn:#d29922;--blue:#58a6ff;--panel:280px;
-  }
-  html.light {
-    --bg:#f5f5f0;--surface:#ffffff;--surface2:#eeede8;--border:#d8d6cf;
-    --accent:#e85d2f;--accent2:#c44a20;--text:#1a1a18;--muted:#6b6b65;
-    --success:#2a8a3a;--warn:#a07010;--blue:#1a6abf;--panel:280px;
-  }
+  /* Переменная ширины панели — только для map.html */
+  :root { --panel: 280px; }
+  html.light { --panel: 280px; }
+
   html.light #map { background: #e8e4dc; }
   html.light .leaflet-container { background: #e8e4dc; }
   html.light .leaflet-tile-pane { filter: brightness(1.05) saturate(0.85); }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
   body{background:var(--bg);color:var(--text);font-family:'Golos Text',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
   .topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:1000}
   .back-btn{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Golos Text',sans-serif;font-size:14px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;text-decoration:none;transition:border-color .2s,color .2s;white-space:nowrap}
@@ -500,7 +496,11 @@ document.getElementById('searchClear').addEventListener('click', function() {
   document.getElementById(id).addEventListener('change', renderAll);
 });
 
-// ── Bottom sheet (drag handle, только mobile) ─────────────────
+// ── Bottom sheet drag handle (только mobile) ─────────────────
+// Единственный обработчик — объединяет лучшее из двух предыдущих версий:
+//   • динамическое добавление/удаление слушателей (не висят постоянно)
+//   • 3 точки снэппинга: 30% / 60% / 85% высоты экрана
+//   • сброс высоты при resize
 (function() {
   const handle = document.getElementById('sheetHandle');
   const panel  = handle.parentElement;
@@ -510,26 +510,18 @@ document.getElementById('searchClear').addEventListener('click', function() {
 
   function snapHeight(h) {
     const vh = window.innerHeight;
-    // снэппинг: 30% / 60% / 85%
     const snaps = [0.30, 0.60, 0.85].map(r => Math.round(vh * r));
     return snaps.reduce((a, b) => Math.abs(b - h) < Math.abs(a - h) ? b : a);
   }
 
-  function onStart(e) {
-    if (!isMobile()) return;
-    dragging = true;
-    startY = (e.touches ? e.touches[0].clientY : e.clientY);
-    startH = panel.offsetHeight;
-    panel.style.transition = 'none';
-    e.preventDefault();
-  }
-
   function onMove(e) {
     if (!dragging) return;
-    const y = (e.touches ? e.touches[0].clientY : e.clientY);
-    const delta = startY - y;           // тянем вверх → delta > 0 → панель растёт
-    const newH = Math.min(Math.max(startH + delta, 80), window.innerHeight * 0.88);
-    panel.style.height = newH + 'px';
+    if (e.cancelable) e.preventDefault();
+    const y    = (e.touches ? e.touches[0].clientY : e.clientY);
+    const newH = startH - (y - startY);
+    const vh   = window.innerHeight;
+    panel.style.height = Math.min(Math.max(newH, 80), vh * 0.88) + 'px';
+    panel.style.transition = 'none';
   }
 
   function onEnd() {
@@ -537,20 +529,30 @@ document.getElementById('searchClear').addEventListener('click', function() {
     dragging = false;
     panel.style.transition = 'height .3s ease';
     panel.style.height = snapHeight(panel.offsetHeight) + 'px';
+    document.removeEventListener('mousemove',  onMove);
+    document.removeEventListener('mouseup',    onEnd);
+    document.removeEventListener('touchmove',  onMove);
+    document.removeEventListener('touchend',   onEnd);
   }
 
-  handle.addEventListener('touchstart', onStart, { passive: false });
-  handle.addEventListener('mousedown',  onStart);
-  window.addEventListener('touchmove',  onMove, { passive: false });
-  window.addEventListener('mousemove',  onMove);
-  window.addEventListener('touchend',   onEnd);
-  window.addEventListener('mouseup',    onEnd);
+  function onStart(e) {
+    if (!isMobile()) return;
+    dragging = true;
+    startY = (e.touches ? e.touches[0].clientY : e.clientY);
+    startH = panel.offsetHeight;
+    document.addEventListener('mousemove',  onMove);
+    document.addEventListener('mouseup',    onEnd);
+    document.addEventListener('touchmove',  onMove, { passive: false });
+    document.addEventListener('touchend',   onEnd);
+  }
 
-  // Инициализация высоты при загрузке
   function initHeight() {
     if (isMobile()) panel.style.height = Math.round(window.innerHeight * 0.30) + 'px';
     else panel.style.height = '';
   }
+
+  handle.addEventListener('mousedown',  onStart);
+  handle.addEventListener('touchstart', onStart, { passive: true });
   window.addEventListener('resize', initHeight);
   initHeight();
 })();
@@ -560,54 +562,6 @@ loadData().catch(function(err) {
     '<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.</div>';
   console.error(err);
 });
-
-// ── Bottom sheet (drag handle) — только на мобильных ─────────
-(function() {
-  const handle = document.getElementById('sheetHandle');
-  const panel  = handle.parentElement;
-  let dragging = false, startY = 0, startH = 0;
-
-  function onStart(e) {
-    if (window.innerWidth > 640) return;
-    dragging = true;
-    startY = (e.touches ? e.touches[0].clientY : e.clientY);
-    startH = panel.offsetHeight;
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup',   onEnd);
-    document.addEventListener('touchmove', onMove, { passive: false });
-    document.addEventListener('touchend',  onEnd);
-  }
-
-  function onMove(e) {
-    if (!dragging) return;
-    if (e.cancelable) e.preventDefault();
-    const y    = (e.touches ? e.touches[0].clientY : e.clientY);
-    const newH = startH - (y - startY);
-    const vh   = window.innerHeight;
-    panel.style.height = Math.min(Math.max(newH, 110), vh * 0.85) + 'px';
-    panel.style.transition = 'none';
-  }
-
-  function onEnd() {
-    if (!dragging) return;
-    dragging = false;
-    panel.style.transition = '';
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup',   onEnd);
-    document.removeEventListener('touchmove', onMove);
-    document.removeEventListener('touchend',  onEnd);
-    // Snap: ближайшая точка из 30% / 60% высоты экрана
-    const vh  = window.innerHeight;
-    const cur = panel.offsetHeight;
-    const snap30 = vh * 0.30;
-    const snap60 = vh * 0.60;
-    const target = Math.abs(cur - snap30) < Math.abs(cur - snap60) ? snap30 : snap60;
-    panel.style.height = target + 'px';
-  }
-
-  handle.addEventListener('mousedown',  onStart);
-  handle.addEventListener('touchstart', onStart, { passive: true });
-})();
 </script>
 </body>
 </html>
