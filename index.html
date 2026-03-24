@@ -88,12 +88,16 @@
   html.light .theme-track { background: rgba(232,93,47,0.12); border-color: rgba(232,93,47,0.3); }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* overflow-x: hidden на body ломает position:fixed в iOS Safari —
+     переносим на html, body оставляем с flex-колонкой */
+  html { overflow-x: hidden; }
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Golos Text', sans-serif;
     min-height: 100vh;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
   }
   
   /* Background grid */
@@ -115,6 +119,7 @@
     padding: 0 20px;
     position: relative;
     z-index: 1;
+    flex: 1; /* растягивается, прижимая футер к низу */
   }
 
   /* Header */
@@ -474,6 +479,27 @@
     50% { opacity: 0.65; }
   }
 
+  /* Счётчик дней */
+  .days-chip {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 12px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .days-chip.active {
+    background: rgba(232,93,47,0.13);
+    color: var(--accent2);
+    border: 1px solid rgba(232,93,47,0.3);
+  }
+  .days-chip.soon {
+    background: rgba(210,153,34,0.13);
+    color: var(--warn);
+    border: 1px solid rgba(210,153,34,0.3);
+  }
+
   /* Mobile */
   @media (max-width: 600px) {
     header { padding: 40px 0 28px; }
@@ -598,28 +624,70 @@ function parseOneDate(s) {
 }
 
 // Разбирает строку с диапазоном и дату включения → {start, end}
-// Форматы: "27.05.2025", "25.07-04.08.2025", "23-24.07.2025"
+// Форматы: "27.05.2025", "25.07.2025–04.08.2025", "23.07.2025–24.07.2025"
+// (старые форматы оставлены для обратной совместимости)
 function parsePeriod(rangeStr, onStr) {
   if (!rangeStr) return null;
   const clean = String(rangeStr).replace(/\.{2,}/g, '.').trim();
-  let start = null;
+  let start = null, end2 = null;
 
-  // "dd.mm-dd.mm.yyyy"
-  let m = clean.match(/^(\d{1,2})\.(\d{1,2})-\d{1,2}\.\d{1,2}\.(\d{4})/);
-  if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
+  // Новый нормализованный: "dd.mm.yyyy-dd.mm.yyyy" или с тире/дефисом
+  let m = clean.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})[-–](\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (m) {
+    start = new Date(+m[3], +m[2] - 1, +m[1]);
+    end2  = new Date(+m[6], +m[5] - 1, +m[4]);
+  }
 
-  // "dd-dd.mm.yyyy"
+  // Старый: "dd.mm-dd.mm.yyyy"
+  if (!start) {
+    m = clean.match(/^(\d{1,2})\.(\d{1,2})-\d{1,2}\.\d{1,2}\.(\d{4})/);
+    if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
+  }
+
+  // Старый: "dd-dd.mm.yyyy"
   if (!start) {
     m = clean.match(/^(\d{1,2})-\d{1,2}\.(\d{1,2})\.(\d{4})/);
     if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
   }
 
-  // "dd.mm.yyyy"
+  // Одиночная дата
   if (!start) start = parseOneDate(clean);
   if (!start) return null;
 
-  const end = onStr ? parseOneDate(onStr) : null;
-  return { start, end: end || start };
+  const endFromOn = onStr ? parseOneDate(onStr) : null;
+  return { start, end: endFromOn || end2 || start };
+}
+
+// Возвращает информацию о ближайшем/текущем периоде отключения
+function getDaysInfo(d) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const periods = [
+    parsePeriod(d.repair, d.repair_on),
+    parsePeriod(d.hydro1, d.hydro1_on),
+    parsePeriod(d.hydro2, d.hydro2_on),
+  ].filter(Boolean);
+
+  if (!periods.length) return null;
+
+  // Идёт прямо сейчас — показываем сколько дней осталось
+  const active = periods.find(p => today >= p.start && today <= p.end);
+  if (active) {
+    const days = Math.ceil((active.end - today) / 86400000);
+    return { type: 'active', days };
+  }
+
+  // Ближайший будущий — показываем через сколько дней
+  const future = periods
+    .filter(p => p.start > today)
+    .sort((a, b) => a.start - b.start)[0];
+  if (future) {
+    const days = Math.ceil((future.start - today) / 86400000);
+    return { type: 'soon', days };
+  }
+
+  return null;
 }
 
 // Возвращает статус карточки относительно сегодняшней даты
@@ -652,6 +720,22 @@ function getStatus(d) {
 // ─── Карточка адреса (без потребителя и без плашки района) ────────────
 function renderCard(d, q) {
   const status = getStatus(d);
+  const daysInfo = getDaysInfo(d);
+
+  let daysChip = '';
+  if (daysInfo) {
+    if (daysInfo.type === 'active') {
+      const label = daysInfo.days <= 0 ? 'последний день' :
+                    daysInfo.days === 1 ? 'ещё 1 день' :
+                    `ещё ${daysInfo.days} дн.`;
+      daysChip = `<span class="days-chip active">${label}</span>`;
+    } else if (daysInfo.type === 'soon') {
+      const label = daysInfo.days === 1 ? 'завтра' :
+                    `через ${daysInfo.days} дн.`;
+      daysChip = `<span class="days-chip soon">${label}</span>`;
+    }
+  }
+
   const statusBadge =
     status === 'active' ? '<span class="status-badge active">● Нет воды</span>' :
     status === 'soon'   ? '<span class="status-badge soon">⚡ Скоро</span>'    :
@@ -683,7 +767,7 @@ function renderCard(d, q) {
   return `
     <div class="result-card${cardClass}">
       <div class="card-header">
-        <div class="address-badge">${hl(d.address, q)}</div>
+        <div class="address-badge">${hl(d.address, q)}${daysChip}</div>
         ${statusBadge}
       </div>
       <div class="periods-grid">${periods}</div>
@@ -858,7 +942,7 @@ fetch('data.json')
   });
 </script>
 
-<footer style="text-align:center; padding: 24px 0 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); margin-top: 20px;">
+<footer style="text-align:center; padding: 24px 20px 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); position: relative; z-index: 1;">
   Автор: <a href="https://t.me/xoroshik" target="_blank" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" style="color:var(--accent2);text-decoration:none;">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener" title="Исходный код" style="color:var(--accent2);text-decoration:none;"><svg height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:3px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
       0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
       -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66

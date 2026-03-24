@@ -320,21 +320,33 @@ function parseOneDate(s) {
   return new Date(+m[3], +m[2] - 1, +m[1]);
 }
 
-// Форматы: "27.05.2025", "25.07-04.08.2025", "23-24.07.2025"
+// Форматы: "27.05.2025", "25.07.2025-04.08.2025" (новый),
+//           "25.07-04.08.2025", "23-24.07.2025" (обратная совместимость)
 function parsePeriod(rangeStr, onStr) {
   if (!rangeStr) return null;
   const clean = String(rangeStr).replace(/\.{2,}/g, '.').trim();
-  let start = null;
-  let m = clean.match(/^(\d{1,2})\.(\d{1,2})-\d{1,2}\.\d{1,2}\.(\d{4})/);
-  if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
+  let start = null, end2 = null;
+
+  // Новый нормализованный: "dd.mm.yyyy-dd.mm.yyyy"
+  let m = clean.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})[-–](\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (m) {
+    start = new Date(+m[3], +m[2] - 1, +m[1]);
+    end2  = new Date(+m[6], +m[5] - 1, +m[4]);
+  }
+  // Старый: "dd.mm-dd.mm.yyyy"
+  if (!start) {
+    m = clean.match(/^(\d{1,2})\.(\d{1,2})-\d{1,2}\.\d{1,2}\.(\d{4})/);
+    if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
+  }
+  // Старый: "dd-dd.mm.yyyy"
   if (!start) {
     m = clean.match(/^(\d{1,2})-\d{1,2}\.(\d{1,2})\.(\d{4})/);
     if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
   }
   if (!start) start = parseOneDate(clean);
   if (!start) return null;
-  const end = onStr ? parseOneDate(onStr) : null;
-  return { start, end: end || start };
+  const endFromOn = onStr ? parseOneDate(onStr) : null;
+  return { start, end: endFromOn || end2 || start };
 }
 
 // ── Иконки и попапы ─────────────────────────────────────────
@@ -397,7 +409,6 @@ function getClusterColor(children) {
 }
 
 function makePopup(pt) {
-  const uniq = [...new Set(pt.records.map(x => x.consumer))].filter(Boolean).join('; ');
   let rows = '';
   for (const r of pt.records) {
     if (r.repair) rows += '<div class="popup-row"><div class="popup-badge repair">Ремонт</div><div class="popup-dates">' + escapeHtml(r.repair) + '<br><span class="popup-on">▲ Подключение: ' + escapeHtml(r.repair_on || '—') + '</span></div></div>';
@@ -406,7 +417,6 @@ function makePopup(pt) {
   }
   if (!rows) rows = '<div class="popup-dates" style="color:var(--muted);font-style:italic">Нет данных</div>';
   return '<div class="popup-inner"><div class="popup-addr">' + escapeHtml(pt.address) + '</div>'
-    + (uniq ? '<div class="popup-consumer">' + escapeHtml(uniq) + '</div>' : '')
     + rows + '</div>';
 }
 
