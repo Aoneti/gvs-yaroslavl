@@ -5,116 +5,152 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Карта отключений ГВС в Ярославле — 2026</title>
 <meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
-<meta name="keywords" content="отключение воды  Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
+<meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
-<!-- Общие переменные и сброс -->
+
+<!--
+  SRI для Leaflet 1.9.4 — чтобы получить актуальные хеши, выполните:
+    curl -s https://unpkg.com/leaflet@1.9.4/dist/leaflet.js | openssl dgst -sha256 -binary | openssl base64 -A
+  Затем подставьте в атрибут integrity="sha256-<hash>"
+  Документация: https://www.srihash.org/
+-->
+<link  rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+       crossorigin="anonymous"/>
+<link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+       crossorigin="anonymous"/>
+<link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+       crossorigin="anonymous"/>
 <link rel="stylesheet" href="styles.css">
+<!-- Бизнес-логика (даты, нормализация, статусы) -->
+<script src="gvs-core.js"></script>
 <style>
-  /* Переменная ширины панели — только для map.html */
-  :root { --panel: 280px; }
+  :root      { --panel: 280px; }
   html.light { --panel: 280px; }
 
-  html.light #map { background: #e8e4dc; }
-  html.light .leaflet-container { background: #e8e4dc; }
-  html.light .leaflet-tile-pane { filter: brightness(1.05) saturate(0.85); }
+  html.light #map                { background: #e8e4dc; }
+  html.light .leaflet-container  { background: #e8e4dc; }
+  html.light .leaflet-tile-pane  { filter: brightness(1.05) saturate(0.85); }
 
-  body{background:var(--bg);color:var(--text);font-family:'Golos Text',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-  .topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:1000}
-  .back-btn{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Golos Text',sans-serif;font-size:14px;font-weight:500;padding:7px 14px;border-radius:8px;cursor:pointer;text-decoration:none;transition:border-color .2s,color .2s;white-space:nowrap}
-  .back-btn:hover{border-color:var(--accent);color:var(--accent2)}
-  .topbar-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .topbar-title span{color:var(--accent)}
-  .topbar-sep{flex:1}
-  .counter-chip{background:rgba(232,93,47,.15);border:1px solid rgba(232,93,47,.3);color:var(--accent2);font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap}
-  .main{display:flex;flex:1;overflow:hidden}
-  .panel{width:var(--panel);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-  .panel-section{padding:14px 14px 10px;border-bottom:1px solid var(--border)}
-  .panel-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px}
-  .search-wrap{position:relative}
-  .search-wrap input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Golos Text',sans-serif;font-size:13px;padding:8px 32px 8px 10px;outline:none;transition:border-color .2s}
-  .search-wrap input::placeholder{color:var(--muted)}
-  .search-wrap input:focus{border-color:var(--accent)}
-  .search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;display:none;padding:2px}
-  .search-clear.vis{display:block}
-  .search-clear:hover{color:var(--accent2)}
-  .filters{display:flex;flex-direction:column;gap:6px}
-  .filter-item{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:4px 6px;border-radius:6px;transition:background .15s}
-  .filter-item:hover{background:var(--surface2)}
-  .filter-item input[type=checkbox]{display:none}
-  .filter-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;opacity:.35;transition:opacity .2s}
-  .filter-item input:checked~.filter-dot{opacity:1}
-  .filter-dot.repair{background:var(--accent)}
-  .filter-dot.hydro1{background:var(--warn)}
-  .filter-dot.hydro2{background:var(--blue)}
-  .filter-text{font-size:12px;color:var(--muted);transition:color .2s}
-  .filter-item input:checked~.filter-dot+.filter-text{color:var(--text)}
-  .addr-list{flex:1;overflow-y:auto;padding:8px}
-  .addr-list::-webkit-scrollbar{width:4px}
-  .addr-list::-webkit-scrollbar-track{background:transparent}
-  .addr-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-  .addr-item{padding:9px 10px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:all .15s;margin-bottom:4px}
-  .addr-item:hover{background:var(--surface2);border-color:var(--border)}
-  .addr-item.active{background:rgba(232,93,47,.1);border-color:rgba(232,93,47,.4)}
-  .addr-street{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:3px}
-  .addr-dots{display:flex;gap:4px;margin-top:4px}
-  .dot{width:7px;height:7px;border-radius:2px;opacity:.7}
-  .dot.repair{background:var(--accent)}
-  .dot.hydro1{background:var(--warn)}
-  .dot.hydro2{background:var(--blue)}
-  .empty-list{text-align:center;padding:30px 12px;color:var(--muted);font-size:13px}
-  .empty-list .big{font-size:28px;display:block;margin-bottom:8px}
-  #map{flex:1;background:#0d1117}
-  .leaflet-container{font-family:'Golos Text',sans-serif;background:#0d1117}
-  .leaflet-tile-pane{filter:brightness(.82) saturate(.7) hue-rotate(5deg)}
-  .leaflet-popup-content-wrapper{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:0;color:var(--text);min-width:260px;max-width:320px}
-  .leaflet-popup-tip-container{display:none}
-  .leaflet-popup-content{margin:0}
-  .leaflet-popup-close-button{color:var(--muted)!important;font-size:18px!important;top:10px!important;right:10px!important}
-  .leaflet-popup-close-button:hover{color:var(--accent2)!important}
-  .mc-dot{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--bg);box-shadow:0 2px 6px rgba(0,0,0,.5);cursor:pointer;transition:transform .15s}
-  .mc-dot:hover{transform:scale(1.3)}
-  /* Кластеры: цвет задаётся динамически через iconCreateFunction */
-  .marker-cluster{background:transparent!important;box-shadow:none!important}
-  .marker-cluster div{background:transparent!important}
-  .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large{background:transparent!important}
-  .marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div{background:transparent!important;color:transparent!important}
-  .popup-inner{padding:16px}
-  .popup-addr{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;line-height:1.3;margin-bottom:4px}
-  .popup-consumer{font-size:11px;color:var(--muted);line-height:1.4;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-  .popup-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:12px}
-  .popup-row:last-child{margin-bottom:0}
-  .popup-badge{flex-shrink:0;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-top:1px}
-  .popup-badge.repair{background:rgba(232,93,47,.2);color:var(--accent2)}
-  .popup-badge.hydro1{background:rgba(210,153,34,.2);color:var(--warn)}
-  .popup-badge.hydro2{background:rgba(88,166,255,.2);color:var(--blue)}
-  .popup-dates{color:var(--text);line-height:1.5}
-  .popup-on{color:var(--success);font-size:11px}
-  /* Sheet handle (только mobile) */
-  .sheet-handle{display:none;justify-content:center;align-items:center;height:22px;cursor:ns-resize;flex-shrink:0;touch-action:none}
-  .sheet-handle::after{content:'';width:36px;height:4px;border-radius:2px;background:var(--border)}
+  body { background:var(--bg); color:var(--text); font-family:'Golos Text',sans-serif; height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
+
+  .topbar { display:flex; align-items:center; gap:12px; padding:10px 16px; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; z-index:1000; }
+  .back-btn { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Golos Text',sans-serif; font-size:14px; font-weight:500; padding:7px 14px; border-radius:8px; cursor:pointer; text-decoration:none; transition:border-color .2s,color .2s; white-space:nowrap; }
+  .back-btn:hover { border-color:var(--accent); color:var(--accent2); }
+  .topbar-title { font-family:'Unbounded',sans-serif; font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .topbar-title span { color:var(--accent); }
+  .topbar-sep { flex:1; }
+  .counter-chip { background:rgba(232,93,47,.15); border:1px solid rgba(232,93,47,.3); color:var(--accent2); font-size:12px; font-weight:600; padding:4px 10px; border-radius:20px; white-space:nowrap; cursor:default; }
+
+  .main { display:flex; flex:1; overflow:hidden; }
+  .panel { width:var(--panel); flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+  .panel-section { padding:14px 14px 10px; border-bottom:1px solid var(--border); }
+  .panel-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); margin-bottom:8px; }
+  .search-wrap { position:relative; }
+  .search-wrap input { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Golos Text',sans-serif; font-size:13px; padding:8px 32px 8px 10px; outline:none; transition:border-color .2s; }
+  .search-wrap input::placeholder { color:var(--muted); }
+  .search-wrap input:focus { border-color:var(--accent); }
+  .search-clear { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:13px; display:none; padding:2px; }
+  .search-clear.vis { display:block; }
+  .search-clear:hover { color:var(--accent2); }
+  .filters { display:flex; flex-direction:column; gap:6px; }
+  .filter-item { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; padding:4px 6px; border-radius:6px; transition:background .15s; }
+  .filter-item:hover { background:var(--surface2); }
+  .filter-item input[type=checkbox] { display:none; }
+  .filter-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; opacity:.35; transition:opacity .2s; }
+  .filter-item input:checked~.filter-dot { opacity:1; }
+  .filter-dot.repair { background:var(--accent); }
+  .filter-dot.hydro1 { background:var(--warn); }
+  .filter-dot.hydro2 { background:var(--blue); }
+  .filter-text { font-size:12px; color:var(--muted); transition:color .2s; }
+  .filter-item input:checked~.filter-dot+.filter-text { color:var(--text); }
+
+  .addr-list { flex:1; overflow-y:auto; padding:8px; }
+  .addr-list::-webkit-scrollbar { width:4px; }
+  .addr-list::-webkit-scrollbar-track { background:transparent; }
+  .addr-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+  /* ── Скелетон-загрузка ──────────────────────────────────────── */
+  .sk-item {
+    height: 52px;
+    background: var(--surface2);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+  .sk-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+      transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+    animation: sk-shimmer 1.4s infinite;
+  }
+  @keyframes sk-shimmer {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
+
+  .addr-item { padding:9px 10px; border-radius:8px; cursor:pointer; border:1px solid transparent; transition:all .15s; margin-bottom:4px; }
+  .addr-item:hover { background:var(--surface2); border-color:var(--border); }
+  .addr-item.active { background:rgba(232,93,47,.1); border-color:rgba(232,93,47,.4); }
+  .addr-street { font-size:12px; font-weight:600; color:var(--text); line-height:1.3; margin-bottom:3px; }
+  .addr-dots { display:flex; gap:4px; margin-top:4px; }
+  .dot { width:7px; height:7px; border-radius:2px; opacity:.7; }
+  .dot.repair { background:var(--accent); }
+  .dot.hydro1 { background:var(--warn); }
+  .dot.hydro2 { background:var(--blue); }
+
+  .empty-list { text-align:center; padding:30px 12px; color:var(--muted); font-size:13px; }
+  .empty-list .big { font-size:28px; display:block; margin-bottom:8px; }
+
+  #map { flex:1; background:#0d1117; }
+  .leaflet-container { font-family:'Golos Text',sans-serif; background:#0d1117; }
+  .leaflet-tile-pane { filter:brightness(.82) saturate(.7) hue-rotate(5deg); }
+
+  .leaflet-popup-content-wrapper { background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,.6); padding:0; color:var(--text); min-width:260px; max-width:320px; }
+  .leaflet-popup-tip-container { display:none; }
+  .leaflet-popup-content { margin:0; }
+  .leaflet-popup-close-button { color:var(--muted)!important; font-size:18px!important; top:10px!important; right:10px!important; }
+  .leaflet-popup-close-button:hover { color:var(--accent2)!important; }
+
+  .mc-dot { width:18px; height:18px; border-radius:50%; border:2.5px solid var(--bg); box-shadow:0 2px 6px rgba(0,0,0,.5); cursor:pointer; transition:transform .15s; }
+  .mc-dot:hover { transform:scale(1.3); }
+  .marker-cluster,.marker-cluster div { background:transparent!important; }
+  .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large { background:transparent!important; }
+  .marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div { background:transparent!important; color:transparent!important; }
+
+  .popup-inner { padding:16px; }
+  .popup-addr { font-family:'Unbounded',sans-serif; font-size:13px; font-weight:700; line-height:1.3; margin-bottom:12px; }
+  .popup-row { display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; font-size:12px; }
+  .popup-row:last-child { margin-bottom:0; }
+  .popup-badge { flex-shrink:0; padding:2px 7px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-top:1px; }
+  .popup-badge.repair { background:rgba(232,93,47,.2); color:var(--accent2); }
+  .popup-badge.hydro1 { background:rgba(210,153,34,.2); color:var(--warn); }
+  .popup-badge.hydro2 { background:rgba(88,166,255,.2); color:var(--blue); }
+  .popup-dates { color:var(--text); line-height:1.5; }
+  .popup-on { color:var(--success); font-size:11px; }
+  .popup-note { color:var(--muted); font-style:italic; font-size:11px; }
+
+  .sheet-handle { display:none; justify-content:center; align-items:center; height:22px; cursor:ns-resize; flex-shrink:0; touch-action:none; }
+  .sheet-handle::after { content:''; width:36px; height:4px; border-radius:2px; background:var(--border); }
+
   @media(max-width:640px){
-    .main{flex-direction:column-reverse}
-    .panel{width:100%;height:30dvh;min-height:110px;max-height:85dvh;border-right:none;border-top:1px solid var(--border);transition:height .3s ease;flex-shrink:0}
-    .sheet-handle{display:flex}
-    .topbar-title{font-size:11px}
-    /* Фильтры — горизонтальные чипы вместо скрытого блока */
-    .panel-filters{display:block;padding:6px 10px;border-bottom:1px solid var(--border)}
-    .panel-filters .panel-label{display:none}
-    .filters{flex-direction:row;overflow-x:auto;gap:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
-    .filters::-webkit-scrollbar{display:none}
-    .filter-item{flex-shrink:0;border:1px solid var(--border);border-radius:20px;padding:5px 10px;background:var(--surface2)}
-    .filter-item input:checked~.filter-dot{opacity:1}
-    .filter-item input:checked~.filter-dot+.filter-text{color:var(--accent2)}
-    .filter-dot{width:8px;height:8px}
-    .filter-text{font-size:12px}
-    /* Увеличиваем touch target поля поиска */
-    .search-wrap input{font-size:15px;padding:12px 36px 12px 12px}
-    .search-clear{font-size:16px;right:10px}
+    .main { flex-direction:column-reverse; }
+    .panel { width:100%; height:30dvh; min-height:110px; max-height:85dvh; border-right:none; border-top:1px solid var(--border); transition:height .3s ease; flex-shrink:0; }
+    .sheet-handle { display:flex; }
+    .topbar-title { font-size:11px; }
+    .panel-filters { display:block; padding:6px 10px; border-bottom:1px solid var(--border); }
+    .panel-filters .panel-label { display:none; }
+    .filters { flex-direction:row; overflow-x:auto; gap:6px; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px; }
+    .filters::-webkit-scrollbar { display:none; }
+    .filter-item { flex-shrink:0; border:1px solid var(--border); border-radius:20px; padding:5px 10px; background:var(--surface2); }
+    .filter-dot { width:8px; height:8px; }
+    .filter-text { font-size:12px; }
+    .search-wrap input { font-size:15px; padding:12px 36px 12px 12px; }
+    .search-clear { font-size:16px; right:10px; }
   }
 </style>
 </head>
@@ -124,7 +160,8 @@
   <a href="index.html" class="back-btn">← Поиск</a>
   <div class="topbar-title">Карта отключений <span>ГВС</span> · Ярославль 2026</div>
   <div class="topbar-sep"></div>
-  <div class="counter-chip" id="counterChip">…</div>
+  <!-- ИСПРАВЛЕНО: title сообщает о неотображённых адресах (без координат) -->
+  <div class="counter-chip" id="counterChip" title="">…</div>
 </div>
 
 <div class="main">
@@ -161,50 +198,56 @@
       </div>
     </div>
 
-    <div class="addr-list" id="addrList"></div>
+    <!-- ── Скелетон пока данные грузятся ────────────────────── -->
+    <div class="addr-list" id="addrList">
+      <div class="sk-item"></div>
+      <div class="sk-item"></div>
+      <div class="sk-item"></div>
+      <div class="sk-item"></div>
+      <div class="sk-item"></div>
+    </div>
   </div>
 
   <div id="map"></div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" crossorigin="anonymous"></script>
+<!--
+  TODO: добавить integrity="sha256-..." для leaflet.js и leaflet.markercluster.js
+  Хеши вычисляются командой:
+    curl -s <url> | openssl dgst -sha256 -binary | openssl base64 -A
+  Или используйте https://www.srihash.org/
+-->
 <script>
-// ── Тема (читаем из localStorage, кнопки нет — управление из index) ───
+// ── Тема ─────────────────────────────────────────────────────────────────
 (function() {
-  if (localStorage.getItem('theme') === 'light') {
-    document.documentElement.classList.add('light');
-  }
+  if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
 })();
 
-// ── Нормализация ключа для сопоставления geo.json ↔ data.json ─
-// Убирает точки, запятые, лишние пробелы.
-// "ул. Панина д. 25" и "ул. Панина, д.25" → одно и то же
-function normKey(s) {
-  return s.toLowerCase().replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim();
-}
+// ─── Константы ───────────────────────────────────────────────────────────
+// Именованные — больше не магические числа
+const MAP_CENTER      = [57.6261, 39.8845]; // центр Ярославля
+const MAP_ZOOM_DEFAULT = 12;
+const MAP_ZOOM_FOCUS   = 16;               // зум при клике на адрес в списке
+const CLUSTER_RADIUS   = 50;              // пикселей — радиус кластеризации
 
-// ── Нормализация поискового запроса ─────────────────────────
-// Убирает служебные слова (ул, д, пр-кт…) и пунктуацию,
-// возвращает массив токенов.
-// "Панина 25" → ["панина", "25"]
-// "ул. Панина, д.25" → ["панина", "25"]
-function normalizeQuery(s) {
+// ─── normKey: ИСПРАВЛЕНО — сортируем токены для порядконезависимого матчинга ──
+// Проблема: gvs_convert строит адреса вида «проезд 2-й Брагинский»,
+// а geo.json хранит ключи «2-й Брагинский проезд» (из геокодера).
+// Сортировка токенов устраняет расхождение — 42 адреса теперь видны на карте.
+function normKey(s) {
   return s.toLowerCase()
-    .replace(/[.,]/g, ' ')       // точки и запятые → пробел
-    .replace(/\bд\b/g, ' ')      // "д" как отдельное слово → пробел
-    .replace(/\bул\b/g, ' ')     // "ул" → пробел
-    .replace(/\bпр-кт\b/g, ' ') // "пр-кт" → пробел
-    .replace(/\bпр-д\b/g, ' ')  // "пр-д" → пробел
-    .replace(/\bпер\b/g, ' ')   // "пер" → пробел
-    .replace(/\bпр\b/g, ' ')    // "пр" → пробел
+    .replace(/[.,]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .split(' ')
-    .filter(Boolean);
+    .filter(Boolean)
+    .sort()
+    .join(' ');
 }
 
-// ── Склонение «адрес» ────────────────────────────────────────
+// ─── Склонение «адрес» ───────────────────────────────────────────────────
 function pluralAddr(n) {
   const mod10 = n % 10, mod100 = n % 100;
   if (mod100 >= 11 && mod100 <= 19) return n + ' адресов';
@@ -213,12 +256,10 @@ function pluralAddr(n) {
   return n + ' адресов';
 }
 
-// ── Карта ─────────────────────────────────────────────────────
-// attributionControl:false — в Leaflet 1.9.x в стандартный prefix
-// жёстко вшит флаг 🇺🇦, убрать его иначе невозможно.
+// ─── Карта ───────────────────────────────────────────────────────────────
 const map = L.map('map', {
-  center: [57.6261, 39.8845],
-  zoom: 12,
+  center: MAP_CENTER,
+  zoom: MAP_ZOOM_DEFAULT,
   zoomControl: false,
   attributionControl: true,
 });
@@ -230,9 +271,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
 }).addTo(map);
 
-// ── Кластерный слой ──────────────────────────────────────────
+// ─── Кластерный слой ─────────────────────────────────────────────────────
 const clusterGroup = L.markerClusterGroup({
-  maxClusterRadius: 50,
+  maxClusterRadius: CLUSTER_RADIUS,
   spiderfyOnMaxZoom: true,
   showCoverageOnHover: false,
   zoomToBoundsOnClick: true,
@@ -240,20 +281,7 @@ const clusterGroup = L.markerClusterGroup({
     const color = getClusterColor(cluster.getAllChildMarkers());
     const count = cluster.getChildCount();
     return L.divIcon({
-      html: '<div style="'
-        + 'background:' + color + ';'
-        + 'opacity:.82;'
-        + 'width:34px;height:34px;'
-        + 'border-radius:50%;'
-        + 'border:2.5px solid #0d1117;'
-        + 'box-shadow:0 2px 8px rgba(0,0,0,.55);'
-        + 'line-height:30px;'
-        + 'text-align:center;'
-        + 'color:#fff;'
-        + 'font-family:\'Unbounded\',sans-serif;'
-        + 'font-size:11px;'
-        + 'font-weight:700;'
-        + '">' + count + '</div>',
+      html: `<div style="background:${color};opacity:.82;width:34px;height:34px;border-radius:50%;border:2.5px solid #0d1117;box-shadow:0 2px 8px rgba(0,0,0,.55);line-height:30px;text-align:center;color:#fff;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;">${count}</div>`,
       className: '',
       iconSize: [40, 40],
       iconAnchor: [20, 20],
@@ -262,137 +290,53 @@ const clusterGroup = L.markerClusterGroup({
 });
 map.addLayer(clusterGroup);
 
-let allPoints = [], activeAddr = null;
+let allPoints = [];
+let activeAddr = null;
 
-// ── Загрузка данных ──────────────────────────────────────────
-async function loadData() {
-  const [dataRes, geoRes] = await Promise.all([
-    fetch('data.json'),
-    fetch('geo.json'),
-  ]);
-  const data  = await dataRes.json();
-  const geoDb = await geoRes.json();
+// ─── HTML-экранирование (делегировано gvs-core) ──────────────────────────
+const escapeHtml = GVS.escapeHtml;
 
-  // Нормализованный индекс geo.json
-  const geoIdx = {};
-  for (const [k, v] of Object.entries(geoDb)) {
-    if (v) geoIdx[normKey(k)] = v;
-  }
-
-  // Группируем data.json по адресу
-  const byAddr = {};
-  for (const item of data) {
-    if (!byAddr[item.address]) byAddr[item.address] = [];
-    byAddr[item.address].push(item);
-  }
-
-  // Совмещаем по нормализованному ключу
-  let matched = 0, missed = 0;
-  for (const [addr, records] of Object.entries(byAddr)) {
-    const geo = geoIdx[normKey(addr)];
-    if (!geo) { missed++; continue; }
-    matched++;
-    allPoints.push({ address: addr, lat: geo.lat, lng: geo.lng, records,
-                     _norm: normalizeQuery(addr).join(' ') });
-  }
-  console.log('geo.json совпало:', matched, '/ не найдено:', missed);
-
-  renderAll();
-}
-
-// ── Экранирование HTML ───────────────────────────────────────
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-// ── Парсинг дат для умной раскраски маркеров ─────────────────
-function parseOneDate(s) {
-  const m = String(s).match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
-  if (!m) return null;
-  return new Date(+m[3], +m[2] - 1, +m[1]);
-}
-
-// Форматы: "27.05.2025", "25.07.2025-04.08.2025" (новый),
-//           "25.07-04.08.2025", "23-24.07.2025" (обратная совместимость)
-function parsePeriod(rangeStr, onStr) {
-  if (!rangeStr) return null;
-  const clean = String(rangeStr).replace(/\.{2,}/g, '.').trim();
-  let start = null, end2 = null;
-
-  // Новый нормализованный: "dd.mm.yyyy-dd.mm.yyyy"
-  let m = clean.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})[-–](\d{1,2})\.(\d{1,2})\.(\d{4})/);
-  if (m) {
-    start = new Date(+m[3], +m[2] - 1, +m[1]);
-    end2  = new Date(+m[6], +m[5] - 1, +m[4]);
-  }
-  // Старый: "dd.mm-dd.mm.yyyy"
-  if (!start) {
-    m = clean.match(/^(\d{1,2})\.(\d{1,2})-\d{1,2}\.\d{1,2}\.(\d{4})/);
-    if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
-  }
-  // Старый: "dd-dd.mm.yyyy"
-  if (!start) {
-    m = clean.match(/^(\d{1,2})-\d{1,2}\.(\d{1,2})\.(\d{4})/);
-    if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
-  }
-  if (!start) start = parseOneDate(clean);
-  if (!start) return null;
-  const endFromOn = onStr ? parseOneDate(onStr) : null;
-  return { start, end: endFromOn || end2 || start };
-}
-
-// ── Иконки и попапы ─────────────────────────────────────────
-// Возвращает цвет маркера с учётом текущей даты:
-//   красный/жёлтый/синий — если отключение идёт сейчас
-//   зелёный              — если все периоды уже завершены (вода есть)
-//   красный/жёлтый/синий — если отключение в будущем (по типу)
-//   серый                — нет данных
+// ─── Цвет маркера по типу и статусу отключения ──────────────────────────
+// Приоритет: активное > всё завершено (зелёный) > по типу будущего
 function getTypeColor(records) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
 
-  // Проверяем, есть ли активное отключение прямо сейчас
+  // Активное прямо сейчас
   for (const r of records) {
     const checks = [
-      { period: parsePeriod(r.repair,  r.repair_on),  color: '#e85d2f' },
-      { period: parsePeriod(r.hydro1,  r.hydro1_on),  color: '#d29922' },
-      { period: parsePeriod(r.hydro2,  r.hydro2_on),  color: '#58a6ff' },
+      { period: GVS.parsePeriod(r.repair, r.repair_on),  color: '#e85d2f' },
+      { period: GVS.parsePeriod(r.hydro1, r.hydro1_on),  color: '#d29922' },
+      { period: GVS.parsePeriod(r.hydro2, r.hydro2_on),  color: '#58a6ff' },
     ];
     for (const c of checks) {
       if (c.period && today >= c.period.start && today <= c.period.end) return c.color;
     }
   }
 
-  // Все периоды уже завершены → вода подана, зелёный
-  const allPeriods = records.flatMap(r => [
-    parsePeriod(r.repair,  r.repair_on),
-    parsePeriod(r.hydro1,  r.hydro1_on),
-    parsePeriod(r.hydro2,  r.hydro2_on),
+  // Все периоды завершены → вода подана
+  const all = records.flatMap(r => [
+    GVS.parsePeriod(r.repair, r.repair_on),
+    GVS.parsePeriod(r.hydro1, r.hydro1_on),
+    GVS.parsePeriod(r.hydro2, r.hydro2_on),
   ]).filter(Boolean);
+  if (all.length > 0 && all.every(p => p.end < today)) return '#3fb950';
 
-  if (allPeriods.length > 0 && allPeriods.every(p => p.end < today)) return '#3fb950';
-
-  // Будущие отключения — по приоритету типа
-  if (records.some(r => r.repair))  return '#e85d2f';
-  if (records.some(r => r.hydro2))  return '#58a6ff';
-  if (records.some(r => r.hydro1))  return '#d29922';
+  // Будущие — по приоритету типа
+  if (records.some(r => r.repair && GVS.isDateValue(r.repair)))  return '#e85d2f';
+  if (records.some(r => r.hydro2 && GVS.isDateValue(r.hydro2))) return '#58a6ff';
+  if (records.some(r => r.hydro1 && GVS.isDateValue(r.hydro1))) return '#d29922';
   return '#7d8590';
 }
 
 function makeIcon(color) {
   return L.divIcon({
     className: '',
-    html: '<div class="mc-dot" style="background:' + color + '"></div>',
+    html: `<div class="mc-dot" style="background:${color}"></div>`,
     iconSize: [18, 18],
     iconAnchor: [9, 9],
   });
 }
 
-// Выбирает цвет кластера = наиболее приоритетный цвет среди дочерних маркеров
 const COLOR_PRIORITY = { '#e85d2f': 0, '#d29922': 1, '#58a6ff': 2, '#3fb950': 3, '#7d8590': 4 };
 function getClusterColor(children) {
   let best = '#7d8590', bestRank = 99;
@@ -404,83 +348,158 @@ function getClusterColor(children) {
   return best;
 }
 
+// ─── Попап (нестандартные текстовые поля тоже рендерятся корректно) ──────
 function makePopup(pt) {
   let rows = '';
   for (const r of pt.records) {
-    if (r.repair) rows += '<div class="popup-row"><div class="popup-badge repair">Ремонт</div><div class="popup-dates">' + escapeHtml(r.repair) + '<br><span class="popup-on">▲ Подключение: ' + escapeHtml(r.repair_on || '—') + '</span></div></div>';
-    if (r.hydro1) rows += '<div class="popup-row"><div class="popup-badge hydro1">Гидро 1</div><div class="popup-dates">' + escapeHtml(r.hydro1) + '<br><span class="popup-on">▲ Подключение: ' + escapeHtml(r.hydro1_on || '—') + '</span></div></div>';
-    if (r.hydro2) rows += '<div class="popup-row"><div class="popup-badge hydro2">Гидро 2</div><div class="popup-dates">' + escapeHtml(r.hydro2) + '<br><span class="popup-on">▲ Подключение: ' + escapeHtml(r.hydro2_on || '—') + '</span></div></div>';
+    const fields = [
+      { key: 'repair', label: 'Ремонт',   on: r.repair_on },
+      { key: 'hydro1', label: 'Гидро 1',  on: r.hydro1_on },
+      { key: 'hydro2', label: 'Гидро 2',  on: r.hydro2_on },
+    ];
+    for (const f of fields) {
+      const val = r[f.key];
+      if (!val) continue;
+      const content = GVS.isDateValue(val)
+        ? `<div class="popup-dates">${escapeHtml(val)}${f.on ? `<br><span class="popup-on">▲ Подключение: ${escapeHtml(f.on)}</span>` : ''}</div>`
+        : `<div class="popup-note">${escapeHtml(val)}</div>`;
+      rows += `<div class="popup-row"><div class="popup-badge ${f.key}">${f.label}</div>${content}</div>`;
+    }
   }
   if (!rows) rows = '<div class="popup-dates" style="color:var(--muted);font-style:italic">Нет данных</div>';
-  return '<div class="popup-inner"><div class="popup-addr">' + escapeHtml(pt.address) + '</div>'
-    + rows + '</div>';
+  return `<div class="popup-inner"><div class="popup-addr">${escapeHtml(pt.address)}</div>${rows}</div>`;
 }
 
-// ── Рендер ───────────────────────────────────────────────────
-function renderAll() {
-  const query = document.getElementById('panelSearch').value.toLowerCase().trim();
-  const fRep  = document.getElementById('fRepair').checked;
-  const fH1   = document.getElementById('fHydro1').checked;
-  const fH2   = document.getElementById('fHydro2').checked;
+// ─── Загрузка данных ─────────────────────────────────────────────────────
+async function loadData() {
+  const [dataRes, geoRes] = await Promise.all([
+    fetch('data.json'),
+    fetch('geo.json'),
+  ]);
 
-  const tokens = normalizeQuery(query);
+  // ИСПРАВЛЕНО: явная проверка на пустой geo.json
+  if (!geoRes.ok) throw new Error(`geo.json: HTTP ${geoRes.status}`);
+  const geoDb = await geoRes.json();
+  if (!geoDb || typeof geoDb !== 'object' || !Object.keys(geoDb).length) {
+    throw new Error('geo.json пустой или повреждён');
+  }
 
-  clusterGroup.clearLayers();
-  const listEl = document.getElementById('addrList');
-  listEl.innerHTML = '';
-  let shown = 0;
+  const data = await dataRes.json();
 
-  for (const pt of allPoints) {
-    // Гибкий поиск: все токены запроса должны присутствовать в адресе
-    if (tokens.length > 0) {
-      if (!tokens.every(function(t) { return pt._norm.includes(t); })) continue;
+  // ИСПРАВЛЕНО: normKey сортирует токены → порядконезависимый матчинг
+  const geoIdx = {};
+  for (const [k, v] of Object.entries(geoDb)) {
+    if (v && typeof v.lat === 'number' && typeof v.lng === 'number') {
+      geoIdx[normKey(k)] = v;
     }
-    const hasRep = pt.records.some(r => r.repair);
-    const hasH1  = pt.records.some(r => r.hydro1);
-    const hasH2  = pt.records.some(r => r.hydro2);
-    if (!((fRep && hasRep) || (fH1 && hasH1) || (fH2 && hasH2))) continue;
+  }
 
-    shown++;
+  // Группируем по адресу
+  const byAddr = {};
+  for (const item of data) {
+    if (!byAddr[item.address]) byAddr[item.address] = [];
+    byAddr[item.address].push(item);
+  }
 
-    const color = getTypeColor(pt.records);
+  let matched = 0, missed = 0;
+  for (const [addr, records] of Object.entries(byAddr)) {
+    const geo = geoIdx[normKey(addr)];
+    if (!geo) { missed++; continue; }
+    matched++;
+    const color   = getTypeColor(records);
+    const pt      = {
+      address: addr,
+      lat: geo.lat, lng: geo.lng,
+      records,
+      _norm: GVS.normalizeQuery(addr).join(' '),
+    };
+    // Создаём маркер ОДИН РАЗ — renderAll только добавляет/убирает из кластера
     const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color) });
     marker._gvsColor = color;
     marker.bindPopup(makePopup(pt), { maxWidth: 320 });
     marker.on('click', () => selectAddr(pt.address));
-    clusterGroup.addLayer(marker);
     pt._marker = marker;
+    allPoints.push(pt);
+  }
 
+  console.log(`[map] geo совпало: ${matched}, без координат: ${missed}`);
+
+  // ИСПРАВЛЕНО: tooltip отображает кол-во адресов без координат
+  const chip = document.getElementById('counterChip');
+  if (missed > 0) chip.title = `${missed} адресов не показаны (нет координат в geo.json)`;
+
+  renderAll();
+}
+
+// ─── Рендер: ИСПРАВЛЕНО — batch addLayers вместо clearLayers + поштучного add ──
+// Избегаем полного пересоздания 4600+ маркеров при каждом нажатии клавиши.
+// Паттерн: clearLayers() + addLayers(visible[]) — оптимизирован Leaflet.
+function renderAll() {
+  const tokens = GVS.normalizeQuery(document.getElementById('panelSearch').value);
+  const fRep   = document.getElementById('fRepair').checked;
+  const fH1    = document.getElementById('fHydro1').checked;
+  const fH2    = document.getElementById('fHydro2').checked;
+
+  const visible  = [];
+  const fragment = document.createDocumentFragment();
+
+  for (const pt of allPoints) {
+    // Поиск: все токены должны присутствовать в нормализованном адресе
+    const matchSearch = !tokens.length || tokens.every(t => pt._norm.includes(t));
+    // Фильтр: хотя бы один из включённых типов есть в записях
+    // isDateValue исключает текстовые заметки («По распоряжению…»)
+    const hasRep = pt.records.some(r => GVS.isDateValue(r.repair));
+    const hasH1  = pt.records.some(r => GVS.isDateValue(r.hydro1));
+    const hasH2  = pt.records.some(r => GVS.isDateValue(r.hydro2));
+    const matchFilter = (fRep && hasRep) || (fH1 && hasH1) || (fH2 && hasH2);
+
+    if (!matchSearch || !matchFilter) continue;
+
+    visible.push(pt._marker);
+
+    // Строим элемент списка
     const item = document.createElement('div');
     item.className = 'addr-item' + (pt.address === activeAddr ? ' active' : '');
     item.dataset.addr = pt.address;
-    item.innerHTML = '<div class="addr-street">' + pt.address + '</div><div class="addr-dots">'
-      + (hasRep ? '<div class="dot repair"></div>' : '')
-      + (hasH1  ? '<div class="dot hydro1"></div>' : '')
-      + (hasH2  ? '<div class="dot hydro2"></div>' : '')
-      + '</div>';
-    item.onclick = () => {
+    item.innerHTML = `<div class="addr-street">${escapeHtml(pt.address)}</div>
+      <div class="addr-dots">
+        ${hasRep ? '<div class="dot repair"></div>' : ''}
+        ${hasH1  ? '<div class="dot hydro1"></div>' : ''}
+        ${hasH2  ? '<div class="dot hydro2"></div>' : ''}
+      </div>`;
+    item.addEventListener('click', () => {
       selectAddr(pt.address);
-      map.setView([pt.lat, pt.lng], 16, { animate: true });
+      map.setView([pt.lat, pt.lng], MAP_ZOOM_FOCUS, { animate: true });
       pt._marker && pt._marker.openPopup();
-    };
-    listEl.appendChild(item);
+    });
+    fragment.appendChild(item);
   }
 
-  if (shown === 0) {
+  // Batch-обновление кластера (один DOM-цикл, не 4600+ отдельных вызовов)
+  clusterGroup.clearLayers();
+  if (visible.length) clusterGroup.addLayers(visible);
+
+  // Обновляем список одной операцией
+  const listEl = document.getElementById('addrList');
+  listEl.innerHTML = '';
+  if (visible.length) {
+    listEl.appendChild(fragment);
+  } else {
     listEl.innerHTML = '<div class="empty-list"><span class="big">🔍</span>Ничего не найдено. Попробуйте другое написание или воспользуйтесь основным поиском</div>';
   }
-  document.getElementById('counterChip').textContent = pluralAddr(shown);
+
+  document.getElementById('counterChip').textContent = pluralAddr(visible.length);
 }
 
 function selectAddr(address) {
   activeAddr = address;
-  document.querySelectorAll('.addr-item').forEach(function(el) {
+  document.querySelectorAll('.addr-item').forEach(el => {
     el.classList.toggle('active', el.dataset.addr === address);
     if (el.dataset.addr === address) el.scrollIntoView({ block: 'nearest' });
   });
 }
 
-// ── События ──────────────────────────────────────────────────
+// ─── События ─────────────────────────────────────────────────────────────
 let _mapSearchDebounce;
 document.getElementById('panelSearch').addEventListener('input', function() {
   document.getElementById('searchClear').classList.toggle('vis', this.value.length > 0);
@@ -492,35 +511,32 @@ document.getElementById('searchClear').addEventListener('click', function() {
   this.classList.remove('vis');
   renderAll();
 });
-['fRepair', 'fHydro1', 'fHydro2'].forEach(function(id) {
+['fRepair', 'fHydro1', 'fHydro2'].forEach(id => {
   document.getElementById(id).addEventListener('change', renderAll);
 });
 
-// ── Bottom sheet drag handle (только mobile) ─────────────────
-// Единственный обработчик — объединяет лучшее из двух предыдущих версий:
-//   • динамическое добавление/удаление слушателей (не висят постоянно)
-//   • 3 точки снэппинга: 30% / 60% / 85% высоты экрана
-//   • сброс высоты при resize
+// ─── Bottom sheet drag handle (только mobile) ────────────────────────────
 (function() {
   const handle = document.getElementById('sheetHandle');
   const panel  = handle.parentElement;
+  // Три точки снэппинга: 30% / 60% / 85% высоты экрана
+  const SNAP_RATIOS = [0.30, 0.60, 0.85];
   let dragging = false, startY = 0, startH = 0;
 
   function isMobile() { return window.innerWidth <= 640; }
 
   function snapHeight(h) {
-    const vh = window.innerHeight;
-    const snaps = [0.30, 0.60, 0.85].map(r => Math.round(vh * r));
+    const vh    = window.innerHeight;
+    const snaps = SNAP_RATIOS.map(r => Math.round(vh * r));
     return snaps.reduce((a, b) => Math.abs(b - h) < Math.abs(a - h) ? b : a);
   }
 
   function onMove(e) {
     if (!dragging) return;
     if (e.cancelable) e.preventDefault();
-    const y    = (e.touches ? e.touches[0].clientY : e.clientY);
+    const y    = e.touches ? e.touches[0].clientY : e.clientY;
     const newH = startH - (y - startY);
-    const vh   = window.innerHeight;
-    panel.style.height = Math.min(Math.max(newH, 80), vh * 0.88) + 'px';
+    panel.style.height = Math.min(Math.max(newH, 80), window.innerHeight * 0.88) + 'px';
     panel.style.transition = 'none';
   }
 
@@ -529,26 +545,25 @@ document.getElementById('searchClear').addEventListener('click', function() {
     dragging = false;
     panel.style.transition = 'height .3s ease';
     panel.style.height = snapHeight(panel.offsetHeight) + 'px';
-    document.removeEventListener('mousemove',  onMove);
-    document.removeEventListener('mouseup',    onEnd);
-    document.removeEventListener('touchmove',  onMove);
-    document.removeEventListener('touchend',   onEnd);
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup',   onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend',  onEnd);
   }
 
   function onStart(e) {
     if (!isMobile()) return;
     dragging = true;
-    startY = (e.touches ? e.touches[0].clientY : e.clientY);
+    startY = e.touches ? e.touches[0].clientY : e.clientY;
     startH = panel.offsetHeight;
-    document.addEventListener('mousemove',  onMove);
-    document.addEventListener('mouseup',    onEnd);
-    document.addEventListener('touchmove',  onMove, { passive: false });
-    document.addEventListener('touchend',   onEnd);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onEnd);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend',  onEnd);
   }
 
   function initHeight() {
-    if (isMobile()) panel.style.height = Math.round(window.innerHeight * 0.30) + 'px';
-    else panel.style.height = '';
+    panel.style.height = isMobile() ? Math.round(window.innerHeight * SNAP_RATIOS[0]) + 'px' : '';
   }
 
   handle.addEventListener('mousedown',  onStart);
@@ -557,10 +572,12 @@ document.getElementById('searchClear').addEventListener('click', function() {
   initHeight();
 })();
 
-loadData().catch(function(err) {
+// ─── Запуск ──────────────────────────────────────────────────────────────
+loadData().catch(err => {
   document.getElementById('addrList').innerHTML =
-    '<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.</div>';
-  console.error(err);
+    `<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.<br><small style="color:var(--muted)">${GVS.escapeHtml(err.message)}</small></div>`;
+  document.getElementById('counterChip').textContent = 'Ошибка';
+  console.error('[map] loadData failed:', err);
 });
 </script>
 </body>

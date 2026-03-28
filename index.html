@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Отключение горячей воды в Ярославле — 2026</title>
 <meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
-<meta name="keywords" content="отключение воды  Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
+<meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💦</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <!-- Общие переменные и сброс -->
 <link rel="stylesheet" href="styles.css">
+<!-- Бизнес-логика (даты, нормализация, статусы) -->
+<script src="gvs-core.js"></script>
 <style>
   html.light body::before {
     background-image:
@@ -38,8 +40,7 @@
   .theme-toggle:hover { border-color: var(--accent); }
   .theme-emoji { font-size: 15px; line-height: 1; }
   .theme-track {
-    width: 36px;
-    height: 20px;
+    width: 36px; height: 20px;
     border-radius: 10px;
     background: var(--surface2);
     border: 1.5px solid var(--border);
@@ -49,22 +50,15 @@
   }
   .theme-thumb {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 14px;
-    height: 14px;
+    top: 2px; left: 2px;
+    width: 14px; height: 14px;
     border-radius: 50%;
     background: var(--muted);
     transition: transform .2s, background .2s;
   }
-  html.light .theme-thumb {
-    transform: translateX(16px);
-    background: var(--accent);
-  }
+  html.light .theme-thumb { transform: translateX(16px); background: var(--accent); }
   html.light .theme-track { background: rgba(232,93,47,0.12); border-color: rgba(232,93,47,0.3); }
 
-  /* overflow-x: hidden на body ломает position:fixed в iOS Safari —
-     переносим на html, body оставляем с flex-колонкой */
   html { overflow-x: hidden; }
   body {
     background: var(--bg);
@@ -94,7 +88,7 @@
     padding: 0 20px;
     position: relative;
     z-index: 1;
-    flex: 1; /* растягивается, прижимая футер к низу */
+    flex: 1;
   }
 
   /* Header */
@@ -107,8 +101,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 64px;
-    height: 64px;
+    width: 64px; height: 64px;
     background: linear-gradient(135deg, var(--accent), #c0392b);
     border-radius: 16px;
     margin-bottom: 24px;
@@ -124,29 +117,21 @@
     margin-bottom: 12px;
   }
   h1 span { color: var(--accent); }
-  .subtitle {
-    color: var(--muted);
-    font-size: 15px;
-    font-weight: 500;
-  }
+  .subtitle { color: var(--muted); font-size: 15px; font-weight: 500; }
 
-  /* Map button */
-  .header-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
+  /* ── Map button: повышен до secondary CTA ─────────────────── */
+  .header-actions { display: flex; justify-content: center; margin-top: 20px; }
   .map-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
+    background: rgba(232,93,47,0.08);
+    border: 1.5px solid rgba(232,93,47,0.35);
     border-radius: 10px;
-    color: var(--muted);
+    color: var(--accent2);
     font-family: 'Golos Text', sans-serif;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     padding: 10px 20px;
     text-decoration: none;
     transition: border-color .2s, color .2s, background .2s;
@@ -154,18 +139,14 @@
   .map-btn:hover {
     border-color: var(--accent);
     color: var(--accent2);
-    background: rgba(232,93,47,0.06);
+    background: rgba(232,93,47,0.15);
   }
 
   /* Search box */
-  .search-wrap {
-    margin: 40px 0 32px;
-    position: relative;
-  }
+  .search-wrap { margin: 40px 0 32px; position: relative; }
   .search-icon {
     position: absolute;
-    left: 20px;
-    top: 50%;
+    left: 20px; top: 50%;
     transform: translateY(-50%);
     color: var(--muted);
     font-size: 20px;
@@ -192,16 +173,14 @@
   }
   .clear-btn {
     position: absolute;
-    right: 16px;
-    top: 50%;
+    right: 16px; top: 50%;
     transform: translateY(-50%);
     background: var(--border);
     border: none;
     color: var(--muted);
     cursor: pointer;
     border-radius: 8px;
-    width: 30px;
-    height: 30px;
+    width: 30px; height: 30px;
     font-size: 14px;
     display: none;
     align-items: center;
@@ -215,8 +194,7 @@
   .hints-dropdown {
     position: absolute;
     top: calc(100% + 6px);
-    left: 0;
-    right: 0;
+    left: 0; right: 0;
     background: var(--surface);
     border: 1.5px solid var(--accent);
     border-radius: 12px;
@@ -243,16 +221,12 @@
     align-items: center;
     gap: 10px;
   }
+  /* ── Иконка подсказок: ⚡ вместо 🔍 ────────────────────────── */
   .hint-icon { font-size: 12px; opacity: 0.5; flex-shrink: 0; }
   .hint:hover { background: var(--surface2); color: var(--accent2); }
 
   /* Stats bar */
-  .stats {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
+  .stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
   .stat-chip {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -271,16 +245,18 @@
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 20px 24px;
-    transition: border-color 0.2s, transform 0.15s;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.15s;
     animation: fadeIn 0.2s ease;
   }
+  /* ── Hover: добавлена тень для ощущения «подъёма» ─────────── */
   .result-card:hover {
     border-color: var(--accent);
     transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
   }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   .card-header {
     display: flex;
@@ -289,10 +265,11 @@
     gap: 12px;
     margin-bottom: 16px;
   }
+  /* ── address-badge: снижен визуальный шум при 20 карточках ── */
   .address-badge {
-    font-family: 'Unbounded', sans-serif;
+    font-family: 'Golos Text', sans-serif; /* было: Unbounded */
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;                      /* было: 700 */
     color: var(--text);
     line-height: 1.3;
   }
@@ -307,12 +284,7 @@
     white-space: nowrap;
     flex-shrink: 0;
   }
-  .consumer-name {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 16px;
-    line-height: 1.4;
-  }
+  .consumer-name { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.4; }
 
   .periods-grid {
     display: grid;
@@ -320,42 +292,50 @@
     gap: 10px;
   }
   .period-item {
-    background: var(--surface2);
     border-radius: 10px;
     padding: 12px 14px;
     border-left: 3px solid var(--border);
+    background: var(--surface2);
   }
-  .period-item.repair { border-left-color: var(--accent); }
-  .period-item.hydro1 { border-left-color: var(--warn); }
-  .period-item.hydro2 { border-left-color: var(--blue); }
+  /* ── Цветной фон-тинт: типы отключений различимы на мобиле ── */
+  .period-item.repair {
+    border-left-color: var(--accent);
+    background: color-mix(in srgb, var(--surface2) 94%, var(--accent) 6%);
+  }
+  .period-item.hydro1 {
+    border-left-color: var(--warn);
+    background: color-mix(in srgb, var(--surface2) 94%, var(--warn) 6%);
+  }
+  .period-item.hydro2 {
+    border-left-color: var(--blue);
+    background: color-mix(in srgb, var(--surface2) 94%, var(--blue) 6%);
+  }
+  /* ── В светлой теме синяя граница была тяжёлой — смягчена ── */
+  html.light .period-item.hydro2 {
+    border-left-color: #2c7acf;
+  }
+
+  /* ── period-label: увеличен до 12px, цвет совпадает с типом ─ */
   .period-label {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12px;              /* было: 11px */
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;        /* было: 0.5px */
     color: var(--muted);
     margin-bottom: 5px;
   }
-  .period-dates {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.4;
-  }
-  .period-on {
-    font-size: 12px;
-    color: var(--success);
-    margin-top: 3px;
-  }
+  .period-item.repair .period-label { color: var(--accent); }
+  .period-item.hydro1 .period-label { color: var(--warn); }
+  .period-item.hydro2 .period-label { color: var(--blue); }
+
+  .period-dates { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .period-on    { font-size: 12px; color: var(--success); margin-top: 3px; }
+  /* ── Нестандартные текстовые значения («По распоряжению…») ── */
+  .period-note  { font-size: 12px; color: var(--muted); font-style: italic; line-height: 1.4; }
+
   .period-empty { color: var(--muted); font-style: italic; font-size: 13px; }
 
-  .card-footer {
-    margin-top: 14px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+  .card-footer { margin-top: 14px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .source-tag {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -366,11 +346,7 @@
   }
 
   /* Empty / initial states */
-  .state-message {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
-  }
+  .state-message { text-align: center; padding: 60px 20px; color: var(--muted); }
   .state-message .emoji { font-size: 48px; display: block; margin-bottom: 16px; }
   .state-message h3 { font-family: 'Unbounded', sans-serif; font-size: 18px; color: var(--text); margin-bottom: 8px; }
   .state-message p { font-size: 15px; line-height: 1.6; }
@@ -401,12 +377,7 @@
   .page-btn:disabled { opacity: 0.3; cursor: default; }
   .page-info { color: var(--muted); font-size: 14px; }
 
-  mark {
-    background: rgba(232,93,47,0.25);
-    color: var(--accent2);
-    border-radius: 3px;
-    padding: 0 2px;
-  }
+  mark { background: rgba(232,93,47,0.25); color: var(--accent2); border-radius: 3px; padding: 0 2px; }
   html.light mark { background: rgba(232,93,47,0.18); }
 
   /* Status badges */
@@ -440,21 +411,20 @@
     border: 1px solid var(--border);
     opacity: 0.6;
   }
-  .result-card.status-active {
-    border-color: rgba(232,93,47,0.5);
-  }
-  .result-card.status-past {
-    opacity: 0.65;
-  }
-  .result-card.status-past:hover {
-    opacity: 1;
-  }
+  .result-card.status-active { border-color: rgba(232,93,47,0.5); }
+
+  /* ── past: только адрес приглушён, содержимое остаётся читаемым */
+  .result-card.status-past .address-badge { font-weight: 500; color: var(--muted); }
+  .result-card.status-past .periods-grid  { opacity: 0.6; }
+  .result-card.status-past:hover .address-badge { color: var(--text); }
+  .result-card.status-past:hover .periods-grid  { opacity: 1; }
+
   @keyframes pulse-badge {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.65; }
+    50%       { opacity: 0.65; }
   }
 
-  /* Счётчик дней */
+  /* Дней-чип */
   .days-chip {
     display: inline-block;
     font-size: 12px;
@@ -480,9 +450,9 @@
     .periods-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* Mobile */
+  /* ── Mobile: сжат header, поисковая строка видна без скролла ─ */
   @media (max-width: 600px) {
-    header { padding: 40px 0 28px; }
+    header { padding: 32px 0 20px; }   /* было: 40px 0 28px */
     .periods-grid { grid-template-columns: 1fr; }
     .card-header { flex-direction: column; }
   }
@@ -522,12 +492,13 @@
            aria-label="Поиск по адресу" aria-controls="results" aria-autocomplete="list">
     <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска">✕</button>
     <div class="hints-dropdown" id="hintsDropdown">
-      <button class="hint"><span class="hint-icon">🔍</span>Толбухина</button>
-      <button class="hint"><span class="hint-icon">🔍</span>Некрасова</button>
-      <button class="hint"><span class="hint-icon">🔍</span>Ленина</button>
-      <button class="hint"><span class="hint-icon">🔍</span>Чайковского</button>
-      <button class="hint"><span class="hint-icon">🔍</span>Свердлова</button>
-      <button class="hint"><span class="hint-icon">🔍</span>Угличская</button>
+      <!-- ── Иконка ⚡: «популярный запрос», а не «история поиска» ── -->
+      <button class="hint"><span class="hint-icon">⚡</span>Толбухина</button>
+      <button class="hint"><span class="hint-icon">⚡</span>Некрасова</button>
+      <button class="hint"><span class="hint-icon">⚡</span>Ленина</button>
+      <button class="hint"><span class="hint-icon">⚡</span>Чайковского</button>
+      <button class="hint"><span class="hint-icon">⚡</span>Свердлова</button>
+      <button class="hint"><span class="hint-icon">⚡</span>Угличская</button>
     </div>
   </div>
 
@@ -540,24 +511,24 @@
 </div>
 
 <script>
-// ─── Тема ─────────────────────────────────────────────────────────────
+// ─── Тема ───────────────────────────────────────────────────────────────
 (function() {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light') document.documentElement.classList.add('light');
+  if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
 })();
-
 document.getElementById('themeToggle').addEventListener('click', () => {
   const isLight = document.documentElement.classList.toggle('light');
   localStorage.setItem('theme', isLight ? 'light' : 'dark');
 });
 
-// ─── Состояние ────────────────────────────────────────────────────────
+// ─── Состояние ──────────────────────────────────────────────────────────
+const PER_PAGE = GVS.PER_PAGE; // из gvs-core.js — больше не магическое число
+
 let DATA        = [];
 let filtered    = [];
 let currentPage = 1;
-const PER_PAGE  = 20;
+let dataLoaded  = false;          // ИСПРАВЛЕНО: флаг для race condition
 
-// ─── DOM ──────────────────────────────────────────────────────────────
+// ─── DOM ────────────────────────────────────────────────────────────────
 const searchInput  = document.getElementById('searchInput');
 const clearBtn     = document.getElementById('clearBtn');
 const resultsEl    = document.getElementById('results');
@@ -565,153 +536,54 @@ const statsBar     = document.getElementById('statsBar');
 const foundCount   = document.getElementById('foundCount');
 const paginationEl = document.getElementById('pagination');
 
-// ─── Нормализация для поиска ──────────────────────────────────────────
-// Убираем знаки препинания, "д.", "д", лишние пробелы — чтобы
-// "Толбухина 6" находило "Толбухина, д.6" и "Толбухина д. 6"
-function normalizeQuery(s) {
-  return s.toLowerCase()
-    .replace(/[,\.]/g, ' ')       // запятые и точки → пробел
-    .replace(/\bд\b/g, ' ')       // отдельное "д" → пробел
-    .replace(/\bул\b/g, ' ')      // "ул" → пробел
-    .replace(/\bпр-кт\b/g, ' ')   // "пр-кт" → пробел
-    .replace(/\bпр\b/g, ' ')      // "пр" → пробел
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-// ─── Экранирование HTML ───────────────────────────────────────
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-// ─── Подсветка совпадений ─────────────────────────────────────
-function hl(text, q) {
-  const safe = escapeHtml(text);
-  if (!q) return safe;
-  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return safe.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
-}
-
-// ─── Парсинг дат для статусных индикаторов ───────────────────
-function parseOneDate(s) {
-  const m = String(s).match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
-  if (!m) return null;
-  return new Date(+m[3], +m[2] - 1, +m[1]);
-}
-
-// Разбирает строку с диапазоном и дату включения → {start, end}
-// Форматы: "27.05.2025", "25.07.2025–04.08.2025", "23.07.2025–24.07.2025"
-// (старые форматы оставлены для обратной совместимости)
-function parsePeriod(rangeStr, onStr) {
-  if (!rangeStr) return null;
-  const clean = String(rangeStr).replace(/\.{2,}/g, '.').trim();
-  let start = null, end2 = null;
-
-  // Новый нормализованный: "dd.mm.yyyy-dd.mm.yyyy" или с тире/дефисом
-  let m = clean.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})[-–](\d{1,2})\.(\d{1,2})\.(\d{4})/);
-  if (m) {
-    start = new Date(+m[3], +m[2] - 1, +m[1]);
-    end2  = new Date(+m[6], +m[5] - 1, +m[4]);
+// ─── Подсветка совпадений ───────────────────────────────────────────────
+// ИСПРАВЛЕНО: принимает массив токенов (нормализованных), а не сырую строку.
+// Длинные токены обрабатываются первыми — предотвращаем вложенные <mark>.
+function hl(text, tokens) {
+  let safe = GVS.escapeHtml(text);
+  if (!tokens || !tokens.length) return safe;
+  const sorted = [...tokens].sort((a, b) => b.length - a.length);
+  for (const token of sorted) {
+    if (!token) continue;
+    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    safe = safe.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
   }
-
-  // Старый: "dd.mm-dd.mm.yyyy"
-  if (!start) {
-    m = clean.match(/^(\d{1,2})\.(\d{1,2})-\d{1,2}\.\d{1,2}\.(\d{4})/);
-    if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
-  }
-
-  // Старый: "dd-dd.mm.yyyy"
-  if (!start) {
-    m = clean.match(/^(\d{1,2})-\d{1,2}\.(\d{1,2})\.(\d{4})/);
-    if (m) start = new Date(+m[3], +m[2] - 1, +m[1]);
-  }
-
-  // Одиночная дата
-  if (!start) start = parseOneDate(clean);
-  if (!start) return null;
-
-  const endFromOn = onStr ? parseOneDate(onStr) : null;
-  return { start, end: endFromOn || end2 || start };
+  return safe;
 }
 
-// Возвращает информацию о ближайшем/текущем периоде отключения
-function getDaysInfo(d) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+// ─── Текущие токены поиска (модульный уровень, без передачи через цепочку) ──
+let _currentTokens = [];
 
-  const periods = [
-    parsePeriod(d.repair, d.repair_on),
-    parsePeriod(d.hydro1, d.hydro1_on),
-    parsePeriod(d.hydro2, d.hydro2_on),
-  ].filter(Boolean);
-
-  if (!periods.length) return null;
-
-  // Идёт прямо сейчас — показываем сколько дней осталось
-  const active = periods.find(p => today >= p.start && today <= p.end);
-  if (active) {
-    const days = Math.ceil((active.end - today) / 86400000);
-    return { type: 'active', days };
-  }
-
-  // Ближайший будущий — показываем через сколько дней
-  const future = periods
-    .filter(p => p.start > today)
-    .sort((a, b) => a.start - b.start)[0];
-  if (future) {
-    const days = Math.ceil((future.start - today) / 86400000);
-    return { type: 'soon', days };
-  }
-
-  return null;
+// ─── Рендер одного блока периода ────────────────────────────────────────
+// ИСПРАВЛЕНО: текстовые значения («По распоряжению…», «снесен» и т.д.)
+// отображаются как заметка, а не как псевдо-дата.
+function renderPeriodItem(type, label, rangeStr, onStr) {
+  if (!rangeStr) return '';
+  const isDate = GVS.isDateValue(rangeStr);
+  const inner = isDate
+    ? `<div class="period-dates">${GVS.escapeHtml(rangeStr)}</div>
+       ${onStr ? `<div class="period-on">✓ включение: ${GVS.escapeHtml(onStr)}</div>` : ''}`
+    : `<div class="period-note">${GVS.escapeHtml(rangeStr)}</div>`;
+  return `<div class="period-item ${type}">
+    <div class="period-label">${label}</div>
+    ${inner}
+  </div>`;
 }
 
-// Возвращает статус карточки относительно сегодняшней даты
-function getStatus(d) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const soonLimit = new Date(today);
-  soonLimit.setDate(today.getDate() + 7);
-
-  const periods = [
-    parsePeriod(d.repair,  d.repair_on),
-    parsePeriod(d.hydro1,  d.hydro1_on),
-    parsePeriod(d.hydro2,  d.hydro2_on),
-  ].filter(Boolean);
-
-  if (!periods.length) return 'normal';
-
-  // Идёт прямо сейчас
-  if (periods.some(p => today >= p.start && today <= p.end)) return 'active';
-
-  // Начнётся в течение 7 дней
-  if (periods.some(p => p.start > today && p.start <= soonLimit)) return 'soon';
-
-  // Все периоды уже в прошлом
-  if (periods.every(p => p.end < today)) return 'past';
-
-  return 'normal';
-}
-
-// ─── Карточка адреса (без потребителя и без плашки района) ────────────
-function renderCard(d, q) {
-  const status = getStatus(d);
-  const daysInfo = getDaysInfo(d);
+// ─── Карточка адреса ────────────────────────────────────────────────────
+function renderCard(d) {
+  const status   = GVS.getStatus(d);
+  const daysInfo = GVS.getDaysInfo(d);
 
   let daysChip = '';
   if (daysInfo) {
     if (daysInfo.type === 'active') {
-      const label = daysInfo.days <= 0 ? 'последний день' :
-                    daysInfo.days === 1 ? 'ещё 1 день' :
-                    `ещё ${daysInfo.days} дн.`;
+      const label = daysInfo.days <= 0 ? 'последний день'
+                  : daysInfo.days === 1 ? 'ещё 1 день'
+                  : `ещё ${daysInfo.days} дн.`;
       daysChip = `<span class="days-chip active">${label}</span>`;
     } else if (daysInfo.type === 'soon') {
-      const label = daysInfo.days === 1 ? 'завтра' :
-                    `через ${daysInfo.days} дн.`;
+      const label = daysInfo.days === 1 ? 'завтра' : `через ${daysInfo.days} дн.`;
       daysChip = `<span class="days-chip soon">${label}</span>`;
     }
   }
@@ -720,49 +592,33 @@ function renderCard(d, q) {
     status === 'active' ? '<span class="status-badge active">● Нет воды</span>' :
     status === 'soon'   ? '<span class="status-badge soon">⚡ Скоро</span>'    :
     status === 'past'   ? '<span class="status-badge past">Завершено</span>'   : '';
-  const cardClass = status === 'active' ? ' status-active' :
-                    status === 'past'   ? ' status-past'   : '';
+  const cardClass = status === 'active' ? ' status-active'
+                  : status === 'past'   ? ' status-past' : '';
 
-  const periods = [
-    d.repair
-      ? `<div class="period-item repair">
-           <div class="period-label">Текущий ремонт</div>
-           <div class="period-dates">${escapeHtml(d.repair)}</div>
-           ${d.repair_on ? `<div class="period-on">✓ включение: ${escapeHtml(d.repair_on)}</div>` : ''}
-         </div>` : '',
-    d.hydro1
-      ? `<div class="period-item hydro1">
-           <div class="period-label">Гидроиспытания 1</div>
-           <div class="period-dates">${escapeHtml(d.hydro1)}</div>
-           ${d.hydro1_on ? `<div class="period-on">✓ включение: ${escapeHtml(d.hydro1_on)}</div>` : ''}
-         </div>` : '',
-    d.hydro2
-      ? `<div class="period-item hydro2">
-           <div class="period-label">Гидроиспытания 2</div>
-           <div class="period-dates">${escapeHtml(d.hydro2)}</div>
-           ${d.hydro2_on ? `<div class="period-on">✓ включение: ${escapeHtml(d.hydro2_on)}</div>` : ''}
-         </div>` : '',
+  const periodsHtml = [
+    renderPeriodItem('repair', 'Текущий ремонт',     d.repair,  d.repair_on),
+    renderPeriodItem('hydro1', 'Гидроиспытания 1',   d.hydro1,  d.hydro1_on),
+    renderPeriodItem('hydro2', 'Гидроиспытания 2',   d.hydro2,  d.hydro2_on),
   ].filter(Boolean).join('') || '<div class="period-empty">Нет данных о периодах</div>';
 
   return `
     <div class="result-card${cardClass}">
       <div class="card-header">
-        <div class="address-badge">${hl(d.address, q)}${daysChip}</div>
+        <div class="address-badge">${hl(d.address, _currentTokens)}${daysChip}</div>
         ${statusBadge}
       </div>
-      <div class="periods-grid">${periods}</div>
-      ${d.source ? `<div class="card-footer"><span class="source-tag">🏘️ ${escapeHtml(d.source)}</span></div>` : ''}
+      <div class="periods-grid">${periodsHtml}</div>
+      ${d.source ? `<div class="card-footer"><span class="source-tag">🏘️ ${GVS.escapeHtml(d.source)}</span></div>` : ''}
     </div>`;
 }
 
-// ─── Рендер страницы результатов ──────────────────────────────────────
+// ─── Рендер страницы результатов ────────────────────────────────────────
 function renderPage() {
-  const q     = searchInput.value.trim();
   const start = (currentPage - 1) * PER_PAGE;
   const page  = filtered.slice(start, start + PER_PAGE);
 
   resultsEl.innerHTML = page.length
-    ? page.map(d => renderCard(d, q)).join('')
+    ? page.map(d => renderCard(d)).join('')
     : `<div class="state-message">
          <span class="emoji">🤔</span>
          <h3>Ничего не найдено</h3>
@@ -772,17 +628,12 @@ function renderPage() {
   renderPagination();
 }
 
-// ─── Пагинация ────────────────────────────────────────────────────────
+// ─── Пагинация ───────────────────────────────────────────────────────────
 function renderPagination() {
   const total = Math.ceil(filtered.length / PER_PAGE);
-
-  if (total <= 1) {
-    paginationEl.style.display = 'none';
-    return;
-  }
+  if (total <= 1) { paginationEl.style.display = 'none'; return; }
 
   paginationEl.style.display = 'flex';
-
   let pages = [];
   if (total <= 7) {
     pages = Array.from({length: total}, (_, i) => i + 1);
@@ -802,7 +653,6 @@ function renderPagination() {
   });
   html += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === total ? 'disabled' : ''}>Вперёд →</button>`;
   html += `<span class="page-info">${currentPage} / ${total}</span>`;
-
   paginationEl.innerHTML = html;
 }
 
@@ -810,15 +660,16 @@ function goPage(n) {
   const total = Math.ceil(filtered.length / PER_PAGE);
   currentPage = Math.max(1, Math.min(n, total));
   renderPage();
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── Поиск ────────────────────────────────────────────────────────────
+// ─── Поиск ───────────────────────────────────────────────────────────────
 function applySearch() {
   const raw = searchInput.value.trim();
   clearBtn.classList.toggle('visible', raw.length > 0);
 
   if (!raw) {
+    _currentTokens = [];
     filtered = [];
     resultsEl.innerHTML = `<div class="state-message">
       <span class="emoji">🏡</span>
@@ -830,13 +681,9 @@ function applySearch() {
     return;
   }
 
-  // Нормализуем запрос и ищем по нормализованному адресу
-  const q = normalizeQuery(raw);
-  const tokens = q.split(' ').filter(Boolean);   // все слова запроса
-
-  filtered = DATA.filter(d =>
-    tokens.every(token => d._norm.includes(token))
-  );
+  // ИСПРАВЛЕНО: нормализованные токены используются и для поиска, и для подсветки
+  _currentTokens = GVS.normalizeQuery(raw);
+  filtered = DATA.filter(d => _currentTokens.every(token => d._norm.includes(token)));
 
   currentPage = 1;
   statsBar.style.display = 'flex';
@@ -844,17 +691,15 @@ function applySearch() {
   renderPage();
 }
 
-// ─── События ──────────────────────────────────────────────────────────
+// ─── События ─────────────────────────────────────────────────────────────
 let _searchDebounce;
 searchInput.addEventListener('input', () => {
-  // скрываем подсказки как только пользователь начал печатать
   if (searchInput.value) hintsDropdown.classList.remove('open');
   else hintsDropdown.classList.add('open');
   clearTimeout(_searchDebounce);
   _searchDebounce = setTimeout(applySearch, 250);
 });
 
-// Делегирование событий пагинации (вместо inline onclick)
 paginationEl.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-page]');
   if (btn && !btn.disabled) goPage(+btn.dataset.page);
@@ -866,23 +711,15 @@ clearBtn.addEventListener('click', () => {
   searchInput.focus();
 });
 
-// ─── Hints dropdown ───────────────────────────────────────────
+// ─── Hints dropdown ──────────────────────────────────────────────────────
 const hintsDropdown = document.getElementById('hintsDropdown');
-
-function openHints() {
-  if (!searchInput.value) hintsDropdown.classList.add('open');
-}
-function closeHints() {
-  // небольшая задержка, чтобы клик по hint успел сработать
-  setTimeout(() => hintsDropdown.classList.remove('open'), 150);
-}
-
+function openHints()  { if (!searchInput.value) hintsDropdown.classList.add('open'); }
+function closeHints() { setTimeout(() => hintsDropdown.classList.remove('open'), 150); }
 searchInput.addEventListener('focus', openHints);
 searchInput.addEventListener('blur',  closeHints);
 
 document.querySelectorAll('.hint').forEach(btn => {
   btn.addEventListener('click', () => {
-    // берём только текст, без иконки
     const text = btn.querySelector('.hint-icon')
       ? btn.textContent.replace(btn.querySelector('.hint-icon').textContent, '').trim()
       : btn.textContent.trim();
@@ -893,7 +730,9 @@ document.querySelectorAll('.hint').forEach(btn => {
   });
 });
 
-// ─── Загрузка data.json ───────────────────────────────────────────────
+// ─── Загрузка data.json ───────────────────────────────────────────────────
+// ИСПРАВЛЕНО: race condition — если пользователь ввёл запрос пока грузились
+// данные, повторяем поиск после загрузки вместо перезаписи интерфейса.
 resultsEl.innerHTML = `<div class="state-message">
   <span class="emoji">⏳</span>
   <h3>Загрузка данных…</h3>
@@ -906,31 +745,37 @@ fetch('data.json')
     return r.json();
   })
   .then(json => {
-    DATA = json.map(d => ({ ...d, _norm: normalizeQuery(d.address) }));
-    resultsEl.innerHTML = `<div class="state-message">
-      <span class="emoji">🏡</span>
-      <h3>Найдите свой адрес</h3>
-      <p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>
-    </div>`;
+    // Строим нормализованный индекс (_norm) как строку объединённых токенов
+    DATA = json.map(d => ({
+      ...d,
+      _norm: GVS.normalizeQuery(d.address).join(' '),
+    }));
+    dataLoaded = true;
+
+    // ИСПРАВЛЕНО: если пользователь уже что-то ввёл — повторяем поиск,
+    // иначе показываем приветственный экран
+    if (searchInput.value.trim()) {
+      applySearch();
+    } else {
+      resultsEl.innerHTML = `<div class="state-message">
+        <span class="emoji">🏡</span>
+        <h3>Найдите свой адрес</h3>
+        <p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>
+      </div>`;
+    }
   })
   .catch(err => {
     console.error(err);
     resultsEl.innerHTML = `<div class="state-message">
       <span class="emoji">❌</span>
       <h3>Не удалось загрузить данные</h3>
+      <p>Попробуйте обновить страницу</p>
     </div>`;
   });
 </script>
 
 <footer style="text-align:center; padding: 24px 20px 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); position: relative; z-index: 1;">
-  Автор: <a href="https://t.me/xoroshik" target="_blank" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" style="color:var(--accent2);text-decoration:none;">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener" title="Исходный код" style="color:var(--accent2);text-decoration:none;"><svg height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:3px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
-      0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
-      -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
-      .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
-      -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
-      .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
-      .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
-      0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, 2026 год.
+  Автор: <a href="https://t.me/xoroshik" target="_blank" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" style="color:var(--accent2);text-decoration:none;">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener" title="Исходный код" style="color:var(--accent2);text-decoration:none;"><svg height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:3px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, 2026 год.
 </footer>
 
 </body>
