@@ -6,8 +6,18 @@
 <title>Отключение горячей воды в Ярославле — 2026</title>
 <meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
 <meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
+<meta name="yandex-verification" content="6535b34b0d9afb9c" >
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💦</text></svg>">
+
+<script>
+(function() {
+  try {
+    if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
+  } catch (e) { /* localStorage недоступен — используем тёмную тему */ }
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <!-- Общие переменные и сброс -->
 <link rel="stylesheet" href="styles.css">
@@ -119,7 +129,6 @@
   h1 span { color: var(--accent); }
   .subtitle { color: var(--muted); font-size: 15px; font-weight: 500; }
 
-  /* ── Map button: повышен до secondary CTA ─────────────────── */
   .header-actions { display: flex; justify-content: center; margin-top: 20px; }
   .map-btn {
     display: inline-flex;
@@ -221,7 +230,6 @@
     align-items: center;
     gap: 10px;
   }
-  /* ── Иконка подсказок: ⚡ вместо 🔍 ────────────────────────── */
   .hint-icon { font-size: 12px; opacity: 0.5; flex-shrink: 0; }
   .hint:hover { background: var(--surface2); color: var(--accent2); }
 
@@ -248,7 +256,6 @@
     transition: border-color 0.2s, transform 0.15s, box-shadow 0.15s;
     animation: fadeIn 0.2s ease;
   }
-  /* ── Hover: добавлена тень для ощущения «подъёма» ─────────── */
   .result-card:hover {
     border-color: var(--accent);
     transform: translateY(-1px);
@@ -265,11 +272,10 @@
     gap: 12px;
     margin-bottom: 16px;
   }
-  /* ── address-badge: снижен визуальный шум при 20 карточках ── */
   .address-badge {
-    font-family: 'Golos Text', sans-serif; /* было: Unbounded */
+    font-family: 'Golos Text', sans-serif;
     font-size: 15px;
-    font-weight: 600;                      /* было: 700 */
+    font-weight: 600;
     color: var(--text);
     line-height: 1.3;
   }
@@ -295,32 +301,33 @@
     border-radius: 10px;
     padding: 12px 14px;
     border-left: 3px solid var(--border);
+    /* FIX #12: fallback для color-mix() — браузеры до Chrome 111 / Firefox 113 / Safari 16.2 */
     background: var(--surface2);
   }
-  /* ── Цветной фон-тинт: типы отключений различимы на мобиле ── */
   .period-item.repair {
     border-left-color: var(--accent);
+    background: var(--surface2);
     background: color-mix(in srgb, var(--surface2) 94%, var(--accent) 6%);
   }
   .period-item.hydro1 {
     border-left-color: var(--warn);
+    background: var(--surface2);
     background: color-mix(in srgb, var(--surface2) 94%, var(--warn) 6%);
   }
   .period-item.hydro2 {
     border-left-color: var(--blue);
+    background: var(--surface2);
     background: color-mix(in srgb, var(--surface2) 94%, var(--blue) 6%);
   }
-  /* ── В светлой теме синяя граница была тяжёлой — смягчена ── */
   html.light .period-item.hydro2 {
     border-left-color: #2c7acf;
   }
 
-  /* ── period-label: увеличен до 12px, цвет совпадает с типом ─ */
   .period-label {
-    font-size: 12px;              /* было: 11px */
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.3px;        /* было: 0.5px */
+    letter-spacing: 0.3px;
     color: var(--muted);
     margin-bottom: 5px;
   }
@@ -330,9 +337,7 @@
 
   .period-dates { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
   .period-on    { font-size: 12px; color: var(--success); margin-top: 3px; }
-  /* ── Нестандартные текстовые значения («По распоряжению…») ── */
   .period-note  { font-size: 12px; color: var(--muted); font-style: italic; line-height: 1.4; }
-
   .period-empty { color: var(--muted); font-style: italic; font-size: 13px; }
 
   .card-footer { margin-top: 14px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -413,7 +418,6 @@
   }
   .result-card.status-active { border-color: rgba(232,93,47,0.5); }
 
-  /* ── past: только адрес приглушён, содержимое остаётся читаемым */
   .result-card.status-past .address-badge { font-weight: 500; color: var(--muted); }
   .result-card.status-past .periods-grid  { opacity: 0.6; }
   .result-card.status-past:hover .address-badge { color: var(--text); }
@@ -424,7 +428,6 @@
     50%       { opacity: 0.65; }
   }
 
-  /* Дней-чип */
   .days-chip {
     display: inline-block;
     font-size: 12px;
@@ -445,19 +448,16 @@
     border: 1px solid rgba(210,153,34,0.3);
   }
 
-  /* Планшет */
   @media (max-width: 900px) {
     .periods-grid { grid-template-columns: repeat(2, 1fr); }
   }
-
-  /* ── Mobile: сжат header, поисковая строка видна без скролла ─ */
   @media (max-width: 600px) {
-    header { padding: 32px 0 20px; }   /* было: 40px 0 28px */
+    header { padding: 32px 0 20px; }
     .periods-grid { grid-template-columns: 1fr; }
     .card-header { flex-direction: column; }
   }
 </style>
-  <!-- Yandex.Metrika counter -->
+ 
 <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -469,7 +469,7 @@
     ym(108168247, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/108168247" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+
 </head>
 <body>
 <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
@@ -482,7 +482,7 @@
     <div class="logo-icon">🔥</div>
     <h1>Отключение <span>горячей воды</span><br>в Ярославле 2026</h1>
     <div class="header-actions">
-      <a href="map.html" class="map-btn">🗺️ Смотреть на карте (работает в тестовом режиме)</a>
+      <a href="map.html" class="map-btn">🗺️ Смотреть на карте<sup>β</sup></a>
     </div>
   </header>
 
@@ -492,13 +492,12 @@
            aria-label="Поиск по адресу" aria-controls="results" aria-autocomplete="list">
     <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска">✕</button>
     <div class="hints-dropdown" id="hintsDropdown">
-      <!-- ── Иконка ⚡: «популярный запрос», а не «история поиска» ── -->
-      <button class="hint"><span class="hint-icon">⚡</span>Толбухина</button>
-      <button class="hint"><span class="hint-icon">⚡</span>Некрасова</button>
-      <button class="hint"><span class="hint-icon">⚡</span>Ленина</button>
-      <button class="hint"><span class="hint-icon">⚡</span>Чайковского</button>
-      <button class="hint"><span class="hint-icon">⚡</span>Свердлова</button>
-      <button class="hint"><span class="hint-icon">⚡</span>Угличская</button>
+      <button class="hint" data-value="Толбухина"><span class="hint-icon">⚡</span>Толбухина</button>
+      <button class="hint" data-value="Некрасова"><span class="hint-icon">⚡</span>Некрасова</button>
+      <button class="hint" data-value="Ленина"><span class="hint-icon">⚡</span>Ленина</button>
+      <button class="hint" data-value="Чайковского"><span class="hint-icon">⚡</span>Чайковского</button>
+      <button class="hint" data-value="Свердлова"><span class="hint-icon">⚡</span>Свердлова</button>
+      <button class="hint" data-value="Угличская"><span class="hint-icon">⚡</span>Угличская</button>
     </div>
   </div>
 
@@ -512,21 +511,19 @@
 
 <script>
 // ─── Тема ───────────────────────────────────────────────────────────────
-(function() {
-  if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
-})();
+// Кнопка переключения; начальное применение темы — в <head> выше.
 document.getElementById('themeToggle').addEventListener('click', () => {
   const isLight = document.documentElement.classList.toggle('light');
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  try { localStorage.setItem('theme', isLight ? 'light' : 'dark'); } catch (e) {}
 });
 
 // ─── Состояние ──────────────────────────────────────────────────────────
-const PER_PAGE = GVS.PER_PAGE; // из gvs-core.js — больше не магическое число
+const PER_PAGE = GVS.PER_PAGE;
 
 let DATA        = [];
 let filtered    = [];
 let currentPage = 1;
-let dataLoaded  = false;          // ИСПРАВЛЕНО: флаг для race condition
+let currentTokens = [];
 
 // ─── DOM ────────────────────────────────────────────────────────────────
 const searchInput  = document.getElementById('searchInput');
@@ -537,26 +534,44 @@ const foundCount   = document.getElementById('foundCount');
 const paginationEl = document.getElementById('pagination');
 
 // ─── Подсветка совпадений ───────────────────────────────────────────────
-// ИСПРАВЛЕНО: принимает массив токенов (нормализованных), а не сырую строку.
-// Длинные токены обрабатываются первыми — предотвращаем вложенные <mark>.
 function hl(text, tokens) {
-  let safe = GVS.escapeHtml(text);
-  if (!tokens || !tokens.length) return safe;
-  const sorted = [...tokens].sort((a, b) => b.length - a.length);
-  for (const token of sorted) {
+  if (!tokens || !tokens.length) return GVS.escapeHtml(text);
+
+  // Находим все диапазоны совпадений в исходном (не эскейпнутом) тексте
+  const ranges = [];
+  for (const token of tokens) {
     if (!token) continue;
     const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    safe = safe.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+    const re = new RegExp(escaped, 'gi');
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      ranges.push([m.index, m.index + m[0].length]);
+    }
   }
-  return safe;
+
+  if (!ranges.length) return GVS.escapeHtml(text);
+
+  // Сортируем и сливаем перекрывающиеся диапазоны — исключает вложенные <mark>
+  ranges.sort((a, b) => a[0] - b[0]);
+  const merged = [ranges[0]];
+  for (let i = 1; i < ranges.length; i++) {
+    const prev = merged[merged.length - 1];
+    if (ranges[i][0] <= prev[1]) prev[1] = Math.max(prev[1], ranges[i][1]);
+    else merged.push(ranges[i]);
+  }
+
+  // Строим результат: каждый фрагмент эскейпируется независимо
+  let out = '', pos = 0;
+  for (const [start, end] of merged) {
+    out += GVS.escapeHtml(text.slice(pos, start));
+    out += '<mark>' + GVS.escapeHtml(text.slice(start, end)) + '</mark>';
+    pos = end;
+  }
+  out += GVS.escapeHtml(text.slice(pos));
+  return out;
 }
 
-// ─── Текущие токены поиска (модульный уровень, без передачи через цепочку) ──
-let _currentTokens = [];
-
 // ─── Рендер одного блока периода ────────────────────────────────────────
-// ИСПРАВЛЕНО: текстовые значения («По распоряжению…», «снесен» и т.д.)
-// отображаются как заметка, а не как псевдо-дата.
 function renderPeriodItem(type, label, rangeStr, onStr) {
   if (!rangeStr) return '';
   const isDate = GVS.isDateValue(rangeStr);
@@ -571,7 +586,7 @@ function renderPeriodItem(type, label, rangeStr, onStr) {
 }
 
 // ─── Карточка адреса ────────────────────────────────────────────────────
-function renderCard(d) {
+function renderCard(d, tokens) {
   const status   = GVS.getStatus(d);
   const daysInfo = GVS.getDaysInfo(d);
 
@@ -604,7 +619,7 @@ function renderCard(d) {
   return `
     <div class="result-card${cardClass}">
       <div class="card-header">
-        <div class="address-badge">${hl(d.address, _currentTokens)}${daysChip}</div>
+        <div class="address-badge">${hl(d.address, tokens)}${daysChip}</div>
         ${statusBadge}
       </div>
       <div class="periods-grid">${periodsHtml}</div>
@@ -613,12 +628,13 @@ function renderCard(d) {
 }
 
 // ─── Рендер страницы результатов ────────────────────────────────────────
-function renderPage() {
+// FIX #18: принимает tokens явно и передаёт в renderCard.
+function renderPage(tokens) {
   const start = (currentPage - 1) * PER_PAGE;
   const page  = filtered.slice(start, start + PER_PAGE);
 
   resultsEl.innerHTML = page.length
-    ? page.map(d => renderCard(d)).join('')
+    ? page.map(d => renderCard(d, tokens)).join('')
     : `<div class="state-message">
          <span class="emoji">🤔</span>
          <h3>Ничего не найдено</h3>
@@ -659,7 +675,8 @@ function renderPagination() {
 function goPage(n) {
   const total = Math.ceil(filtered.length / PER_PAGE);
   currentPage = Math.max(1, Math.min(n, total));
-  renderPage();
+  // FIX #18: передаём currentTokens в renderPage явно
+  renderPage(currentTokens);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -669,7 +686,7 @@ function applySearch() {
   clearBtn.classList.toggle('visible', raw.length > 0);
 
   if (!raw) {
-    _currentTokens = [];
+    currentTokens = [];
     filtered = [];
     resultsEl.innerHTML = `<div class="state-message">
       <span class="emoji">🏡</span>
@@ -681,14 +698,13 @@ function applySearch() {
     return;
   }
 
-  // ИСПРАВЛЕНО: нормализованные токены используются и для поиска, и для подсветки
-  _currentTokens = GVS.normalizeQuery(raw);
-  filtered = DATA.filter(d => _currentTokens.every(token => d._norm.includes(token)));
+  currentTokens = GVS.normalizeQuery(raw);
+  filtered = DATA.filter(d => currentTokens.every(token => d._norm.includes(token)));
 
   currentPage = 1;
   statsBar.style.display = 'flex';
   foundCount.textContent = filtered.length;
-  renderPage();
+  renderPage(currentTokens);
 }
 
 // ─── События ─────────────────────────────────────────────────────────────
@@ -720,10 +736,8 @@ searchInput.addEventListener('blur',  closeHints);
 
 document.querySelectorAll('.hint').forEach(btn => {
   btn.addEventListener('click', () => {
-    const text = btn.querySelector('.hint-icon')
-      ? btn.textContent.replace(btn.querySelector('.hint-icon').textContent, '').trim()
-      : btn.textContent.trim();
-    searchInput.value = text;
+    // FIX #14: читаем значение из data-value — надёжно, не зависит от DOM-структуры
+    searchInput.value = btn.dataset.value || btn.textContent.trim();
     hintsDropdown.classList.remove('open');
     applySearch();
     searchInput.focus();
@@ -731,29 +745,24 @@ document.querySelectorAll('.hint').forEach(btn => {
 });
 
 // ─── Загрузка data.json ───────────────────────────────────────────────────
-// ИСПРАВЛЕНО: race condition — если пользователь ввёл запрос пока грузились
-// данные, повторяем поиск после загрузки вместо перезаписи интерфейса.
 resultsEl.innerHTML = `<div class="state-message">
   <span class="emoji">⏳</span>
   <h3>Загрузка данных…</h3>
   <p>Подождите секунду</p>
 </div>`;
 
-fetch('data.json')
+fetch('data.json', { cache: 'no-cache' })
   .then(r => {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   })
   .then(json => {
-    // Строим нормализованный индекс (_norm) как строку объединённых токенов
     DATA = json.map(d => ({
       ...d,
       _norm: GVS.normalizeQuery(d.address).join(' '),
     }));
-    dataLoaded = true;
 
-    // ИСПРАВЛЕНО: если пользователь уже что-то ввёл — повторяем поиск,
-    // иначе показываем приветственный экран
+    // Если пользователь ввёл запрос пока грузились данные — повторяем поиск
     if (searchInput.value.trim()) {
       applySearch();
     } else {

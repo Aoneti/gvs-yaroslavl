@@ -7,15 +7,17 @@
 <meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
 <meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<script>
+(function() {
+  try {
+    if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
+  } catch (e) { /* localStorage недоступен — используем тёмную тему */ }
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 
-<!--
-  SRI для Leaflet 1.9.4 — чтобы получить актуальные хеши, выполните:
-    curl -s https://unpkg.com/leaflet@1.9.4/dist/leaflet.js | openssl dgst -sha256 -binary | openssl base64 -A
-  Затем подставьте в атрибут integrity="sha256-<hash>"
-  Документация: https://www.srihash.org/
--->
 <link  rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
        crossorigin="anonymous"/>
 <link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
@@ -23,7 +25,6 @@
 <link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
        crossorigin="anonymous"/>
 <link rel="stylesheet" href="styles.css">
-<!-- Бизнес-логика (даты, нормализация, статусы) -->
 <script src="gvs-core.js"></script>
 <style>
   :root      { --panel: 280px; }
@@ -71,7 +72,6 @@
   .addr-list::-webkit-scrollbar-track { background:transparent; }
   .addr-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
 
-  /* ── Скелетон-загрузка ──────────────────────────────────────── */
   .sk-item {
     height: 52px;
     background: var(--surface2);
@@ -84,8 +84,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg,
-      transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
     animation: sk-shimmer 1.4s infinite;
   }
   @keyframes sk-shimmer {
@@ -103,6 +102,15 @@
   .dot.hydro1 { background:var(--warn); }
   .dot.hydro2 { background:var(--blue); }
 
+  .addr-overflow {
+    text-align: center;
+    padding: 10px 8px 6px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+
   .empty-list { text-align:center; padding:30px 12px; color:var(--muted); font-size:13px; }
   .empty-list .big { font-size:28px; display:block; margin-bottom:8px; }
 
@@ -118,6 +126,8 @@
 
   .mc-dot { width:18px; height:18px; border-radius:50%; border:2.5px solid var(--bg); box-shadow:0 2px 6px rgba(0,0,0,.5); cursor:pointer; transition:transform .15s; }
   .mc-dot:hover { transform:scale(1.3); }
+  .mc-dot.approximate { border-style: dashed; opacity: 0.65; }
+  .mc-dot.approximate:hover { opacity: 1; }
   .marker-cluster,.marker-cluster div { background:transparent!important; }
   .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large { background:transparent!important; }
   .marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div { background:transparent!important; color:transparent!important; }
@@ -160,7 +170,7 @@
   <a href="index.html" class="back-btn">← Поиск</a>
   <div class="topbar-title">Карта отключений <span>ГВС</span> · Ярославль 2026</div>
   <div class="topbar-sep"></div>
-  <!-- ИСПРАВЛЕНО: title сообщает о неотображённых адресах (без координат) -->
+  <!-- title сообщает о неотображённых адресах (без координат) -->
   <div class="counter-chip" id="counterChip" title="">…</div>
 </div>
 
@@ -188,17 +198,16 @@
         <label class="filter-item">
           <input type="checkbox" id="fHydro1" checked>
           <div class="filter-dot hydro1"></div>
-          <span class="filter-text">Гидроиспытание 1</span>
+          <span class="filter-text">Гидроиспытания 1</span>
         </label>
         <label class="filter-item">
           <input type="checkbox" id="fHydro2" checked>
           <div class="filter-dot hydro2"></div>
-          <span class="filter-text">Гидроиспытание 2</span>
+          <span class="filter-text">Гидроиспытания 2</span>
         </label>
       </div>
     </div>
 
-    <!-- ── Скелетон пока данные грузятся ────────────────────── -->
     <div class="addr-list" id="addrList">
       <div class="sk-item"></div>
       <div class="sk-item"></div>
@@ -211,31 +220,24 @@
   <div id="map"></div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" crossorigin="anonymous"></script>
-<!--
-  TODO: добавить integrity="sha256-..." для leaflet.js и leaflet.markercluster.js
-  Хеши вычисляются командой:
-    curl -s <url> | openssl dgst -sha256 -binary | openssl base64 -A
-  Или используйте https://www.srihash.org/
--->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
+        crossorigin="anonymous"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
+        integrity="sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr"
+        crossorigin="anonymous"></script>
 <script>
 // ── Тема ─────────────────────────────────────────────────────────────────
-(function() {
-  if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
-})();
 
 // ─── Константы ───────────────────────────────────────────────────────────
-// Именованные — больше не магические числа
-const MAP_CENTER      = [57.6261, 39.8845]; // центр Ярославля
+const MAP_CENTER       = [57.6261, 39.8845];
 const MAP_ZOOM_DEFAULT = 12;
-const MAP_ZOOM_FOCUS   = 16;               // зум при клике на адрес в списке
-const CLUSTER_RADIUS   = 50;              // пикселей — радиус кластеризации
+const MAP_ZOOM_FOCUS   = 16;
+const CLUSTER_RADIUS   = 50;
+const MAX_LIST_ITEMS   = 200;
 
-// ─── normKey: ИСПРАВЛЕНО — сортируем токены для порядконезависимого матчинга ──
-// Проблема: gvs_convert строит адреса вида «проезд 2-й Брагинский»,
-// а geo.json хранит ключи «2-й Брагинский проезд» (из геокодера).
-// Сортировка токенов устраняет расхождение — 42 адреса теперь видны на карте.
+// ─── normKey ─────────────────────────────────────────────────────────────
+// Сортирует токены для порядконезависимого матчинга адресов из data.json и geo.json 
 function normKey(s) {
   return s.toLowerCase()
     .replace(/[.,]/g, ' ')
@@ -293,45 +295,14 @@ map.addLayer(clusterGroup);
 let allPoints = [];
 let activeAddr = null;
 
-// ─── HTML-экранирование (делегировано gvs-core) ──────────────────────────
 const escapeHtml = GVS.escapeHtml;
 
-// ─── Цвет маркера по типу и статусу отключения ──────────────────────────
-// Приоритет: активное > всё завершено (зелёный) > по типу будущего
-function getTypeColor(records) {
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-
-  // Активное прямо сейчас
-  for (const r of records) {
-    const checks = [
-      { period: GVS.parsePeriod(r.repair, r.repair_on),  color: '#e85d2f' },
-      { period: GVS.parsePeriod(r.hydro1, r.hydro1_on),  color: '#d29922' },
-      { period: GVS.parsePeriod(r.hydro2, r.hydro2_on),  color: '#58a6ff' },
-    ];
-    for (const c of checks) {
-      if (c.period && today >= c.period.start && today <= c.period.end) return c.color;
-    }
-  }
-
-  // Все периоды завершены → вода подана
-  const all = records.flatMap(r => [
-    GVS.parsePeriod(r.repair, r.repair_on),
-    GVS.parsePeriod(r.hydro1, r.hydro1_on),
-    GVS.parsePeriod(r.hydro2, r.hydro2_on),
-  ]).filter(Boolean);
-  if (all.length > 0 && all.every(p => p.end < today)) return '#3fb950';
-
-  // Будущие — по приоритету типа
-  if (records.some(r => r.repair && GVS.isDateValue(r.repair)))  return '#e85d2f';
-  if (records.some(r => r.hydro2 && GVS.isDateValue(r.hydro2))) return '#58a6ff';
-  if (records.some(r => r.hydro1 && GVS.isDateValue(r.hydro1))) return '#d29922';
-  return '#7d8590';
-}
-
-function makeIcon(color) {
+// ─── Цвет маркера ────────────────────────────────────────────────────────
+function makeIcon(color, approximate) {
+  const cls = approximate ? 'mc-dot approximate' : 'mc-dot';
   return L.divIcon({
     className: '',
-    html: `<div class="mc-dot" style="background:${color}"></div>`,
+    html: `<div class="${cls}" style="background:${color}"></div>`,
     iconSize: [18, 18],
     iconAnchor: [9, 9],
   });
@@ -348,7 +319,7 @@ function getClusterColor(children) {
   return best;
 }
 
-// ─── Попап (нестандартные текстовые поля тоже рендерятся корректно) ──────
+// ─── Попап ───────────────────────────────────────────────────────────────
 function makePopup(pt) {
   let rows = '';
   for (const r of pt.records) {
@@ -367,18 +338,23 @@ function makePopup(pt) {
     }
   }
   if (!rows) rows = '<div class="popup-dates" style="color:var(--muted);font-style:italic">Нет данных</div>';
-  return `<div class="popup-inner"><div class="popup-addr">${escapeHtml(pt.address)}</div>${rows}</div>`;
+  const approxBadge = pt.approximate
+    ? `<div style="margin-top:8px;font-size:11px;color:var(--muted);font-style:italic">` +
+      `📍 Координаты приблизительны</div>`
+    : '';
+  return `<div class="popup-inner"><div class="popup-addr">${escapeHtml(pt.address)}</div>${rows}${approxBadge}</div>`;
 }
 
 // ─── Загрузка данных ─────────────────────────────────────────────────────
 async function loadData() {
   const [dataRes, geoRes] = await Promise.all([
-    fetch('data.json'),
-    fetch('geo.json'),
+    fetch('data.json', { cache: 'no-cache' }),
+    fetch('geo.json',  { cache: 'no-cache' }),
   ]);
 
-  // ИСПРАВЛЕНО: явная проверка на пустой geo.json
-  if (!geoRes.ok) throw new Error(`geo.json: HTTP ${geoRes.status}`);
+  if (!dataRes.ok) throw new Error(`data.json: HTTP ${dataRes.status}`);
+  if (!geoRes.ok)  throw new Error(`geo.json: HTTP ${geoRes.status}`);
+
   const geoDb = await geoRes.json();
   if (!geoDb || typeof geoDb !== 'object' || !Object.keys(geoDb).length) {
     throw new Error('geo.json пустой или повреждён');
@@ -386,7 +362,7 @@ async function loadData() {
 
   const data = await dataRes.json();
 
-  // ИСПРАВЛЕНО: normKey сортирует токены → порядконезависимый матчинг
+  // normKey сортирует токены → порядконезависимый матчинг
   const geoIdx = {};
   for (const [k, v] of Object.entries(geoDb)) {
     if (v && typeof v.lat === 'number' && typeof v.lng === 'number') {
@@ -406,15 +382,16 @@ async function loadData() {
     const geo = geoIdx[normKey(addr)];
     if (!geo) { missed++; continue; }
     matched++;
-    const color   = getTypeColor(records);
-    const pt      = {
+    const color      = GVS.getMapColor(records);
+    const approximate = geo.approximate === true;
+    const pt     = {
       address: addr,
       lat: geo.lat, lng: geo.lng,
       records,
+      approximate,
       _norm: GVS.normalizeQuery(addr).join(' '),
     };
-    // Создаём маркер ОДИН РАЗ — renderAll только добавляет/убирает из кластера
-    const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color) });
+    const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color, approximate) });
     marker._gvsColor = color;
     marker.bindPopup(makePopup(pt), { maxWidth: 320 });
     marker.on('click', () => selectAddr(pt.address));
@@ -424,16 +401,13 @@ async function loadData() {
 
   console.log(`[map] geo совпало: ${matched}, без координат: ${missed}`);
 
-  // ИСПРАВЛЕНО: tooltip отображает кол-во адресов без координат
   const chip = document.getElementById('counterChip');
   if (missed > 0) chip.title = `${missed} адресов не показаны (нет координат в geo.json)`;
 
   renderAll();
 }
 
-// ─── Рендер: ИСПРАВЛЕНО — batch addLayers вместо clearLayers + поштучного add ──
-// Избегаем полного пересоздания 4600+ маркеров при каждом нажатии клавиши.
-// Паттерн: clearLayers() + addLayers(visible[]) — оптимизирован Leaflet.
+// ─── Рендер: batch addLayers + ограничение списка ───────────────────────
 function renderAll() {
   const tokens = GVS.normalizeQuery(document.getElementById('panelSearch').value);
   const fRep   = document.getElementById('fRepair').checked;
@@ -442,12 +416,10 @@ function renderAll() {
 
   const visible  = [];
   const fragment = document.createDocumentFragment();
+  let   listCount = 0;
 
   for (const pt of allPoints) {
-    // Поиск: все токены должны присутствовать в нормализованном адресе
     const matchSearch = !tokens.length || tokens.every(t => pt._norm.includes(t));
-    // Фильтр: хотя бы один из включённых типов есть в записях
-    // isDateValue исключает текстовые заметки («По распоряжению…»)
     const hasRep = pt.records.some(r => GVS.isDateValue(r.repair));
     const hasH1  = pt.records.some(r => GVS.isDateValue(r.hydro1));
     const hasH2  = pt.records.some(r => GVS.isDateValue(r.hydro2));
@@ -457,29 +429,39 @@ function renderAll() {
 
     visible.push(pt._marker);
 
-    // Строим элемент списка
-    const item = document.createElement('div');
-    item.className = 'addr-item' + (pt.address === activeAddr ? ' active' : '');
-    item.dataset.addr = pt.address;
-    item.innerHTML = `<div class="addr-street">${escapeHtml(pt.address)}</div>
-      <div class="addr-dots">
-        ${hasRep ? '<div class="dot repair"></div>' : ''}
-        ${hasH1  ? '<div class="dot hydro1"></div>' : ''}
-        ${hasH2  ? '<div class="dot hydro2"></div>' : ''}
-      </div>`;
-    item.addEventListener('click', () => {
-      selectAddr(pt.address);
-      map.setView([pt.lat, pt.lng], MAP_ZOOM_FOCUS, { animate: true });
-      pt._marker && pt._marker.openPopup();
-    });
-    fragment.appendChild(item);
+    // Добавляем в DOM-список только первые MAX_LIST_ITEMS элементов
+    if (listCount < MAX_LIST_ITEMS) {
+      const item = document.createElement('div');
+      item.className = 'addr-item' + (pt.address === activeAddr ? ' active' : '');
+      item.dataset.addr = pt.address;
+      item.innerHTML = `<div class="addr-street">${escapeHtml(pt.address)}${pt.approximate ? ' <span style="color:var(--muted);font-size:10px">~</span>' : ''}</div>
+        <div class="addr-dots">
+          ${hasRep ? '<div class="dot repair"></div>' : ''}
+          ${hasH1  ? '<div class="dot hydro1"></div>' : ''}
+          ${hasH2  ? '<div class="dot hydro2"></div>' : ''}
+        </div>`;
+      item.addEventListener('click', () => {
+        selectAddr(pt.address);
+        map.setView([pt.lat, pt.lng], MAP_ZOOM_FOCUS, { animate: true });
+        pt._marker && pt._marker.openPopup();
+      });
+      fragment.appendChild(item);
+      listCount++;
+    }
   }
 
-  // Batch-обновление кластера (один DOM-цикл, не 4600+ отдельных вызовов)
+  // Плашка с количеством скрытых адресов (если есть)
+  if (visible.length > MAX_LIST_ITEMS) {
+    const overflow = document.createElement('div');
+    overflow.className = 'addr-overflow';
+    overflow.textContent = `↑ и ещё ${visible.length - MAX_LIST_ITEMS} — уточните поиск`;
+    fragment.appendChild(overflow);
+  }
+
+  // Batch-обновление кластера
   clusterGroup.clearLayers();
   if (visible.length) clusterGroup.addLayers(visible);
 
-  // Обновляем список одной операцией
   const listEl = document.getElementById('addrList');
   listEl.innerHTML = '';
   if (visible.length) {
@@ -519,7 +501,6 @@ document.getElementById('searchClear').addEventListener('click', function() {
 (function() {
   const handle = document.getElementById('sheetHandle');
   const panel  = handle.parentElement;
-  // Три точки снэппинга: 30% / 60% / 85% высоты экрана
   const SNAP_RATIOS = [0.30, 0.60, 0.85];
   let dragging = false, startY = 0, startH = 0;
 
