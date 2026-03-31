@@ -10,7 +10,7 @@
 <script>
 (function() {
   try {
-    if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
+    if (localStorage.getItem('theme') !== 'dark') document.documentElement.classList.add('light');
   } catch (e) { /* localStorage недоступен — используем тёмную тему */ }
 })();
 </script>
