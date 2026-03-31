@@ -301,7 +301,6 @@
     border-radius: 10px;
     padding: 12px 14px;
     border-left: 3px solid var(--border);
-    /* FIX #12: fallback для color-mix() — браузеры до Chrome 111 / Firefox 113 / Safari 16.2 */
     background: var(--surface2);
   }
   .period-item.repair {
@@ -511,7 +510,6 @@
 
 <script>
 // ─── Тема ───────────────────────────────────────────────────────────────
-// Кнопка переключения; начальное применение темы — в <head> выше.
 document.getElementById('themeToggle').addEventListener('click', () => {
   const isLight = document.documentElement.classList.toggle('light');
   try { localStorage.setItem('theme', isLight ? 'light' : 'dark'); } catch (e) {}
@@ -537,7 +535,6 @@ const paginationEl = document.getElementById('pagination');
 function hl(text, tokens) {
   if (!tokens || !tokens.length) return GVS.escapeHtml(text);
 
-  // Находим все диапазоны совпадений в исходном (не эскейпнутом) тексте
   const ranges = [];
   for (const token of tokens) {
     if (!token) continue;
@@ -551,7 +548,6 @@ function hl(text, tokens) {
 
   if (!ranges.length) return GVS.escapeHtml(text);
 
-  // Сортируем и сливаем перекрывающиеся диапазоны — исключает вложенные <mark>
   ranges.sort((a, b) => a[0] - b[0]);
   const merged = [ranges[0]];
   for (let i = 1; i < ranges.length; i++) {
@@ -560,7 +556,6 @@ function hl(text, tokens) {
     else merged.push(ranges[i]);
   }
 
-  // Строим результат: каждый фрагмент эскейпируется независимо
   let out = '', pos = 0;
   for (const [start, end] of merged) {
     out += GVS.escapeHtml(text.slice(pos, start));
@@ -628,7 +623,6 @@ function renderCard(d, tokens) {
 }
 
 // ─── Рендер страницы результатов ────────────────────────────────────────
-// FIX #18: принимает tokens явно и передаёт в renderCard.
 function renderPage(tokens) {
   const start = (currentPage - 1) * PER_PAGE;
   const page  = filtered.slice(start, start + PER_PAGE);
@@ -675,7 +669,6 @@ function renderPagination() {
 function goPage(n) {
   const total = Math.ceil(filtered.length / PER_PAGE);
   currentPage = Math.max(1, Math.min(n, total));
-  // FIX #18: передаём currentTokens в renderPage явно
   renderPage(currentTokens);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -736,7 +729,6 @@ searchInput.addEventListener('blur',  closeHints);
 
 document.querySelectorAll('.hint').forEach(btn => {
   btn.addEventListener('click', () => {
-    // FIX #14: читаем значение из data-value — надёжно, не зависит от DOM-структуры
     searchInput.value = btn.dataset.value || btn.textContent.trim();
     hintsDropdown.classList.remove('open');
     applySearch();
@@ -762,7 +754,6 @@ fetch('data.json', { cache: 'no-cache' })
       _norm: GVS.normalizeQuery(d.address).join(' '),
     }));
 
-    // Если пользователь ввёл запрос пока грузились данные — повторяем поиск
     if (searchInput.value.trim()) {
       applySearch();
     } else {
@@ -790,15 +781,13 @@ fetch('data.json', { cache: 'no-cache' })
 <!-- Tracker widget (notebook style) -->
 <div id="tracker-widget" aria-hidden="true">
   <div class="notebook" role="dialog" aria-label="Аналитика сайта">
-    <button class="minimize" aria-label="Свернуть" title="Свернуть" onclick="trackerMinimize()">—</button>
+    <button class="minimize" aria-label="Свернуть" title="Свернуть" onclick="trackerMinimize()">✕</button>
     <div class="lines" aria-hidden="true"></div>
-
     <h3>📊 Аналитика</h3>
     <p>Мы используем Яндекс.Метрику для анализа посещений и улучшения работы сайта.</p>
-
     <div class="actions">
       <button class="secondary" onclick="trackerLearn()">Подробнее</button>
-      <button onclick="trackerOk()">Понятно</button>
+      <button class="primary" onclick="trackerOk()">Понятно</button>
     </div>
   </div>
 </div>
@@ -806,146 +795,142 @@ fetch('data.json', { cache: 'no-cache' })
 <!-- Social subscribe widget -->
 <div id="social-widget" aria-hidden="true">
   <div class="notebook" role="dialog" aria-label="Подписка на MAX">
-    <button class="minimize" aria-label="Свернуть" title="Свернуть" onclick="socialMinimize()">—</button>
+    <button class="minimize" aria-label="Свернуть" title="Свернуть" onclick="socialMinimize()">✕</button>
     <div class="lines" aria-hidden="true"></div>
-
     <h3>🔥 Свежие новости Ярославля</h3>
-    <p>Свежие новости Ярославля в MAX!</p>
-
+    <p>Подпишитесь, чтобы быть  вкурсе событий!</p>
     <div class="actions">
-      <a href="https://max.ru/yarcube_ru" target="_blank" rel="noopener" class="button">Перейти в MAX</a>
+      <a href="https://max.ru/yarcube_ru" target="_blank" rel="noopener" class="button">Подписаться</a>
     </div>
   </div>
 </div>
 
-<!-- Social mini icon (появляется после сворачивания соцвиджета) -->
-<button id="social-mini" aria-label="Открыть новости в MAX" title="Открыть новости в MAX" onclick="socialRestore()">
+<!-- Мини-иконка (появляется после сворачивания соцвиджета) -->
+<button id="social-mini" aria-label="Свежие новости Ярославля" title="Свежие новости Ярославля" onclick="socialRestore()">
   🔔
 </button>
 
 <script>
-(function(){
-  // Элементы
-  var tracker = document.getElementById('tracker-widget');
-  var social  = document.getElementById('social-widget');
-  var mini    = document.getElementById('social-mini');
+(function () {
+  var tracker    = document.getElementById('tracker-widget');
+  var social     = document.getElementById('social-widget');
+  var mini       = document.getElementById('social-mini');
+  var TRACKER_KEY = 'gvs_tracker_hidden_v1';
+  var SOCIAL_KEY  = 'gvs_social_hidden_v1';
 
-  var trackerKey = 'gvs_tracker_hidden_v1';
-  var socialKey  = 'gvs_social_hidden_v1';
 
-  // Показ виджетов с задержкой
-  function showTracker() {
-    if (localStorage.getItem(trackerKey) === 'hidden') return;
-    tracker.style.display = 'block';
-    setTimeout(function(){ tracker.classList.add('show'); tracker.setAttribute('aria-hidden','false'); }, 40);
+  function updatePositions() {
+    if (window.innerWidth <= 640) return;
+
+    var trackerVisible = tracker.style.display !== 'none';
+    var gap            = 12; // px между виджетами
+    var base           = 20; // отступ от низа
+
+    if (trackerVisible) {
+      var trackerH = tracker.offsetHeight;
+      social.style.bottom = (base + trackerH + gap) + 'px';
+      mini.style.bottom   = (base + trackerH + gap) + 'px';
+    } else {
+      social.style.bottom = base + 'px';
+      mini.style.bottom   = base + 'px';
+    }
   }
+
+  // ── Показ виджетов ────────────────────────────────────────────────────
+  function showTracker() {
+    if (localStorage.getItem(TRACKER_KEY) === 'hidden') return;
+    tracker.style.display = 'block';
+    requestAnimationFrame(function () {
+      updatePositions();
+      tracker.classList.add('show');
+      tracker.setAttribute('aria-hidden', 'false');
+    });
+  }
+
   function showSocial() {
-    if (localStorage.getItem(socialKey) === 'hidden') {
-      // если соц скрыт — показать мини-иконку
+    if (localStorage.getItem(SOCIAL_KEY) === 'hidden') {
       showMini();
       return;
     }
+    updatePositions();
     social.style.display = 'block';
-    setTimeout(function(){ social.classList.add('show'); social.setAttribute('aria-hidden','false'); }, 40);
+    requestAnimationFrame(function () {
+      social.classList.add('show');
+      social.setAttribute('aria-hidden', 'false');
+    });
   }
 
-  // Показываем мини-иконку
   function showMini() {
     mini.style.display = 'flex';
-    mini.style.opacity = '1';
+    updatePositions();
   }
+
   function hideMini() {
     mini.style.opacity = '0';
-    setTimeout(function(){ mini.style.display = 'none'; }, 220);
+    setTimeout(function () {
+      mini.style.display  = 'none';
+      mini.style.opacity  = '1';
+    }, 220);
   }
 
-  // Действия трекера
-  window.trackerOk = function() {
+  // ── Действия трекера ──────────────────────────────────────────────────
+  window.trackerOk = function () {
     tracker.classList.remove('show');
     tracker.style.display = 'none';
-    localStorage.setItem(trackerKey, 'hidden');
-    // оповестить соцвиджет — он должен "упасть" вниз
-    dropSocial();
+    tracker.setAttribute('aria-hidden', 'true');
+    localStorage.setItem(TRACKER_KEY, 'hidden');
+    updatePositions();
   };
 
-  window.trackerMinimize = function() {
-    tracker.classList.remove('show');
-    tracker.style.display = 'none';
-    localStorage.setItem(trackerKey, 'hidden');
-    dropSocial();
+  window.trackerMinimize = window.trackerOk;
+
+  window.trackerLearn = function () {
+    window.open(
+      'https://yandex.ru/legal/metrica_termsofuse/ru/#5-personalnye-dannye-i-konfidencialnost',
+      '_blank'
+    );
   };
 
-  window.trackerLearn = function() {
-    window.open('https://yandex.ru/legal/metrica_termsofuse/ru/#5-personalnye-dannye-i-konfidencialnost', '_blank');
-  };
-
-  // Действия соцвиджета
-  window.socialMinimize = function() {
+  // ── Действия соцвиджета ───────────────────────────────────────────────
+  window.socialMinimize = function () {
     social.classList.remove('show');
     social.style.display = 'none';
-    localStorage.setItem(socialKey, 'hidden');
-    // показать мини-иконку
+    social.setAttribute('aria-hidden', 'true');
+    localStorage.setItem(SOCIAL_KEY, 'hidden');
     showMini();
   };
 
-  window.socialRestore = function() {
-    // восстановить соцвиджет из мини-иконки
-    localStorage.removeItem(socialKey);
+  window.socialRestore = function () {
+    localStorage.removeItem(SOCIAL_KEY);
     hideMini();
-    // если трекер скрыт, social должен опуститься на место трекера (bottom:20px)
-    // но мы сначала показываем social в текущей позиции
+    updatePositions();
     social.style.display = 'block';
-    // если трекер скрыт — опускаем social вниз
-    if (localStorage.getItem(trackerKey) === 'hidden') {
-      social.style.bottom = '20px';
-    } else {
-      // иначе ставим чуть выше трекера
-      social.style.bottom = '140px';
-    }
-    setTimeout(function(){ social.classList.add('show'); social.setAttribute('aria-hidden','false'); }, 40);
+    requestAnimationFrame(function () {
+      social.classList.add('show');
+      social.setAttribute('aria-hidden', 'false');
+    });
   };
 
-  // Функция "падения" соцвиджета: плавно опустить вниз, если трекер закрыт
-  function dropSocial() {
-    // если соц скрыт (мини-иконка), опускаем мини-иконку
-    if (localStorage.getItem(socialKey) === 'hidden') {
-      // мини-иконка должна остаться внизу (bottom:20px)
-      mini.style.bottom = '20px';
-      return;
-    }
-    // если соц открыт — анимированно опустить его вниз
-    // сначала убедимся, что он видим
-    if (social.style.display === 'none') {
-      // если он скрыт, просто переместим мини/позицию
-      social.style.bottom = '20px';
-      return;
-    }
-    // анимируем bottom
-    social.style.bottom = '20px';
-    // также сдвинем мини-иконку (если видна)
-    mini.style.bottom = '20px';
-  }
+  // ── Инициализация при загрузке ────────────────────────────────────────
+  window.addEventListener('load', function () {
+    var trackerHidden = localStorage.getItem(TRACKER_KEY) === 'hidden';
+    var socialHidden  = localStorage.getItem(SOCIAL_KEY) === 'hidden';
 
-  // При загрузке — показать виджеты с задержками
-  window.addEventListener('load', function(){
-    setTimeout(showTracker, 2500); // трекер через 2.5с
-    setTimeout(showSocial, 3500);  // соц чуть позже
-    // если трекер уже скрыт (localStorage), сразу опустить соц
-    if (localStorage.getItem(trackerKey) === 'hidden') {
-      // если соц открыт — опустить его
-      setTimeout(function(){ if (social.style.display !== 'none') social.style.bottom = '20px'; }, 360);
-      // если соц мини — поставить мини внизу
-      mini.style.bottom = '20px';
+    if (!trackerHidden) {
+      setTimeout(showTracker, 2500);
+      setTimeout(showSocial, 3500);
+    } else {
+      setTimeout(showSocial, 2500);
     }
-    // если соц скрыт — показать мини-иконку
-    if (localStorage.getItem(socialKey) === 'hidden') {
-      setTimeout(showMini, 360);
+
+    if (socialHidden) {
+      setTimeout(function () {
+        showMini();
+      }, trackerHidden ? 2500 : 4000);
     }
   });
 
-  // expose restore for onclick
-  window.socialRestore = window.socialRestore || function(){ window.socialRestore(); };
-
+  window.addEventListener('resize', updatePositions);
 })();
 </script>
 

@@ -35,152 +35,35 @@ html.light {
   padding: 0;
 }
 
-/* Notebook-style tracker widget */
-#tracker-widget {
-  display: none;
-  position: fixed;
-  left: 20px;
-  bottom: 20px;
-  z-index: 9999;
-  max-width: 300px;
-  transform-origin: left bottom;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
-
-/* Бумажка */
-#tracker-widget .notebook {
-  background: linear-gradient(180deg, var(--surface) 0%, var(--surface2) 100%);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 14px 14px 12px 14px;
-  border-radius: 8px;
-  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-  width: 100%;
-  transform: rotate(-3deg);
-  position: relative;
-  overflow: visible;
-}
-
-/* Верхняя "скоба" / скрепка */
-#tracker-widget .notebook::before {
-  content: "";
-  position: absolute;
-  left: 18px;
-  top: -10px;
-  width: 36px;
-  height: 18px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, rgba(0,0,0,0.12), rgba(255,255,255,0.03));
-  border: 1px solid rgba(0,0,0,0.12);
-  transform: rotate(-12deg);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}
-
-/* "Листы" бумаги (тонкие линии) */
-#tracker-widget .notebook .lines {
-  position: absolute;
-  inset: 10px 10px 10px 10px;
-  pointer-events: none;
-  background-image: linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
-  background-size: 100% 22px;
-  opacity: 0.06;
-  border-radius: 6px;
-}
-
-/* Заголовок и текст */
-#tracker-widget h3 {
-  margin: 0 0 6px 0;
-  font-size: 13px;
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-#tracker-widget p {
-  margin: 0 0 10px 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.35;
-}
-
-/* Кнопки */
-#tracker-widget .actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  align-items: center;
-}
-#tracker-widget button {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 7px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: transform 0.12s ease, opacity 0.12s ease;
-}
-#tracker-widget button.secondary {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-#tracker-widget button:hover { transform: translateY(-1px); }
-
-/* Маленькая кнопка-свернуть */
-#tracker-widget .minimize {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  width: 28px;
-  height: 20px;
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-size: 12px;
-  cursor: pointer;
-}
-
-/* Анимация появления */
-@keyframes notebookIn {
-  from { transform: translateY(18px) rotate(-6deg); opacity: 0; }
-  to   { transform: translateY(0) rotate(-3deg); opacity: 1; }
-}
-#tracker-widget.show .notebook { animation: notebookIn 360ms cubic-bezier(.2,.9,.2,1); }
-
-/* Адаптив */
-@media (max-width: 420px) {
-  #tracker-widget { left: 12px; bottom: 12px; max-width: 260px; }
-  #tracker-widget .notebook { padding: 12px; }
-}
-
-/* Notebook-style widgets (tracker + social) */
+/* ── Виджеты ── */
 
 /* Контейнеры */
-#tracker-widget, #social-widget {
+#tracker-widget,
+#social-widget {
   display: none;
   position: fixed;
   left: 20px;
+  bottom: 20px; 
   z-index: 9999;
   max-width: 300px;
+  width: 300px;
   transform-origin: left bottom;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  transition: bottom 360ms cubic-bezier(.2,.9,.2,1);
 }
 
-/* Позиции: tracker снизу, social чуть выше */
-#tracker-widget { bottom: 20px; z-index: 9999; }
-#social-widget  { bottom: 140px; z-index: 9998; }
+#social-widget { z-index: 9998; }
 
-/* Общий стиль "блокнота" */
+/* Общий стиль «блокнота» */
 .notebook {
   background: linear-gradient(180deg, var(--surface) 0%, var(--surface2) 100%);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 14px;
-  border-radius: 8px;
+  padding: 16px 16px 14px;
+  border-radius: 10px;
   box-shadow: 0 8px 30px rgba(2,6,23,0.6);
   width: 100%;
-  transform: rotate(-3deg);
+  transform: rotate(-2deg);
   position: relative;
   overflow: visible;
 }
@@ -212,91 +95,212 @@ html.light {
 }
 
 /* Заголовки и текст */
-.notebook h3 { margin: 0 0 6px 0; font-size: 14px; color: var(--accent); display:flex; gap:8px; align-items:center; }
-.notebook p  { margin: 0 0 10px 0; color: var(--muted); font-size: 13px; line-height: 1.35; }
+.notebook h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.notebook p {
+  margin: 0 0 12px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
 
 /* Кнопки */
-.notebook .actions { display:flex; gap:8px; justify-content:flex-end; align-items:center; }
-.notebook button, .notebook a.button {
+.notebook .actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.notebook button,
+.notebook a.button {
   border: none;
   cursor: pointer;
   font-size: 13px;
-  padding: 8px 12px;
-  border-radius: 6px;
+  font-family: inherit;
+  padding: 8px 14px;
+  border-radius: 7px;
   transition: transform .12s ease, opacity .12s ease;
+  line-height: 1;
 }
 .notebook a.button {
-  display:inline-block;
-  text-decoration:none;
-  color:#fff;
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
   background: var(--accent);
-  box-shadow: 0 6px 18px rgba(232,93,47,0.12);
+  box-shadow: 0 4px 14px rgba(232,93,47,0.25);
+}
+.notebook button.primary {
+  background: var(--accent);
+  color: #fff;
 }
 .notebook button.secondary {
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
 }
+.notebook button:hover,
+.notebook a.button:hover { transform: translateY(-1px); }
 
-/* Уточнение: сделать кнопку соцсети явно видимой (широкая и контрастная) */
+/* Кнопка соцсети — полная ширина */
 #social-widget .notebook a.button {
   width: 100%;
   text-align: center;
   font-weight: 600;
   padding: 10px 14px;
   font-size: 14px;
+  background: linear-gradient(135deg, #00D4FF 0%, #7B68EE 50%, #8B00FF 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 8px 24px rgba(139,0,255,0.12);
+  border-radius: 8px;
+  display: inline-block;
+  text-decoration: none;
+  transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
 }
 
-/* Мини-иконка (появляется после сворачивания соцвиджета) */
-#social-mini {
-  display: none;
-  position: fixed;
-  left: 20px;
-  bottom: 20px; /* будет смещаться при падении */
-  z-index: 10000;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, var(--accent2), var(--accent));
-  color: #fff;
-  box-shadow: 0 8px 24px rgba(2,6,23,0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transform: rotate(-3deg);
-  font-size: 18px;
+#social-widget .notebook a.button:hover {
+  transform: translateY(-2px);
+  opacity: 0.98;
+  box-shadow: 0 12px 30px rgba(139,0,255,0.16);
+}
+#social-widget .notebook a.button:active {
+  transform: translateY(0);
+  opacity: 0.95;
 }
 
-/* Кнопка свернуть в правом верхнем углу виджета */
+/* Кнопка «свернуть» */
 .notebook .minimize {
   position: absolute;
   right: 8px;
   top: 8px;
-  width: 28px;
-  height: 20px;
+  width: 32px;
+  height: 28px;
   background: transparent;
   border: none;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  transition: background .15s, color .15s;
+  font-family: inherit;
+}
+.notebook .minimize:hover {
+  background: var(--surface2);
+  color: var(--text);
 }
 
-/* Анимации появления/скрытия */
+/* ── Мини-иконка (появляется после сворачивания соцвиджета) ── */
+#social-mini {
+  display: none;
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 9998;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(160deg, var(--accent2), var(--accent));
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(232,93,47,0.4);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: rotate(-2deg);
+  font-size: 20px;
+  border: none;
+  transition: bottom 360ms cubic-bezier(.2,.9,.2,1), opacity 200ms, transform .15s;
+}
+#social-mini:hover { transform: rotate(-2deg) scale(1.1); }
+
+/* ── Анимации ── */
 @keyframes notebookIn {
-  from { transform: translateY(18px) rotate(-6deg); opacity: 0; }
-  to   { transform: translateY(0) rotate(-3deg); opacity: 1; }
+  from { transform: translateY(20px) rotate(-5deg); opacity: 0; }
+  to   { transform: translateY(0)    rotate(-2deg); opacity: 1; }
 }
-.show .notebook { animation: notebookIn 360ms cubic-bezier(.2,.9,.2,1); }
+.show .notebook { animation: notebookIn 380ms cubic-bezier(.2,.9,.2,1); }
 
-/* Плавное смещение social-widget при "падении" */
-#social-widget { transition: bottom 360ms cubic-bezier(.2,.9,.2,1); }
-#social-mini { transition: bottom 360ms cubic-bezier(.2,.9,.2,1), opacity 200ms; }
+/* ── Адаптив: Bottom Sheet на мобильных ── */
+@media (max-width: 640px) {
+  #tracker-widget,
+  #social-widget {
+    left: 0 !important;
+    right: 0;
+    bottom: 0 !important;
+    max-width: 100%;
+    width: 100%;
+    transition: none;
+  }
 
-/* Адаптив */
-@media (max-width: 420px) {
-  #tracker-widget, #social-widget { left: 12px; max-width: 260px; }
-  #social-mini { left: 12px; }
-  .notebook { padding: 12px; }
-  #social-widget  { bottom: 120px; }
+  /* Трекер поверх соцвиджета на мобильных */
+  #tracker-widget { z-index: 10001; }
+  #social-widget  { z-index: 10000; }
+
+  .notebook {
+    border-radius: 18px 18px 0 0;
+    transform: none !important;
+    padding: 20px 20px 28px;
+    /* Убираем анимацию вращения на мобильных */
+  }
+
+  /* Скоба выглядит странно на bottom-sheet */
+  .notebook::before { display: none; }
+
+  /* Полоска-хэндл вместо скобы */
+  .notebook::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+  }
+
+  @keyframes notebookIn {
+    from { transform: translateY(100%); opacity: 0.6; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  /* Крупнее тап-таргеты */
+  .notebook .minimize {
+    width: 44px;
+    height: 40px;
+    font-size: 18px;
+    right: 12px;
+    top: 12px;
+  }
+
+  .notebook h3    { font-size: 16px; margin-bottom: 10px; }
+  .notebook p     { font-size: 14px; line-height: 1.5; }
+  .notebook button,
+  .notebook a.button {
+    font-size: 14px;
+    padding: 11px 16px;
+  }
+
+  /* Мини-иконка в правом нижнем углу на мобильных */
+  #social-mini {
+    left: auto !important;
+    right: 16px;
+    bottom: 16px !important;
+    transform: none;
+    z-index: 10002;
+  }
+  #social-mini:hover { transform: scale(1.1); }
+}
+
+@media (max-width: 360px) {
+  .notebook { padding: 16px 16px 24px; }
 }
