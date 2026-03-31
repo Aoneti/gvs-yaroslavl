@@ -12,7 +12,7 @@
 <script>
 (function() {
   try {
-    if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light');
+    if (localStorage.getItem('theme') !== 'dark') document.documentElement.classList.add('light');
   } catch (e) { /* localStorage недоступен — используем тёмную тему */ }
 })();
 </script>
@@ -473,9 +473,9 @@
 </head>
 <body>
 <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
-  <span class="theme-emoji" id="themeEmoji">🌑</span>
-  <div class="theme-track"><div class="theme-thumb"></div></div>
   <span class="theme-emoji">🌕</span>
+<div class="theme-track">...</div>
+<span class="theme-emoji" id="themeEmoji">🌑</span>
 </button>
 <div class="container">
   <header>
