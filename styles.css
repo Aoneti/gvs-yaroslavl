@@ -304,9 +304,6 @@ html.light {
   .notebook { padding: 16px 16px 24px; }
 }
 
-/* ── FIX[Medium]: убрана захардкоженная цветовая константа,
-   теперь используется CSS-переменная --blue, чтобы при изменении
-   темы значение менялось автоматически. ── */
 html.light .period-item.hydro2 {
   border-left-color: var(--blue);
 }

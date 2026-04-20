@@ -10,18 +10,18 @@
 Excel-файл отключений
         │
         ▼
- gvs_convert.ipynb   →   data.json
+convert.ipynb   →   data.json
         │
         ▼
-geocoder_v2.ipynb    →   geo.json
+geocoder.ipynb    →   geo.json
         │
         ▼
-  Загрузить оба файла в репозиторий
+Загрузить оба файла в репозиторий
 ```
 
 ---
 
-## 1. `gvs_convert.ipynb` — конвертация Excel в json
+## 1. `convert.ipynb` — конвертация Excel в json
 
 Конвертирует таблицу отключений из Excel в `data.json`, который читает сайт.
 
@@ -33,7 +33,7 @@ geocoder_v2.ipynb    →   geo.json
 
 ---
 
-## 2. `geocoder_v2.ipynb` — геокодирование адресов
+## 2. `geocoder.ipynb` — геокодирование адресов
 
 Берёт адреса из `data.json` и получает для каждого координаты через [Nominatim (OpenStreetMap)](https://nominatim.openstreetmap.org). Результат сохраняется в `geo.json`.
 

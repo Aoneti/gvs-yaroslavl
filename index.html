@@ -6,7 +6,6 @@
 <title>Отключение горячей воды в Ярославле — 2026</title>
 <meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
 <meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
-<meta name="yandex-verification" content="6535b34b0d9afb9c" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💦</text></svg>">
 
 <script>
@@ -576,8 +575,6 @@ function renderPeriodItem(type, label, rangeStr, onStr) {
 }
 
 // ─── Карточка адреса ────────────────────────────────────────────────────
-// FIX[Medium]: принимает today — вычисляется один раз в renderPage,
-// а не пересоздаётся через new Date() на каждую из 20 карточек.
 function renderCard(d, tokens, today) {
   const status   = GVS.getStatus(d, today);
   const daysInfo = GVS.getDaysInfo(d, today);
@@ -620,7 +617,6 @@ function renderCard(d, tokens, today) {
 }
 
 // ─── Рендер страницы результатов ────────────────────────────────────────
-// FIX[Medium]: вычисляем today один раз здесь, передаём в renderCard.
 function renderPage(tokens) {
   const today = GVS.makeToday();
   const start = (currentPage - 1) * PER_PAGE;
@@ -778,8 +774,6 @@ fetch('data.json')
 </footer>
 
 <!-- Tracker widget (notebook style) -->
-<!-- FIX[Medium]: убраны onclick-атрибуты — обработчики вынесены в IIFE
-     ниже, window.* больше не загрязняется. Добавлены id на кнопки. -->
 <div id="tracker-widget" aria-hidden="true">
   <div class="notebook" role="dialog" aria-label="Аналитика сайта">
     <button class="minimize" id="tracker-minimize-btn" aria-label="Свернуть" title="Свернуть">✕</button>
@@ -806,14 +800,12 @@ fetch('data.json')
   </div>
 </div>
 
-<!-- Мини-иконка (появляется после сворачивания соцвиджета) -->
+<!-- Мини-иконка -->
 <button id="social-mini" aria-label="Свежие новости Ярославля" title="Свежие новости Ярославля">
   🔔
 </button>
 
 <script>
-// FIX[Medium]: все функции виджетов теперь локальны внутри IIFE,
-// window.* не загрязняется. onclick-атрибуты заменены на addEventListener.
 (function () {
   const tracker    = document.getElementById('tracker-widget');
   const social     = document.getElementById('social-widget');
@@ -908,7 +900,6 @@ fetch('data.json')
     });
   }
 
-  // FIX[Medium]: addEventListener вместо onclick-атрибутов
   document.getElementById('tracker-minimize-btn').addEventListener('click', trackerOk);
   document.getElementById('tracker-learn-btn').addEventListener('click', trackerLearn);
   document.getElementById('tracker-ok-btn').addEventListener('click', trackerOk);

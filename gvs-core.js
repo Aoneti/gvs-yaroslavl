@@ -6,10 +6,6 @@ const GVS = (() => {
   const PER_PAGE  = 20;   // карточек на странице
   const SOON_DAYS = 7;    // дней вперёд → статус «скоро»
 
-  // ─── Детектор значений-дат vs текстовых заметок ─────────────
-  // FIX[High]: усилен регексп — теперь требует минимум «dd.mm»
-  // перед разделителем, иначе «1-й Брагинский проезд» совпадал
-  // и передавался в parsePeriod как дата.
   const DATE_PERIOD_RE = /^\d{1,2}\.\d{1,2}[.-]/;
   function isDateValue(v) {
     return Boolean(v && DATE_PERIOD_RE.test(String(v)));
@@ -46,9 +42,6 @@ const GVS = (() => {
   }
 
   // ─── Вспомогательная: нормализованный «сегодня» ──────────────
-  // FIX[Medium]: вынесено в отдельную функцию, чтобы callers
-  // вычисляли today один раз и передавали в getStatus/getDaysInfo,
-  // избегая повторного new Date() на каждую карточку.
   function makeToday() {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -119,9 +112,6 @@ const GVS = (() => {
   }
 
   // ─── Счётчик дней (для чипа на карточке) ────────────────────
-  // FIX[Medium]: принимает опциональный `today`, вычисленный
-  // заранее в caller'е, чтобы не создавать new Date() на каждую
-  // карточку при рендере страницы из N результатов.
   function getDaysInfo(d, today) {
     if (!today) today = makeToday();
     const periods = _getPeriods(d);
@@ -143,7 +133,6 @@ const GVS = (() => {
   }
 
   // ─── Статус карточки относительно сегодня ────────────────────
-  // FIX[Medium]: принимает опциональный `today`.
   function getStatus(d, today) {
     if (!today) today = makeToday();
     const soonLimit = new Date(today);
@@ -164,11 +153,6 @@ const GVS = (() => {
     hydro2: '#58a6ff',
   };
 
-  // FIX[Critical]: блок «будущие периоды» теперь проверяет
-  // p.start > today, а не просто наличие даты. Без этого фикса
-  // дом с завершившимся ремонтом и будущими гидроиспытаниями
-  // показывал красный маркер ремонта вместо правильного цвета ГИ.
-  // FIX[Medium]: принимает опциональный `today`.
   function getMapColor(records, today) {
     if (!today) today = makeToday();
 
@@ -192,9 +176,7 @@ const GVS = (() => {
     ]).filter(Boolean);
     if (all.length > 0 && all.every(p => p.end < today)) return '#3fb950';
 
-    // Будущие — по приоритету типа.
-    // Проверяем p.start > today, чтобы уже закончившийся тип
-    // не «выбивал» цвет вместо реально предстоящего.
+    // Будущие — по приоритету типа
     if (records.some(r => { const p = parsePeriod(r.repair, r.repair_on); return p && p.start > today; }))  return _COLOR_BY_TYPE.repair;
     if (records.some(r => { const p = parsePeriod(r.hydro2, r.hydro2_on); return p && p.start > today; })) return _COLOR_BY_TYPE.hydro2;
     if (records.some(r => { const p = parsePeriod(r.hydro1, r.hydro1_on); return p && p.start > today; })) return _COLOR_BY_TYPE.hydro1;

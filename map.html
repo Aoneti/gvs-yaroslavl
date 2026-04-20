@@ -18,9 +18,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 
-<!-- FIX[Medium/TODO]: добавить integrity="sha384-..." к CSS-ресурсам
-     после вычисления хешей: openssl dgst -sha384 -binary FILE | openssl base64
-     JS-файлы ниже уже имеют SRI. -->
 <link  rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
        crossorigin="anonymous"/>
 <link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
@@ -30,8 +27,6 @@
 <link rel="stylesheet" href="styles.css">
 <script src="gvs-core.js"></script>
 
-<!-- FIX[Medium]: Яндекс.Метрика добавлена в map.html —
-     раньше действия пользователей на карте не попадали в аналитику. -->
 <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -252,12 +247,6 @@ const CLUSTER_RADIUS   = 50;
 const MAX_LIST_ITEMS   = 200;
 
 // ─── normKey ─────────────────────────────────────────────────────────────
-// FIX[High]: теперь использует GVS.normalizeQuery — тот же алгоритм,
-// что в index.html и gvs_convert.ipynb. Это устраняет расхождение:
-// ранее normKey не применял алиасы типов улиц (пр-кт → проспект) и
-// не фильтровал шумовые токены («д»), что могло нарушить сопоставление
-// адресов data.json ↔ geo.json при изменении формата данных.
-// Сортировка токенов сохранена для порядконезависимого матчинга.
 function normKey(s) {
   return GVS.normalizeQuery(s).sort().join(' ');
 }
@@ -275,10 +264,9 @@ function pluralAddr(n) {
 const map = L.map('map', {
   center: MAP_CENTER,
   zoom: MAP_ZOOM_DEFAULT,
-  zoomControl: false,
   attributionControl: true,
 });
-L.control.zoom({ position: 'bottomleft' }).addTo(map);
+map.zoomControl.setPosition('bottomleft');
 map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -308,9 +296,6 @@ map.addLayer(clusterGroup);
 let allPoints = [];
 let activeAddr = null;
 
-// FIX[Medium]: WeakMap вместо хранения цвета прямо на объекте
-// Leaflet-маркера (_gvsColor). Это устраняет загрязнение internal state
-// библиотеки и исключает конфликт имён при обновлении Leaflet.
 const markerColorMap = new WeakMap();
 
 const escapeHtml = GVS.escapeHtml;
@@ -328,7 +313,6 @@ function makeIcon(color, approximate) {
 
 const COLOR_PRIORITY = { '#e85d2f': 0, '#d29922': 1, '#58a6ff': 2, '#3fb950': 3, '#7d8590': 4 };
 
-// FIX[Medium]: цвет берётся из WeakMap, а не из marker._gvsColor
 function getClusterColor(children) {
   let best = '#7d8590', bestRank = 99;
   for (const m of children) {
@@ -367,10 +351,7 @@ function makePopup(pt) {
 
 // ─── Загрузка данных ─────────────────────────────────────────────────────
 async function loadData() {
-  // FIX[High]: убран cache: 'no-cache' — браузер теперь использует ETag/
-  // Last-Modified от GitHub Pages. Для инвалидации при обновлении данных
-  // добавьте версию к URL: fetch('data.json?v=20250801').
-  // FIX[High]: параллельный JSON-парсинг вместо последовательного.
+
   const [dataRes, geoRes] = await Promise.all([
     fetch('data.json'),
     fetch('geo.json'),
@@ -379,8 +360,6 @@ async function loadData() {
   if (!dataRes.ok) throw new Error(`data.json: HTTP ${dataRes.status}`);
   if (!geoRes.ok)  throw new Error(`geo.json: HTTP ${geoRes.status}`);
 
-  // FIX[High]: два .json() в параллельном Promise.all — CPU не простаивает
-  // пока парсится первый файл (актуально для data.json ~1.4 MB).
   const [data, geoDb] = await Promise.all([dataRes.json(), geoRes.json()]);
 
   if (!geoDb || typeof geoDb !== 'object' || !Object.keys(geoDb).length) {
@@ -418,7 +397,6 @@ async function loadData() {
     };
     const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color, approximate) });
 
-    // FIX[Medium]: цвет хранится в WeakMap, а не как свойство маркера
     markerColorMap.set(marker, color);
 
     marker.bindPopup(makePopup(pt), { maxWidth: 320 });
@@ -436,13 +414,9 @@ async function loadData() {
 }
 
 // ─── Состояние видимых маркеров для диффного обновления ──────────────────
-// FIX[Medium]: вместо clearLayers()+addLayers() на каждый ввод символа
-// теперь вычисляется разница — только реально изменившиеся маркеры
-// добавляются/удаляются. Это критически важно при 2000+ маркерах на
-// слабых мобильных устройствах.
 let _visibleSet = new Set();
 
-// ─── Рендер: diff addLayers/removeLayers + ограничение списка ────────────
+// ─── Рендер + ограничение списка ────────────
 function renderAll() {
   const tokens = GVS.normalizeQuery(document.getElementById('panelSearch').value);
   const fRep   = document.getElementById('fRepair').checked;
@@ -484,7 +458,7 @@ function renderAll() {
     }
   }
 
-  // Плашка с количеством скрытых адресов (если есть)
+  // Плашка с количеством скрытых адресов
   if (visiblePts.length > MAX_LIST_ITEMS) {
     const overflow = document.createElement('div');
     overflow.className = 'addr-overflow';
@@ -492,9 +466,6 @@ function renderAll() {
     fragment.appendChild(overflow);
   }
 
-  // FIX[Medium]: диффное обновление кластера.
-  // Вычисляем множество новых видимых маркеров и только удаляем/добавляем
-  // изменившиеся, вместо полного clearLayers()+addLayers().
   const newSet = new Set(visiblePts.map(pt => pt._marker));
   const toRemove = [];
   const toAdd    = [];
