@@ -249,7 +249,6 @@ html.light {
     border-radius: 18px 18px 0 0;
     transform: none !important;
     padding: 20px 20px 28px;
-    /* Убираем анимацию вращения на мобильных */
   }
 
   /* Скоба выглядит странно на bottom-sheet */
@@ -303,4 +302,11 @@ html.light {
 
 @media (max-width: 360px) {
   .notebook { padding: 16px 16px 24px; }
+}
+
+/* ── FIX[Medium]: убрана захардкоженная цветовая константа,
+   теперь используется CSS-переменная --blue, чтобы при изменении
+   темы значение менялось автоматически. ── */
+html.light .period-item.hydro2 {
+  border-left-color: var(--blue);
 }

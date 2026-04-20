@@ -7,8 +7,10 @@ const GVS = (() => {
   const SOON_DAYS = 7;    // дней вперёд → статус «скоро»
 
   // ─── Детектор значений-дат vs текстовых заметок ─────────────
-  // Период считается датой, если начинается с цифры (день месяца).
-  const DATE_PERIOD_RE = /^\d{1,2}[.-]/;
+  // FIX[High]: усилен регексп — теперь требует минимум «dd.mm»
+  // перед разделителем, иначе «1-й Брагинский проезд» совпадал
+  // и передавался в parsePeriod как дата.
+  const DATE_PERIOD_RE = /^\d{1,2}\.\d{1,2}[.-]/;
   function isDateValue(v) {
     return Boolean(v && DATE_PERIOD_RE.test(String(v)));
   }
@@ -22,7 +24,7 @@ const GVS = (() => {
       .replace(/"/g, '&quot;');
   }
 
-  // ─── Нормализация поискового запроса → массив токенов ────────.
+  // ─── Нормализация поискового запроса → массив токенов ────────
   const _STREET_ALIASES = {
     'пр-кт':    'проспект',
     'пр-д':     'проезд',
@@ -41,6 +43,16 @@ const GVS = (() => {
       .filter(Boolean)
       .map(t => _STREET_ALIASES[t] || t)
       .filter(t => !_NOISE_TOKENS.has(t));
+  }
+
+  // ─── Вспомогательная: нормализованный «сегодня» ──────────────
+  // FIX[Medium]: вынесено в отдельную функцию, чтобы callers
+  // вычисляли today один раз и передавали в getStatus/getDaysInfo,
+  // избегая повторного new Date() на каждую карточку.
+  function makeToday() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
   }
 
   // ─── Безопасное создание даты с защитой от переполнения ──────
@@ -107,8 +119,11 @@ const GVS = (() => {
   }
 
   // ─── Счётчик дней (для чипа на карточке) ────────────────────
-  function getDaysInfo(d) {
-    const today = new Date(); today.setHours(0, 0, 0, 0);
+  // FIX[Medium]: принимает опциональный `today`, вычисленный
+  // заранее в caller'е, чтобы не создавать new Date() на каждую
+  // карточку при рендере страницы из N результатов.
+  function getDaysInfo(d, today) {
+    if (!today) today = makeToday();
     const periods = _getPeriods(d);
     if (!periods.length) return null;
 
@@ -128,8 +143,9 @@ const GVS = (() => {
   }
 
   // ─── Статус карточки относительно сегодня ────────────────────
-  function getStatus(d) {
-    const today = new Date(); today.setHours(0, 0, 0, 0);
+  // FIX[Medium]: принимает опциональный `today`.
+  function getStatus(d, today) {
+    if (!today) today = makeToday();
     const soonLimit = new Date(today);
     soonLimit.setDate(today.getDate() + SOON_DAYS);
 
@@ -141,14 +157,20 @@ const GVS = (() => {
     return 'normal';
   }
 
-  // ─── Цвет маркера для карты (перенесено из map.html) ─────────
+  // ─── Цвет маркера для карты ──────────────────────────────────
   const _COLOR_BY_TYPE = {
     repair: '#e85d2f',
     hydro1: '#d29922',
     hydro2: '#58a6ff',
   };
-  function getMapColor(records) {
-    const today = new Date(); today.setHours(0, 0, 0, 0);
+
+  // FIX[Critical]: блок «будущие периоды» теперь проверяет
+  // p.start > today, а не просто наличие даты. Без этого фикса
+  // дом с завершившимся ремонтом и будущими гидроиспытаниями
+  // показывал красный маркер ремонта вместо правильного цвета ГИ.
+  // FIX[Medium]: принимает опциональный `today`.
+  function getMapColor(records, today) {
+    if (!today) today = makeToday();
 
     // Активное прямо сейчас
     for (const r of records) {
@@ -170,10 +192,12 @@ const GVS = (() => {
     ]).filter(Boolean);
     if (all.length > 0 && all.every(p => p.end < today)) return '#3fb950';
 
-    // Будущие — по приоритету типа
-    if (records.some(r => r.repair && isDateValue(r.repair)))  return _COLOR_BY_TYPE.repair;
-    if (records.some(r => r.hydro2 && isDateValue(r.hydro2))) return _COLOR_BY_TYPE.hydro2;
-    if (records.some(r => r.hydro1 && isDateValue(r.hydro1))) return _COLOR_BY_TYPE.hydro1;
+    // Будущие — по приоритету типа.
+    // Проверяем p.start > today, чтобы уже закончившийся тип
+    // не «выбивал» цвет вместо реально предстоящего.
+    if (records.some(r => { const p = parsePeriod(r.repair, r.repair_on); return p && p.start > today; }))  return _COLOR_BY_TYPE.repair;
+    if (records.some(r => { const p = parsePeriod(r.hydro2, r.hydro2_on); return p && p.start > today; })) return _COLOR_BY_TYPE.hydro2;
+    if (records.some(r => { const p = parsePeriod(r.hydro1, r.hydro1_on); return p && p.start > today; })) return _COLOR_BY_TYPE.hydro1;
     return '#7d8590';
   }
 
@@ -184,6 +208,7 @@ const GVS = (() => {
     isDateValue,
     escapeHtml,
     normalizeQuery,
+    makeToday,
     parsePeriod,
     getDaysInfo,
     getStatus,

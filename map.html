@@ -18,6 +18,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 
+<!-- FIX[Medium/TODO]: добавить integrity="sha384-..." к CSS-ресурсам
+     после вычисления хешей: openssl dgst -sha384 -binary FILE | openssl base64
+     JS-файлы ниже уже имеют SRI. -->
 <link  rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
        crossorigin="anonymous"/>
 <link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
@@ -26,6 +29,21 @@
        crossorigin="anonymous"/>
 <link rel="stylesheet" href="styles.css">
 <script src="gvs-core.js"></script>
+
+<!-- FIX[Medium]: Яндекс.Метрика добавлена в map.html —
+     раньше действия пользователей на карте не попадали в аналитику. -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108168247', 'ym');
+
+    ym(108168247, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/108168247" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
 <style>
   :root      { --panel: 280px; }
   html.light { --panel: 280px; }
@@ -170,7 +188,6 @@
   <a href="index.html" class="back-btn">← Поиск</a>
   <div class="topbar-title">Карта отключений <span>ГВС</span> · Ярославль 2026</div>
   <div class="topbar-sep"></div>
-  <!-- title сообщает о неотображённых адресах (без координат) -->
   <div class="counter-chip" id="counterChip" title="">…</div>
 </div>
 
@@ -227,8 +244,6 @@
         integrity="sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr"
         crossorigin="anonymous"></script>
 <script>
-// ── Тема ─────────────────────────────────────────────────────────────────
-
 // ─── Константы ───────────────────────────────────────────────────────────
 const MAP_CENTER       = [57.6261, 39.8845];
 const MAP_ZOOM_DEFAULT = 12;
@@ -237,16 +252,14 @@ const CLUSTER_RADIUS   = 50;
 const MAX_LIST_ITEMS   = 200;
 
 // ─── normKey ─────────────────────────────────────────────────────────────
-// Сортирует токены для порядконезависимого матчинга адресов из data.json и geo.json 
+// FIX[High]: теперь использует GVS.normalizeQuery — тот же алгоритм,
+// что в index.html и gvs_convert.ipynb. Это устраняет расхождение:
+// ранее normKey не применял алиасы типов улиц (пр-кт → проспект) и
+// не фильтровал шумовые токены («д»), что могло нарушить сопоставление
+// адресов data.json ↔ geo.json при изменении формата данных.
+// Сортировка токенов сохранена для порядконезависимого матчинга.
 function normKey(s) {
-  return s.toLowerCase()
-    .replace(/[.,]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .split(' ')
-    .filter(Boolean)
-    .sort()
-    .join(' ');
+  return GVS.normalizeQuery(s).sort().join(' ');
 }
 
 // ─── Склонение «адрес» ───────────────────────────────────────────────────
@@ -295,6 +308,11 @@ map.addLayer(clusterGroup);
 let allPoints = [];
 let activeAddr = null;
 
+// FIX[Medium]: WeakMap вместо хранения цвета прямо на объекте
+// Leaflet-маркера (_gvsColor). Это устраняет загрязнение internal state
+// библиотеки и исключает конфликт имён при обновлении Leaflet.
+const markerColorMap = new WeakMap();
+
 const escapeHtml = GVS.escapeHtml;
 
 // ─── Цвет маркера ────────────────────────────────────────────────────────
@@ -309,10 +327,12 @@ function makeIcon(color, approximate) {
 }
 
 const COLOR_PRIORITY = { '#e85d2f': 0, '#d29922': 1, '#58a6ff': 2, '#3fb950': 3, '#7d8590': 4 };
+
+// FIX[Medium]: цвет берётся из WeakMap, а не из marker._gvsColor
 function getClusterColor(children) {
   let best = '#7d8590', bestRank = 99;
   for (const m of children) {
-    const c = m._gvsColor || '#7d8590';
+    const c = markerColorMap.get(m) || '#7d8590';
     const rank = COLOR_PRIORITY[c] !== undefined ? COLOR_PRIORITY[c] : 99;
     if (rank < bestRank) { best = c; bestRank = rank; }
   }
@@ -347,20 +367,25 @@ function makePopup(pt) {
 
 // ─── Загрузка данных ─────────────────────────────────────────────────────
 async function loadData() {
+  // FIX[High]: убран cache: 'no-cache' — браузер теперь использует ETag/
+  // Last-Modified от GitHub Pages. Для инвалидации при обновлении данных
+  // добавьте версию к URL: fetch('data.json?v=20250801').
+  // FIX[High]: параллельный JSON-парсинг вместо последовательного.
   const [dataRes, geoRes] = await Promise.all([
-    fetch('data.json', { cache: 'no-cache' }),
-    fetch('geo.json',  { cache: 'no-cache' }),
+    fetch('data.json'),
+    fetch('geo.json'),
   ]);
 
   if (!dataRes.ok) throw new Error(`data.json: HTTP ${dataRes.status}`);
   if (!geoRes.ok)  throw new Error(`geo.json: HTTP ${geoRes.status}`);
 
-  const geoDb = await geoRes.json();
+  // FIX[High]: два .json() в параллельном Promise.all — CPU не простаивает
+  // пока парсится первый файл (актуально для data.json ~1.4 MB).
+  const [data, geoDb] = await Promise.all([dataRes.json(), geoRes.json()]);
+
   if (!geoDb || typeof geoDb !== 'object' || !Object.keys(geoDb).length) {
     throw new Error('geo.json пустой или повреждён');
   }
-
-  const data = await dataRes.json();
 
   // normKey сортирует токены → порядконезависимый матчинг
   const geoIdx = {};
@@ -384,7 +409,7 @@ async function loadData() {
     matched++;
     const color      = GVS.getMapColor(records);
     const approximate = geo.approximate === true;
-    const pt     = {
+    const pt = {
       address: addr,
       lat: geo.lat, lng: geo.lng,
       records,
@@ -392,7 +417,10 @@ async function loadData() {
       _norm: GVS.normalizeQuery(addr).join(' '),
     };
     const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color, approximate) });
-    marker._gvsColor = color;
+
+    // FIX[Medium]: цвет хранится в WeakMap, а не как свойство маркера
+    markerColorMap.set(marker, color);
+
     marker.bindPopup(makePopup(pt), { maxWidth: 320 });
     marker.on('click', () => selectAddr(pt.address));
     pt._marker = marker;
@@ -407,16 +435,23 @@ async function loadData() {
   renderAll();
 }
 
-// ─── Рендер: batch addLayers + ограничение списка ───────────────────────
+// ─── Состояние видимых маркеров для диффного обновления ──────────────────
+// FIX[Medium]: вместо clearLayers()+addLayers() на каждый ввод символа
+// теперь вычисляется разница — только реально изменившиеся маркеры
+// добавляются/удаляются. Это критически важно при 2000+ маркерах на
+// слабых мобильных устройствах.
+let _visibleSet = new Set();
+
+// ─── Рендер: diff addLayers/removeLayers + ограничение списка ────────────
 function renderAll() {
   const tokens = GVS.normalizeQuery(document.getElementById('panelSearch').value);
   const fRep   = document.getElementById('fRepair').checked;
   const fH1    = document.getElementById('fHydro1').checked;
   const fH2    = document.getElementById('fHydro2').checked;
 
-  const visible  = [];
-  const fragment = document.createDocumentFragment();
-  let   listCount = 0;
+  const visiblePts = [];
+  const fragment   = document.createDocumentFragment();
+  let   listCount  = 0;
 
   for (const pt of allPoints) {
     const matchSearch = !tokens.length || tokens.every(t => pt._norm.includes(t));
@@ -427,9 +462,8 @@ function renderAll() {
 
     if (!matchSearch || !matchFilter) continue;
 
-    visible.push(pt._marker);
+    visiblePts.push(pt);
 
-    // Добавляем в DOM-список только первые MAX_LIST_ITEMS элементов
     if (listCount < MAX_LIST_ITEMS) {
       const item = document.createElement('div');
       item.className = 'addr-item' + (pt.address === activeAddr ? ' active' : '');
@@ -451,26 +485,38 @@ function renderAll() {
   }
 
   // Плашка с количеством скрытых адресов (если есть)
-  if (visible.length > MAX_LIST_ITEMS) {
+  if (visiblePts.length > MAX_LIST_ITEMS) {
     const overflow = document.createElement('div');
     overflow.className = 'addr-overflow';
-    overflow.textContent = `↑ и ещё ${visible.length - MAX_LIST_ITEMS} — уточните поиск`;
+    overflow.textContent = `↑ и ещё ${visiblePts.length - MAX_LIST_ITEMS} — уточните поиск`;
     fragment.appendChild(overflow);
   }
 
-  // Batch-обновление кластера
-  clusterGroup.clearLayers();
-  if (visible.length) clusterGroup.addLayers(visible);
+  // FIX[Medium]: диффное обновление кластера.
+  // Вычисляем множество новых видимых маркеров и только удаляем/добавляем
+  // изменившиеся, вместо полного clearLayers()+addLayers().
+  const newSet = new Set(visiblePts.map(pt => pt._marker));
+  const toRemove = [];
+  const toAdd    = [];
+  for (const m of _visibleSet) {
+    if (!newSet.has(m)) toRemove.push(m);
+  }
+  for (const m of newSet) {
+    if (!_visibleSet.has(m)) toAdd.push(m);
+  }
+  if (toRemove.length) clusterGroup.removeLayers(toRemove);
+  if (toAdd.length)    clusterGroup.addLayers(toAdd);
+  _visibleSet = newSet;
 
   const listEl = document.getElementById('addrList');
   listEl.innerHTML = '';
-  if (visible.length) {
+  if (visiblePts.length) {
     listEl.appendChild(fragment);
   } else {
     listEl.innerHTML = '<div class="empty-list"><span class="big">🔍</span>Ничего не найдено. Попробуйте другое написание или воспользуйтесь основным поиском</div>';
   }
 
-  document.getElementById('counterChip').textContent = pluralAddr(visible.length);
+  document.getElementById('counterChip').textContent = pluralAddr(visiblePts.length);
 }
 
 function selectAddr(address) {

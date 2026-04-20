@@ -19,9 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
-<!-- Общие переменные и сброс -->
 <link rel="stylesheet" href="styles.css">
-<!-- Бизнес-логика (даты, нормализация, статусы) -->
 <script src="gvs-core.js"></script>
 <style>
   html.light body::before {
@@ -318,9 +316,6 @@
     background: var(--surface2);
     background: color-mix(in srgb, var(--surface2) 94%, var(--blue) 6%);
   }
-  html.light .period-item.hydro2 {
-    border-left-color: #2c7acf;
-  }
 
   .period-label {
     font-size: 12px;
@@ -581,9 +576,11 @@ function renderPeriodItem(type, label, rangeStr, onStr) {
 }
 
 // ─── Карточка адреса ────────────────────────────────────────────────────
-function renderCard(d, tokens) {
-  const status   = GVS.getStatus(d);
-  const daysInfo = GVS.getDaysInfo(d);
+// FIX[Medium]: принимает today — вычисляется один раз в renderPage,
+// а не пересоздаётся через new Date() на каждую из 20 карточек.
+function renderCard(d, tokens, today) {
+  const status   = GVS.getStatus(d, today);
+  const daysInfo = GVS.getDaysInfo(d, today);
 
   let daysChip = '';
   if (daysInfo) {
@@ -623,12 +620,14 @@ function renderCard(d, tokens) {
 }
 
 // ─── Рендер страницы результатов ────────────────────────────────────────
+// FIX[Medium]: вычисляем today один раз здесь, передаём в renderCard.
 function renderPage(tokens) {
+  const today = GVS.makeToday();
   const start = (currentPage - 1) * PER_PAGE;
   const page  = filtered.slice(start, start + PER_PAGE);
 
   resultsEl.innerHTML = page.length
-    ? page.map(d => renderCard(d, tokens)).join('')
+    ? page.map(d => renderCard(d, tokens, today)).join('')
     : `<div class="state-message">
          <span class="emoji">🤔</span>
          <h3>Ничего не найдено</h3>
@@ -743,7 +742,7 @@ resultsEl.innerHTML = `<div class="state-message">
   <p>Подождите секунду</p>
 </div>`;
 
-fetch('data.json', { cache: 'no-cache' })
+fetch('data.json')
   .then(r => {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
@@ -779,15 +778,17 @@ fetch('data.json', { cache: 'no-cache' })
 </footer>
 
 <!-- Tracker widget (notebook style) -->
+<!-- FIX[Medium]: убраны onclick-атрибуты — обработчики вынесены в IIFE
+     ниже, window.* больше не загрязняется. Добавлены id на кнопки. -->
 <div id="tracker-widget" aria-hidden="true">
   <div class="notebook" role="dialog" aria-label="Аналитика сайта">
-    <button class="minimize" aria-label="Свернуть" title="Свернуть" onclick="trackerMinimize()">✕</button>
+    <button class="minimize" id="tracker-minimize-btn" aria-label="Свернуть" title="Свернуть">✕</button>
     <div class="lines" aria-hidden="true"></div>
     <h3>📊 Аналитика</h3>
     <p>Мы используем Яндекс.Метрику для анализа посещений и улучшения работы сайта.</p>
     <div class="actions">
-      <button class="secondary" onclick="trackerLearn()">Подробнее</button>
-      <button class="primary" onclick="trackerOk()">Понятно</button>
+      <button class="secondary" id="tracker-learn-btn">Подробнее</button>
+      <button class="primary"   id="tracker-ok-btn">Понятно</button>
     </div>
   </div>
 </div>
@@ -795,7 +796,7 @@ fetch('data.json', { cache: 'no-cache' })
 <!-- Social subscribe widget -->
 <div id="social-widget" aria-hidden="true">
   <div class="notebook" role="dialog" aria-label="Подписка на MAX">
-    <button class="minimize" aria-label="Свернуть" title="Свернуть" onclick="socialMinimize()">✕</button>
+    <button class="minimize" id="social-minimize-btn" aria-label="Свернуть" title="Свернуть">✕</button>
     <div class="lines" aria-hidden="true"></div>
     <h3>🔥 Свежие новости Ярославля</h3>
     <p>Подпишитесь, чтобы быть  в курсе событий!</p>
@@ -806,28 +807,29 @@ fetch('data.json', { cache: 'no-cache' })
 </div>
 
 <!-- Мини-иконка (появляется после сворачивания соцвиджета) -->
-<button id="social-mini" aria-label="Свежие новости Ярославля" title="Свежие новости Ярославля" onclick="socialRestore()">
+<button id="social-mini" aria-label="Свежие новости Ярославля" title="Свежие новости Ярославля">
   🔔
 </button>
 
 <script>
+// FIX[Medium]: все функции виджетов теперь локальны внутри IIFE,
+// window.* не загрязняется. onclick-атрибуты заменены на addEventListener.
 (function () {
-  var tracker    = document.getElementById('tracker-widget');
-  var social     = document.getElementById('social-widget');
-  var mini       = document.getElementById('social-mini');
-  var TRACKER_KEY = 'gvs_tracker_hidden_v1';
-  var SOCIAL_KEY  = 'gvs_social_hidden_v1';
-
+  const tracker    = document.getElementById('tracker-widget');
+  const social     = document.getElementById('social-widget');
+  const mini       = document.getElementById('social-mini');
+  const TRACKER_KEY = 'gvs_tracker_hidden_v1';
+  const SOCIAL_KEY  = 'gvs_social_hidden_v1';
 
   function updatePositions() {
     if (window.innerWidth <= 640) return;
 
-    var trackerVisible = tracker.style.display !== 'none';
-    var gap            = 12; // px между виджетами
-    var base           = 20; // отступ от низа
+    const trackerVisible = tracker.style.display !== 'none';
+    const gap            = 12;
+    const base           = 20;
 
     if (trackerVisible) {
-      var trackerH = tracker.offsetHeight;
+      const trackerH = tracker.offsetHeight;
       social.style.bottom = (base + trackerH + gap) + 'px';
       mini.style.bottom   = (base + trackerH + gap) + 'px';
     } else {
@@ -836,7 +838,6 @@ fetch('data.json', { cache: 'no-cache' })
     }
   }
 
-  // ── Показ виджетов ────────────────────────────────────────────────────
   function showTracker() {
     if (localStorage.getItem(TRACKER_KEY) === 'hidden') return;
     tracker.style.display = 'block';
@@ -873,34 +874,30 @@ fetch('data.json', { cache: 'no-cache' })
     }, 220);
   }
 
-  // ── Действия трекера ──────────────────────────────────────────────────
-  window.trackerOk = function () {
+  function trackerOk() {
     tracker.classList.remove('show');
     tracker.style.display = 'none';
     tracker.setAttribute('aria-hidden', 'true');
     localStorage.setItem(TRACKER_KEY, 'hidden');
     updatePositions();
-  };
+  }
 
-  window.trackerMinimize = window.trackerOk;
-
-  window.trackerLearn = function () {
+  function trackerLearn() {
     window.open(
       'https://yandex.ru/legal/metrica_termsofuse/ru/#5-personalnye-dannye-i-konfidencialnost',
       '_blank'
     );
-  };
+  }
 
-  // ── Действия соцвиджета ───────────────────────────────────────────────
-  window.socialMinimize = function () {
+  function socialMinimize() {
     social.classList.remove('show');
     social.style.display = 'none';
     social.setAttribute('aria-hidden', 'true');
     localStorage.setItem(SOCIAL_KEY, 'hidden');
     showMini();
-  };
+  }
 
-  window.socialRestore = function () {
+  function socialRestore() {
     localStorage.removeItem(SOCIAL_KEY);
     hideMini();
     updatePositions();
@@ -909,12 +906,18 @@ fetch('data.json', { cache: 'no-cache' })
       social.classList.add('show');
       social.setAttribute('aria-hidden', 'false');
     });
-  };
+  }
 
-  // ── Инициализация при загрузке ────────────────────────────────────────
+  // FIX[Medium]: addEventListener вместо onclick-атрибутов
+  document.getElementById('tracker-minimize-btn').addEventListener('click', trackerOk);
+  document.getElementById('tracker-learn-btn').addEventListener('click', trackerLearn);
+  document.getElementById('tracker-ok-btn').addEventListener('click', trackerOk);
+  document.getElementById('social-minimize-btn').addEventListener('click', socialMinimize);
+  mini.addEventListener('click', socialRestore);
+
   window.addEventListener('load', function () {
-    var trackerHidden = localStorage.getItem(TRACKER_KEY) === 'hidden';
-    var socialHidden  = localStorage.getItem(SOCIAL_KEY) === 'hidden';
+    const trackerHidden = localStorage.getItem(TRACKER_KEY) === 'hidden';
+    const socialHidden  = localStorage.getItem(SOCIAL_KEY) === 'hidden';
 
     if (!trackerHidden) {
       setTimeout(showTracker, 2500);
