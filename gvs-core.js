@@ -63,20 +63,30 @@ const GVS = (() => {
     return _safeDate(+m[3], +m[2] - 1, +m[1]);
   }
 
-  // ─── Парсинг периода «dd.mm.yyyy[-dd.mm.yyyy]» → {start, end} ──
+  // ─── Парсинг периода dd.mm.yyyy[-dd.mm.yyyy] ──
+
   function parsePeriod(rangeStr, onStr) {
     if (!isDateValue(rangeStr)) return null;
     const clean = String(rangeStr).replace(/\.{2,}/g, '.').trim();
     let start = null, end2 = null;
 
-    // 1. dd.mm.yyyy-dd.mm.yyyy  (нормализованный, 4-значный год)
-    let m = clean.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})[-–](\d{1,2})\.(\d{1,2})\.(\d{4})/);
+    // 1. dd.mm.yyyy-dd.mm.yyyy
+    let m = clean.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})[-\u2013](\d{1,2})\.(\d{1,2})\.(\d{4})/);
     if (m) {
       start = _safeDate(+m[3], +m[2] - 1, +m[1]);
       end2  = _safeDate(+m[6], +m[5] - 1, +m[4]);
     }
 
-    // 2. dd.mm-dd.mm.yyyy  (год только у второй части)
+    // 2. dd.mm.yy-dd.mm.yy
+    if (!start) {
+      m = clean.match(/^(\d{1,2})\.(\d{1,2})\.(\d{2})[-\u2013](\d{1,2})\.(\d{1,2})\.(\d{2})$/);
+      if (m) {
+        start = _safeDate(+m[3], +m[2] - 1, +m[1]);
+        end2  = _safeDate(+m[6], +m[5] - 1, +m[4]);
+      }
+    }
+
+    // 3. dd.mm-dd.mm.yyyy
     if (!start) {
       m = clean.match(/^(\d{1,2})\.(\d{1,2})-(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
       if (m) {
@@ -85,7 +95,7 @@ const GVS = (() => {
       }
     }
 
-    // 3. dd-dd.mm.yyyy  (два дня одного месяца)
+    // 4. dd-dd.mm.yyyy
     if (!start) {
       m = clean.match(/^(\d{1,2})-(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
       if (m) {
@@ -94,7 +104,7 @@ const GVS = (() => {
       }
     }
 
-    // 4. Одиночная дата
+    // 5. Одиночная дата
     if (!start) start = _parseOneDate(clean);
     if (!start) return null;
 
@@ -146,6 +156,21 @@ const GVS = (() => {
     return 'normal';
   }
 
+  // ─── Тип активного периода
+  function getActivePeriodType(d, today) {
+    if (!today) today = makeToday();
+    const checks = [
+      { key: 'repair', val: d.repair, on: d.repair_on },
+      { key: 'hydro1', val: d.hydro1, on: d.hydro1_on },
+      { key: 'hydro2', val: d.hydro2, on: d.hydro2_on },
+    ];
+    for (const c of checks) {
+      const p = parsePeriod(c.val, c.on);
+      if (p && today >= p.start && today <= p.end) return c.key;
+    }
+    return null;
+  }
+
   // ─── Цвет маркера для карты ──────────────────────────────────
   const _COLOR_BY_TYPE = {
     repair: '#e85d2f',
@@ -175,11 +200,9 @@ const GVS = (() => {
       parsePeriod(r.hydro2, r.hydro2_on),
     ]).filter(Boolean);
     if (all.length > 0 && all.every(p => p.end < today)) return '#3fb950';
-
-    // Будущие — по приоритету типа
     if (records.some(r => { const p = parsePeriod(r.repair, r.repair_on); return p && p.start > today; }))  return _COLOR_BY_TYPE.repair;
-    if (records.some(r => { const p = parsePeriod(r.hydro2, r.hydro2_on); return p && p.start > today; })) return _COLOR_BY_TYPE.hydro2;
     if (records.some(r => { const p = parsePeriod(r.hydro1, r.hydro1_on); return p && p.start > today; })) return _COLOR_BY_TYPE.hydro1;
+    if (records.some(r => { const p = parsePeriod(r.hydro2, r.hydro2_on); return p && p.start > today; })) return _COLOR_BY_TYPE.hydro2;
     return '#7d8590';
   }
 
@@ -194,6 +217,7 @@ const GVS = (() => {
     parsePeriod,
     getDaysInfo,
     getStatus,
+    getActivePeriodType,
     getMapColor,
   };
 })();

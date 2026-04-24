@@ -303,7 +303,3 @@ html.light {
 @media (max-width: 360px) {
   .notebook { padding: 16px 16px 24px; }
 }
-
-html.light .period-item.hydro2 {
-  border-left-color: var(--blue);
-}

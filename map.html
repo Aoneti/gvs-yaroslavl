@@ -17,7 +17,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
-
 <link  rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
        crossorigin="anonymous"/>
 <link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
@@ -157,6 +156,19 @@
   .popup-on { color:var(--success); font-size:11px; }
   .popup-note { color:var(--muted); font-style:italic; font-size:11px; }
 
+  .popup-approx-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 6px 10px;
+    background: rgba(210,153,34,0.12);
+    border: 1px solid rgba(210,153,34,0.3);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--warn);
+  }
+
   .sheet-handle { display:none; justify-content:center; align-items:center; height:22px; cursor:ns-resize; flex-shrink:0; touch-action:none; }
   .sheet-handle::after { content:''; width:36px; height:4px; border-radius:2px; background:var(--border); }
 
@@ -239,12 +251,14 @@
         integrity="sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr"
         crossorigin="anonymous"></script>
 <script>
+'use strict';
+
 // ─── Константы ───────────────────────────────────────────────────────────
-const MAP_CENTER       = [57.6261, 39.8845];
-const MAP_ZOOM_DEFAULT = 12;
-const MAP_ZOOM_FOCUS   = 16;
-const CLUSTER_RADIUS   = 50;
-const MAX_LIST_ITEMS   = 200;
+var MAP_CENTER       = [57.6261, 39.8845];
+var MAP_ZOOM_DEFAULT = 12;
+var MAP_ZOOM_FOCUS   = 16;
+var CLUSTER_RADIUS   = 50;
+var MAX_LIST_ITEMS   = 200;
 
 // ─── normKey ─────────────────────────────────────────────────────────────
 function normKey(s) {
@@ -253,7 +267,7 @@ function normKey(s) {
 
 // ─── Склонение «адрес» ───────────────────────────────────────────────────
 function pluralAddr(n) {
-  const mod10 = n % 10, mod100 = n % 100;
+  var mod10 = n % 10, mod100 = n % 100;
   if (mod100 >= 11 && mod100 <= 19) return n + ' адресов';
   if (mod10 === 1)                   return n + ' адрес';
   if (mod10 >= 2 && mod10 <= 4)      return n + ' адреса';
@@ -261,7 +275,7 @@ function pluralAddr(n) {
 }
 
 // ─── Карта ───────────────────────────────────────────────────────────────
-const map = L.map('map', {
+var map = L.map('map', {
   center: MAP_CENTER,
   zoom: MAP_ZOOM_DEFAULT,
   attributionControl: true,
@@ -269,22 +283,39 @@ const map = L.map('map', {
 map.zoomControl.setPosition('bottomleft');
 map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© <a href="https://www.openstreetmap.org/copyright" style="color:#7d8590">OpenStreetMap</a>',
   maxZoom: 19,
 }).addTo(map);
 
+(function() {
+  var errorShown = false;
+  tileLayer.on('tileerror', function() {
+    if (errorShown) return;
+    errorShown = true;
+    var toast = document.createElement('div');
+    toast.style.cssText =
+      'position:fixed;top:60px;left:50%;transform:translateX(-50%);' +
+      'background:var(--surface);border:1px solid var(--border);color:var(--text);' +
+      'padding:8px 18px;border-radius:8px;font-size:13px;z-index:9999;' +
+      'box-shadow:0 4px 16px rgba(0,0,0,.4);white-space:nowrap;';
+    toast.textContent = '⚠️ Не удалось загрузить карту — проверьте соединение';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 5000);
+  });
+})();
+
 // ─── Кластерный слой ─────────────────────────────────────────────────────
-const clusterGroup = L.markerClusterGroup({
+var clusterGroup = L.markerClusterGroup({
   maxClusterRadius: CLUSTER_RADIUS,
   spiderfyOnMaxZoom: true,
   showCoverageOnHover: false,
   zoomToBoundsOnClick: true,
   iconCreateFunction: function(cluster) {
-    const color = getClusterColor(cluster.getAllChildMarkers());
-    const count = cluster.getChildCount();
+    var color = getClusterColor(cluster.getAllChildMarkers());
+    var count = cluster.getChildCount();
     return L.divIcon({
-      html: `<div style="background:${color};opacity:.82;width:34px;height:34px;border-radius:50%;border:2.5px solid #0d1117;box-shadow:0 2px 8px rgba(0,0,0,.55);line-height:30px;text-align:center;color:#fff;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;">${count}</div>`,
+      html: '<div style="background:' + color + ';opacity:.82;width:34px;height:34px;border-radius:50%;border:2.5px solid #0d1117;box-shadow:0 2px 8px rgba(0,0,0,.55);line-height:30px;text-align:center;color:#fff;font-family:\'Unbounded\',sans-serif;font-size:11px;font-weight:700;">' + count + '</div>',
       className: '',
       iconSize: [40, 40],
       iconAnchor: [20, 20],
@@ -293,31 +324,30 @@ const clusterGroup = L.markerClusterGroup({
 });
 map.addLayer(clusterGroup);
 
-let allPoints = [];
-let activeAddr = null;
+var allPoints = [];
+var activeAddr = null;
+var markerColorMap = new Map();
 
-const markerColorMap = new WeakMap();
-
-const escapeHtml = GVS.escapeHtml;
+var escapeHtml = GVS.escapeHtml;
 
 // ─── Цвет маркера ────────────────────────────────────────────────────────
 function makeIcon(color, approximate) {
-  const cls = approximate ? 'mc-dot approximate' : 'mc-dot';
+  var cls = approximate ? 'mc-dot approximate' : 'mc-dot';
   return L.divIcon({
     className: '',
-    html: `<div class="${cls}" style="background:${color}"></div>`,
+    html: '<div class="' + cls + '" style="background:' + color + '"></div>',
     iconSize: [18, 18],
     iconAnchor: [9, 9],
   });
 }
 
-const COLOR_PRIORITY = { '#e85d2f': 0, '#d29922': 1, '#58a6ff': 2, '#3fb950': 3, '#7d8590': 4 };
+var COLOR_PRIORITY = { '#e85d2f': 0, '#d29922': 1, '#58a6ff': 2, '#3fb950': 3, '#7d8590': 4 };
 
 function getClusterColor(children) {
-  let best = '#7d8590', bestRank = 99;
-  for (const m of children) {
-    const c = markerColorMap.get(m) || '#7d8590';
-    const rank = COLOR_PRIORITY[c] !== undefined ? COLOR_PRIORITY[c] : 99;
+  var best = '#7d8590', bestRank = 99;
+  for (var i = 0; i < children.length; i++) {
+    var c = markerColorMap.get(children[i]) || '#7d8590';
+    var rank = COLOR_PRIORITY[c] !== undefined ? COLOR_PRIORITY[c] : 99;
     if (rank < bestRank) { best = c; bestRank = rank; }
   }
   return best;
@@ -325,161 +355,188 @@ function getClusterColor(children) {
 
 // ─── Попап ───────────────────────────────────────────────────────────────
 function makePopup(pt) {
-  let rows = '';
-  for (const r of pt.records) {
-    const fields = [
+  var rows = '';
+  for (var i = 0; i < pt.records.length; i++) {
+    var r = pt.records[i];
+    var fields = [
       { key: 'repair', label: 'Ремонт',   on: r.repair_on },
       { key: 'hydro1', label: 'Гидро 1',  on: r.hydro1_on },
       { key: 'hydro2', label: 'Гидро 2',  on: r.hydro2_on },
     ];
-    for (const f of fields) {
-      const val = r[f.key];
+    for (var j = 0; j < fields.length; j++) {
+      var f = fields[j];
+      var val = r[f.key];
       if (!val) continue;
-      const content = GVS.isDateValue(val)
-        ? `<div class="popup-dates">${escapeHtml(val)}${f.on ? `<br><span class="popup-on">▲ вода с ${escapeHtml(f.on)}</span>` : ''}</div>`
-        : `<div class="popup-note">${escapeHtml(val)}</div>`;
-      rows += `<div class="popup-row"><div class="popup-badge ${f.key}">${f.label}</div>${content}</div>`;
+      var content = GVS.isDateValue(val)
+        ? '<div class="popup-dates">' + escapeHtml(val) + (f.on ? '<br><span class="popup-on">\u25b2 \u0432\u043e\u0434\u0430 \u0441 ' + escapeHtml(f.on) + '</span>' : '') + '</div>'
+        : '<div class="popup-note">' + escapeHtml(val) + '</div>';
+      rows += '<div class="popup-row"><div class="popup-badge ' + f.key + '">' + f.label + '</div>' + content + '</div>';
     }
   }
   if (!rows) rows = '<div class="popup-dates" style="color:var(--muted);font-style:italic">Нет данных</div>';
-  const approxBadge = pt.approximate
-    ? `<div style="margin-top:8px;font-size:11px;color:var(--muted);font-style:italic">` +
-      `📍 Координаты приблизительны</div>`
+
+  var approxBadge = pt.approximate
+    ? '<div class="popup-approx-badge">⚠️ Координаты приблизительны — маркер указывает на улицу, а не на конкретный дом</div>'
     : '';
-  return `<div class="popup-inner"><div class="popup-addr">${escapeHtml(pt.address)}</div>${rows}${approxBadge}</div>`;
+
+  return '<div class="popup-inner"><div class="popup-addr">' + escapeHtml(pt.address) + '</div>' + rows + approxBadge + '</div>';
 }
 
 // ─── Загрузка данных ─────────────────────────────────────────────────────
-async function loadData() {
+function loadData() {
 
-  const [dataRes, geoRes] = await Promise.all([
+  return Promise.all([
     fetch('data.json'),
     fetch('geo.json'),
-  ]);
+  ]).then(function(responses) {
+    if (!responses[0].ok) throw new Error('data.json: HTTP ' + responses[0].status);
+    if (!responses[1].ok) throw new Error('geo.json: HTTP ' + responses[1].status);
+    return Promise.all([responses[0].json(), responses[1].json()]);
+  }).then(function(results) {
+    var data  = results[0];
+    var geoDb = results[1];
 
-  if (!dataRes.ok) throw new Error(`data.json: HTTP ${dataRes.status}`);
-  if (!geoRes.ok)  throw new Error(`geo.json: HTTP ${geoRes.status}`);
-
-  const [data, geoDb] = await Promise.all([dataRes.json(), geoRes.json()]);
-
-  if (!geoDb || typeof geoDb !== 'object' || !Object.keys(geoDb).length) {
-    throw new Error('geo.json пустой или повреждён');
-  }
-
-  // normKey сортирует токены → порядконезависимый матчинг
-  const geoIdx = {};
-  for (const [k, v] of Object.entries(geoDb)) {
-    if (v && typeof v.lat === 'number' && typeof v.lng === 'number') {
-      geoIdx[normKey(k)] = v;
+    if (!geoDb || typeof geoDb !== 'object' || !Object.keys(geoDb).length) {
+      throw new Error('geo.json пустой или повреждён');
     }
-  }
 
-  // Группируем по адресу
-  const byAddr = {};
-  for (const item of data) {
-    if (!byAddr[item.address]) byAddr[item.address] = [];
-    byAddr[item.address].push(item);
-  }
+    // normKey сортирует токены → порядконезависимый матчинг
+    var geoIdx = {};
+    var entries = Object.entries(geoDb);
+    for (var i = 0; i < entries.length; i++) {
+      var k = entries[i][0], v = entries[i][1];
+      if (v && typeof v.lat === 'number' && typeof v.lng === 'number') {
+        geoIdx[normKey(k)] = v;
+      }
+    }
 
-  let matched = 0, missed = 0;
-  for (const [addr, records] of Object.entries(byAddr)) {
-    const geo = geoIdx[normKey(addr)];
-    if (!geo) { missed++; continue; }
-    matched++;
-    const color      = GVS.getMapColor(records);
-    const approximate = geo.approximate === true;
-    const pt = {
-      address: addr,
-      lat: geo.lat, lng: geo.lng,
-      records,
-      approximate,
-      _norm: GVS.normalizeQuery(addr).join(' '),
-    };
-    const marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color, approximate) });
+    // Группируем по адресу
+    var byAddr = {};
+    for (var d = 0; d < data.length; d++) {
+      var item = data[d];
+      if (!byAddr[item.address]) byAddr[item.address] = [];
+      byAddr[item.address].push(item);
+    }
 
-    markerColorMap.set(marker, color);
+    var today = GVS.makeToday();
 
-    marker.bindPopup(makePopup(pt), { maxWidth: 320 });
-    marker.on('click', () => selectAddr(pt.address));
-    pt._marker = marker;
-    allPoints.push(pt);
-  }
+    var matched = 0, missed = 0;
+    var addrEntries = Object.entries(byAddr);
+    for (var a = 0; a < addrEntries.length; a++) {
+      var addr    = addrEntries[a][0];
+      var records = addrEntries[a][1];
+      var geo = geoIdx[normKey(addr)];
+      if (!geo) { missed++; continue; }
+      matched++;
+      var color       = GVS.getMapColor(records, today);
+      var approximate = geo.approximate === true;
+      var pt = {
+        address: addr,
+        lat: geo.lat, lng: geo.lng,
+        records: records,
+        approximate: approximate,
+        _normTokens: GVS.normalizeQuery(addr),
+      };
+      var marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color, approximate) });
 
-  console.log(`[map] geo совпало: ${matched}, без координат: ${missed}`);
+      markerColorMap.set(marker, color);
 
-  const chip = document.getElementById('counterChip');
-  if (missed > 0) chip.title = `${missed} адресов не показаны (нет координат в geo.json)`;
+      marker.bindPopup(makePopup(pt), { maxWidth: 320 });
+      marker.on('click', (function(address) {
+        return function() { selectAddr(address); };
+      })(pt.address));
+      pt._marker = marker;
+      allPoints.push(pt);
+    }
 
-  renderAll();
+    console.log('[map] geo совпало: ' + matched + ', без координат: ' + missed);
+
+    var chip = document.getElementById('counterChip');
+    if (missed > 0) chip.title = missed + ' адресов не показаны (нет координат в geo.json)';
+
+    renderAll();
+  });
 }
 
 // ─── Состояние видимых маркеров для диффного обновления ──────────────────
-let _visibleSet = new Set();
+var _visibleSet = new Set();
 
-// ─── Рендер + ограничение списка ────────────
+// ─── Рендер + ограничение списка ─────────────────────────────────────────
 function renderAll() {
-  const tokens = GVS.normalizeQuery(document.getElementById('panelSearch').value);
-  const fRep   = document.getElementById('fRepair').checked;
-  const fH1    = document.getElementById('fHydro1').checked;
-  const fH2    = document.getElementById('fHydro2').checked;
+  var tokens = GVS.normalizeQuery(document.getElementById('panelSearch').value);
+  var fRep   = document.getElementById('fRepair').checked;
+  var fH1    = document.getElementById('fHydro1').checked;
+  var fH2    = document.getElementById('fHydro2').checked;
 
-  const visiblePts = [];
-  const fragment   = document.createDocumentFragment();
-  let   listCount  = 0;
+  var visiblePts = [];
+  var fragment   = document.createDocumentFragment();
+  var listCount  = 0;
 
-  for (const pt of allPoints) {
-    const matchSearch = !tokens.length || tokens.every(t => pt._norm.includes(t));
-    const hasRep = pt.records.some(r => GVS.isDateValue(r.repair));
-    const hasH1  = pt.records.some(r => GVS.isDateValue(r.hydro1));
-    const hasH2  = pt.records.some(r => GVS.isDateValue(r.hydro2));
-    const matchFilter = (fRep && hasRep) || (fH1 && hasH1) || (fH2 && hasH2);
+  for (var i = 0; i < allPoints.length; i++) {
+    var pt = allPoints[i];
+    var matchSearch = !tokens.length || tokens.every(function(t) {
+      return pt._normTokens.some(function(nt) {
+        return nt === t || nt.startsWith(t);
+      });
+    });
+
+    var hasRep = pt.records.some(function(r) { return GVS.isDateValue(r.repair); });
+    var hasH1  = pt.records.some(function(r) { return GVS.isDateValue(r.hydro1); });
+    var hasH2  = pt.records.some(function(r) { return GVS.isDateValue(r.hydro2); });
+    var matchFilter = (fRep && hasRep) || (fH1 && hasH1) || (fH2 && hasH2);
 
     if (!matchSearch || !matchFilter) continue;
 
     visiblePts.push(pt);
 
     if (listCount < MAX_LIST_ITEMS) {
-      const item = document.createElement('div');
+      var item = document.createElement('div');
       item.className = 'addr-item' + (pt.address === activeAddr ? ' active' : '');
       item.dataset.addr = pt.address;
-      item.innerHTML = `<div class="addr-street">${escapeHtml(pt.address)}${pt.approximate ? ' <span style="color:var(--muted);font-size:10px">~</span>' : ''}</div>
-        <div class="addr-dots">
-          ${hasRep ? '<div class="dot repair"></div>' : ''}
-          ${hasH1  ? '<div class="dot hydro1"></div>' : ''}
-          ${hasH2  ? '<div class="dot hydro2"></div>' : ''}
-        </div>`;
-      item.addEventListener('click', () => {
-        selectAddr(pt.address);
-        map.setView([pt.lat, pt.lng], MAP_ZOOM_FOCUS, { animate: true });
-        pt._marker && pt._marker.openPopup();
-      });
+      item.innerHTML =
+        '<div class="addr-street">' + escapeHtml(pt.address) +
+        (pt.approximate ? ' <span style="color:var(--muted);font-size:10px">~</span>' : '') +
+        '</div>' +
+        '<div class="addr-dots">' +
+          (hasRep ? '<div class="dot repair"></div>' : '') +
+          (hasH1  ? '<div class="dot hydro1"></div>' : '') +
+          (hasH2  ? '<div class="dot hydro2"></div>' : '') +
+        '</div>';
+      (function(capturedPt) {
+        item.addEventListener('click', function() {
+          selectAddr(capturedPt.address);
+          map.setView([capturedPt.lat, capturedPt.lng], MAP_ZOOM_FOCUS, { animate: true });
+          if (capturedPt._marker) capturedPt._marker.openPopup();
+        });
+      })(pt);
       fragment.appendChild(item);
       listCount++;
     }
   }
 
+  var visibleAddrs = new Set(visiblePts.map(function(p) { return p.address; }));
+  if (activeAddr && !visibleAddrs.has(activeAddr)) {
+    activeAddr = null;
+  }
+
   // Плашка с количеством скрытых адресов
   if (visiblePts.length > MAX_LIST_ITEMS) {
-    const overflow = document.createElement('div');
+    var overflow = document.createElement('div');
     overflow.className = 'addr-overflow';
-    overflow.textContent = `↑ и ещё ${visiblePts.length - MAX_LIST_ITEMS} — уточните поиск`;
+    overflow.textContent = '↑ и ещё ' + (visiblePts.length - MAX_LIST_ITEMS) + ' — уточните поиск';
     fragment.appendChild(overflow);
   }
 
-  const newSet = new Set(visiblePts.map(pt => pt._marker));
-  const toRemove = [];
-  const toAdd    = [];
-  for (const m of _visibleSet) {
-    if (!newSet.has(m)) toRemove.push(m);
-  }
-  for (const m of newSet) {
-    if (!_visibleSet.has(m)) toAdd.push(m);
-  }
+  var newSet = new Set(visiblePts.map(function(p) { return p._marker; }));
+  var toRemove = [];
+  var toAdd    = [];
+  _visibleSet.forEach(function(m) { if (!newSet.has(m)) toRemove.push(m); });
+  newSet.forEach(function(m) { if (!_visibleSet.has(m)) toAdd.push(m); });
   if (toRemove.length) clusterGroup.removeLayers(toRemove);
   if (toAdd.length)    clusterGroup.addLayers(toAdd);
   _visibleSet = newSet;
 
-  const listEl = document.getElementById('addrList');
+  var listEl = document.getElementById('addrList');
   listEl.innerHTML = '';
   if (visiblePts.length) {
     listEl.appendChild(fragment);
@@ -492,14 +549,14 @@ function renderAll() {
 
 function selectAddr(address) {
   activeAddr = address;
-  document.querySelectorAll('.addr-item').forEach(el => {
+  document.querySelectorAll('.addr-item').forEach(function(el) {
     el.classList.toggle('active', el.dataset.addr === address);
     if (el.dataset.addr === address) el.scrollIntoView({ block: 'nearest' });
   });
 }
 
 // ─── События ─────────────────────────────────────────────────────────────
-let _mapSearchDebounce;
+var _mapSearchDebounce;
 document.getElementById('panelSearch').addEventListener('input', function() {
   document.getElementById('searchClear').classList.toggle('vis', this.value.length > 0);
   clearTimeout(_mapSearchDebounce);
@@ -510,30 +567,30 @@ document.getElementById('searchClear').addEventListener('click', function() {
   this.classList.remove('vis');
   renderAll();
 });
-['fRepair', 'fHydro1', 'fHydro2'].forEach(id => {
+['fRepair', 'fHydro1', 'fHydro2'].forEach(function(id) {
   document.getElementById(id).addEventListener('change', renderAll);
 });
 
 // ─── Bottom sheet drag handle (только mobile) ────────────────────────────
 (function() {
-  const handle = document.getElementById('sheetHandle');
-  const panel  = handle.parentElement;
-  const SNAP_RATIOS = [0.30, 0.60, 0.85];
-  let dragging = false, startY = 0, startH = 0;
+  var handle = document.getElementById('sheetHandle');
+  var panel  = handle.parentElement;
+  var SNAP_RATIOS = [0.30, 0.60, 0.85];
+  var dragging = false, startY = 0, startH = 0;
 
   function isMobile() { return window.innerWidth <= 640; }
 
   function snapHeight(h) {
-    const vh    = window.innerHeight;
-    const snaps = SNAP_RATIOS.map(r => Math.round(vh * r));
-    return snaps.reduce((a, b) => Math.abs(b - h) < Math.abs(a - h) ? b : a);
+    var vh    = window.innerHeight;
+    var snaps = SNAP_RATIOS.map(function(r) { return Math.round(vh * r); });
+    return snaps.reduce(function(a, b) { return Math.abs(b - h) < Math.abs(a - h) ? b : a; });
   }
 
   function onMove(e) {
     if (!dragging) return;
     if (e.cancelable) e.preventDefault();
-    const y    = e.touches ? e.touches[0].clientY : e.clientY;
-    const newH = startH - (y - startY);
+    var y    = e.touches ? e.touches[0].clientY : e.clientY;
+    var newH = startH - (y - startY);
     panel.style.height = Math.min(Math.max(newH, 80), window.innerHeight * 0.88) + 'px';
     panel.style.transition = 'none';
   }
@@ -571,9 +628,9 @@ document.getElementById('searchClear').addEventListener('click', function() {
 })();
 
 // ─── Запуск ──────────────────────────────────────────────────────────────
-loadData().catch(err => {
+loadData().catch(function(err) {
   document.getElementById('addrList').innerHTML =
-    `<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.<br><small style="color:var(--muted)">${GVS.escapeHtml(err.message)}</small></div>`;
+    '<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.<br><small style="color:var(--muted)">' + GVS.escapeHtml(err.message) + '</small></div>';
   document.getElementById('counterChip').textContent = 'Ошибка';
   console.error('[map] loadData failed:', err);
 });

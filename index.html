@@ -321,6 +321,10 @@
     background: color-mix(in srgb, var(--surface2) 94%, var(--blue) 6%);
   }
 
+  html.light .period-item.hydro2 {
+    border-left-color: var(--blue);
+  }
+
   .period-item.period-active {
     border-left-width: 4px;
   }
@@ -446,10 +450,6 @@
     animation: pulse-active 2.5s ease-in-out infinite;
   }
 
-  html.light .period-item.hydro2 {
-    border-left-color: var(--blue);
-  }
-
   @media (max-width: 900px) {
     .periods-grid { grid-template-columns: repeat(2, 1fr); }
   }
@@ -516,38 +516,41 @@
 </div>
 
 <script>
+'use strict';
+
 // ─── Тема ───────────────────────────────────────────────────────────────
-document.getElementById('themeToggle').addEventListener('click', () => {
-  const isLight = document.documentElement.classList.toggle('light');
+document.getElementById('themeToggle').addEventListener('click', function() {
+  var isLight = document.documentElement.classList.toggle('light');
   try { localStorage.setItem('theme', isLight ? 'light' : 'dark'); } catch (e) {}
 });
 
 // ─── Состояние ──────────────────────────────────────────────────────────
-const PER_PAGE = GVS.PER_PAGE;
+var PER_PAGE = GVS.PER_PAGE;
 
-let DATA        = [];
-let filtered    = [];
-let currentPage = 1;
-let currentTokens = [];
+var DATA        = [];
+var filtered    = [];
+var currentPage = 1;
+var currentTokens = [];
 
 // ─── DOM ────────────────────────────────────────────────────────────────
-const searchInput  = document.getElementById('searchInput');
-const clearBtn     = document.getElementById('clearBtn');
-const resultsEl    = document.getElementById('results');
-const statsBar     = document.getElementById('statsBar');
-const foundCount   = document.getElementById('foundCount');
-const paginationEl = document.getElementById('pagination');
+var searchInput  = document.getElementById('searchInput');
+var clearBtn     = document.getElementById('clearBtn');
+var resultsEl    = document.getElementById('results');
+var statsBar     = document.getElementById('statsBar');
+var foundCount   = document.getElementById('foundCount');
+var paginationEl = document.getElementById('pagination');
 
 // ─── Подсветка совпадений ───────────────────────────────────────────────
 function hl(text, tokens) {
   if (!tokens || !tokens.length) return GVS.escapeHtml(text);
 
-  const ranges = [];
-  for (const token of tokens) {
+  var ranges = [];
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i];
     if (!token) continue;
-    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const re = new RegExp(escaped, 'gi');
-    let m;
+    var escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var re = new RegExp(escaped, 'gi');
+    var m;
     while ((m = re.exec(text)) !== null) {
       ranges.push([m.index, m.index + m[0].length]);
     }
@@ -555,16 +558,17 @@ function hl(text, tokens) {
 
   if (!ranges.length) return GVS.escapeHtml(text);
 
-  ranges.sort((a, b) => a[0] - b[0]);
-  const merged = [ranges[0]];
-  for (let i = 1; i < ranges.length; i++) {
-    const prev = merged[merged.length - 1];
-    if (ranges[i][0] <= prev[1]) prev[1] = Math.max(prev[1], ranges[i][1]);
-    else merged.push(ranges[i]);
+  ranges.sort(function(a, b) { return a[0] - b[0]; });
+  var merged = [ranges[0]];
+  for (var j = 1; j < ranges.length; j++) {
+    var prev = merged[merged.length - 1];
+    if (ranges[j][0] <= prev[1]) prev[1] = Math.max(prev[1], ranges[j][1]);
+    else merged.push(ranges[j]);
   }
 
-  let out = '', pos = 0;
-  for (const [start, end] of merged) {
+  var out = '', pos = 0;
+  for (var k = 0; k < merged.length; k++) {
+    var start = merged[k][0], end = merged[k][1];
     out += GVS.escapeHtml(text.slice(pos, start));
     out += '<mark>' + GVS.escapeHtml(text.slice(start, end)) + '</mark>';
     pos = end;
@@ -573,128 +577,114 @@ function hl(text, tokens) {
   return out;
 }
 
-function getActivePeriodType(d, today) {
-  const checks = [
-    { key: 'repair', val: d.repair, on: d.repair_on },
-    { key: 'hydro1', val: d.hydro1, on: d.hydro1_on },
-    { key: 'hydro2', val: d.hydro2, on: d.hydro2_on },
-  ];
-  for (const c of checks) {
-    const p = GVS.parsePeriod(c.val, c.on);
-    if (p && today >= p.start && today <= p.end) return c.key;
-  }
-  return null;
-}
-
 // ─── Рендер одного блока периода ──────────────
 function renderPeriodItem(type, label, rangeStr, onStr, isActive) {
   if (!rangeStr) return '';
-  const isDate = GVS.isDateValue(rangeStr);
-  const activeClass = isActive ? ' period-active' : '';
-  const inner = isDate
-    ? `<div class="period-dates">${GVS.escapeHtml(rangeStr)}</div>
-       ${onStr ? `<div class="period-on">▲ вода с ${GVS.escapeHtml(onStr)}</div>` : ''}`
-    : `<div class="period-note">${GVS.escapeHtml(rangeStr)}</div>`;
-  return `<div class="period-item ${type}${activeClass}">
-    <div class="period-label">${label}</div>
-    ${inner}
-  </div>`;
+  var isDate = GVS.isDateValue(rangeStr);
+  var activeClass = isActive ? ' period-active' : '';
+  var inner = isDate
+    ? '<div class="period-dates">' + GVS.escapeHtml(rangeStr) + '</div>' +
+      (onStr ? '<div class="period-on">\u25b2 \u0432\u043e\u0434\u0430 \u0441 ' + GVS.escapeHtml(onStr) + '</div>' : '')
+    : '<div class="period-note">' + GVS.escapeHtml(rangeStr) + '</div>';
+  return '<div class="period-item ' + type + activeClass + '">' +
+    '<div class="period-label">' + label + '</div>' +
+    inner +
+    '</div>';
 }
 
 // ─── Карточка адреса ─────────────────────────────────────────────────────
 function renderCard(d, tokens, today) {
-  const status          = GVS.getStatus(d, today);
-  const daysInfo        = GVS.getDaysInfo(d, today);
-  const activePeriodType = getActivePeriodType(d, today);
+  var status           = GVS.getStatus(d, today);
+  var daysInfo         = GVS.getDaysInfo(d, today);
+  var activePeriodType = GVS.getActivePeriodType(d, today);
 
-  let unifiedBadge = '';
+  var unifiedBadge = '';
   if (status === 'active' && daysInfo) {
-    const numLabel = daysInfo.days <= 0 ? 'сегодня'
-                   : daysInfo.days === 1 ? '1 день'
-                   : `${daysInfo.days} дн.`;
-    unifiedBadge = `<div class="status-block active">
-      <span class="status-num">${numLabel}</span>
-      <span class="status-label">Нет воды</span>
-    </div>`;
+    var numLabel = daysInfo.days <= 0 ? 'сегодня'
+                 : daysInfo.days === 1 ? '1 день'
+                 : daysInfo.days + ' дн.';
+    unifiedBadge = '<div class="status-block active">' +
+      '<span class="status-num">' + numLabel + '</span>' +
+      '<span class="status-label">Нет воды</span>' +
+      '</div>';
   } else if (status === 'soon' && daysInfo) {
-    const numLabel = daysInfo.days === 1 ? 'завтра' : `через ${daysInfo.days} дн.`;
-    unifiedBadge = `<div class="status-block soon">
-      <span class="status-num">${numLabel}</span>
-      <span class="status-label">Скоро</span>
-    </div>`;
+    var numLabelSoon = daysInfo.days === 1 ? 'завтра' : 'через ' + daysInfo.days + ' дн.';
+    unifiedBadge = '<div class="status-block soon">' +
+      '<span class="status-num">' + numLabelSoon + '</span>' +
+      '<span class="status-label">Скоро</span>' +
+      '</div>';
   } else if (status === 'past') {
-    unifiedBadge = `<div class="status-block past">
-      <span class="status-label">Завершено</span>
-    </div>`;
+    unifiedBadge = '<div class="status-block past">' +
+      '<span class="status-label">Завершено</span>' +
+      '</div>';
   }
 
-  const cardClass = status === 'active' ? ' status-active'
-                  : status === 'past'   ? ' status-past' : '';
+  var cardClass = status === 'active' ? ' status-active'
+                : status === 'past'   ? ' status-past' : '';
 
-  const periodsHtml = [
+  var periodsHtml = [
     renderPeriodItem('repair', 'Текущий ремонт',   d.repair,  d.repair_on,  activePeriodType === 'repair'),
     renderPeriodItem('hydro1', 'Гидроиспытания 1', d.hydro1,  d.hydro1_on,  activePeriodType === 'hydro1'),
     renderPeriodItem('hydro2', 'Гидроиспытания 2', d.hydro2,  d.hydro2_on,  activePeriodType === 'hydro2'),
   ].filter(Boolean).join('') || '<div class="period-empty">Нет данных о периодах</div>';
 
-  return `
-    <div class="result-card${cardClass}">
-      <div class="card-header">
-        <div class="address-badge">${hl(d.address, tokens)}</div>
-        ${unifiedBadge}
-      </div>
-      <div class="periods-grid">${periodsHtml}</div>
-      ${d.source ? `<div class="card-footer"><span class="source-tag">🏘️ ${GVS.escapeHtml(d.source)}</span></div>` : ''}
-    </div>`;
+  return '<div class="result-card' + cardClass + '">' +
+    '<div class="card-header">' +
+      '<div class="address-badge">' + hl(d.address, tokens) + '</div>' +
+      unifiedBadge +
+    '</div>' +
+    '<div class="periods-grid">' + periodsHtml + '</div>' +
+    (d.source ? '<div class="card-footer"><span class="source-tag">🏘️ ' + GVS.escapeHtml(d.source) + '</span></div>' : '') +
+    '</div>';
 }
 
 // ─── Рендер страницы результатов ────────────────────────────────────────
 function renderPage(tokens) {
-  const today = GVS.makeToday();
-  const start = (currentPage - 1) * PER_PAGE;
-  const page  = filtered.slice(start, start + PER_PAGE);
+  var today = GVS.makeToday();
+  var start = (currentPage - 1) * PER_PAGE;
+  var page  = filtered.slice(start, start + PER_PAGE);
 
   resultsEl.innerHTML = page.length
-    ? page.map(d => renderCard(d, tokens, today)).join('')
-    : `<div class="state-message">
-         <span class="emoji">🤔</span>
-         <h3>Ничего не найдено</h3>
-         <p>Попробуйте другое написание адреса</p>
-       </div>`;
+    ? page.map(function(d) { return renderCard(d, tokens, today); }).join('')
+    : '<div class="state-message">' +
+        '<span class="emoji">🤔</span>' +
+        '<h3>Ничего не найдено</h3>' +
+        '<p>Попробуйте другое написание адреса</p>' +
+      '</div>';
 
   renderPagination();
 }
 
 // ─── Пагинация ───────────────────────────────────────────────────────────
 function renderPagination() {
-  const total = Math.ceil(filtered.length / PER_PAGE);
+  var total = Math.ceil(filtered.length / PER_PAGE);
   if (total <= 1) { paginationEl.style.display = 'none'; return; }
 
   paginationEl.style.display = 'flex';
-  let pages = [];
+  var pages = [];
   if (total <= 7) {
-    pages = Array.from({length: total}, (_, i) => i + 1);
+    for (var i = 1; i <= total; i++) pages.push(i);
   } else {
     pages = [1];
     if (currentPage > 3) pages.push('…');
-    for (let p = Math.max(2, currentPage - 1); p <= Math.min(total - 1, currentPage + 1); p++) pages.push(p);
+    for (var p = Math.max(2, currentPage - 1); p <= Math.min(total - 1, currentPage + 1); p++) pages.push(p);
     if (currentPage < total - 2) pages.push('…');
     pages.push(total);
   }
 
-  let html = `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>← Назад</button>`;
-  pages.forEach(p => {
+  var html = '<button class="page-btn" data-page="' + (currentPage - 1) + '" ' + (currentPage === 1 ? 'disabled' : '') + '>← Назад</button>';
+  pages.forEach(function(p) {
     html += p === '…'
-      ? `<span class="page-info">…</span>`
-      : `<button class="page-btn ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`;
+      ? '<span class="page-info">…</span>'
+      : '<button class="page-btn ' + (p === currentPage ? 'active' : '') + '" data-page="' + p + '">' + p + '</button>';
   });
-  html += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === total ? 'disabled' : ''}>Вперёд →</button>`;
-  html += `<span class="page-info">${currentPage} / ${total}</span>`;
+  html += '<button class="page-btn" data-page="' + (currentPage + 1) + '" ' + (currentPage === total ? 'disabled' : '') + '>Вперёд →</button>';
+  html += '<span class="page-info">' + currentPage + ' / ' + total + '</span>';
   paginationEl.innerHTML = html;
 }
 
 function goPage(n) {
-  const total = Math.ceil(filtered.length / PER_PAGE);
+  var total = Math.ceil(filtered.length / PER_PAGE);
   currentPage = Math.max(1, Math.min(n, total));
   renderPage(currentTokens);
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -702,24 +692,31 @@ function goPage(n) {
 
 // ─── Поиск ───────────────────────────────────────────────────────────────
 function applySearch() {
-  const raw = searchInput.value.trim();
+  var raw = searchInput.value.trim();
   clearBtn.classList.toggle('visible', raw.length > 0);
 
   if (!raw) {
     currentTokens = [];
     filtered = [];
-    resultsEl.innerHTML = `<div class="state-message">
-      <span class="emoji">🏡</span>
-      <h3>Найдите свой адрес</h3>
-      <p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>
-    </div>`;
+    resultsEl.innerHTML = '<div class="state-message">' +
+      '<span class="emoji">🏡</span>' +
+      '<h3>Найдите свой адрес</h3>' +
+      '<p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>' +
+      '</div>';
     statsBar.style.display = 'none';
     paginationEl.style.display = 'none';
     return;
   }
 
   currentTokens = GVS.normalizeQuery(raw);
-  filtered = DATA.filter(d => currentTokens.every(token => d._norm.includes(token)));
+
+  filtered = DATA.filter(function(d) {
+    return currentTokens.every(function(token) {
+      return d._normTokens.some(function(t) {
+        return t === token || t.startsWith(token);
+      });
+    });
+  });
 
   currentPage = 1;
   statsBar.style.display = 'flex';
@@ -728,34 +725,34 @@ function applySearch() {
 }
 
 // ─── События ─────────────────────────────────────────────────────────────
-let _searchDebounce;
-searchInput.addEventListener('input', () => {
+var _searchDebounce;
+searchInput.addEventListener('input', function() {
   if (searchInput.value) hintsDropdown.classList.remove('open');
   else hintsDropdown.classList.add('open');
   clearTimeout(_searchDebounce);
   _searchDebounce = setTimeout(applySearch, 150);
 });
 
-paginationEl.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-page]');
+paginationEl.addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-page]');
   if (btn && !btn.disabled) goPage(+btn.dataset.page);
 });
 
-clearBtn.addEventListener('click', () => {
+clearBtn.addEventListener('click', function() {
   searchInput.value = '';
   applySearch();
   searchInput.focus();
 });
 
 // ─── Hints dropdown ──────────────────────────────────────────────────────
-const hintsDropdown = document.getElementById('hintsDropdown');
+var hintsDropdown = document.getElementById('hintsDropdown');
 function openHints()  { if (!searchInput.value) hintsDropdown.classList.add('open'); }
-function closeHints() { setTimeout(() => hintsDropdown.classList.remove('open'), 150); }
+function closeHints() { setTimeout(function() { hintsDropdown.classList.remove('open'); }, 150); }
 searchInput.addEventListener('focus', openHints);
 searchInput.addEventListener('blur',  closeHints);
 
-document.querySelectorAll('.hint').forEach(btn => {
-  btn.addEventListener('click', () => {
+document.querySelectorAll('.hint').forEach(function(btn) {
+  btn.addEventListener('click', function() {
     searchInput.value = btn.dataset.value || btn.textContent.trim();
     hintsDropdown.classList.remove('open');
     applySearch();
@@ -764,40 +761,41 @@ document.querySelectorAll('.hint').forEach(btn => {
 });
 
 // ─── Загрузка data.json ───────────────────────────────────────────────────
-resultsEl.innerHTML = `<div class="state-message">
-  <span class="emoji">⏳</span>
-  <h3>Загрузка данных…</h3>
-  <p>Подождите секунду</p>
-</div>`;
+resultsEl.innerHTML = '<div class="state-message">' +
+  '<span class="emoji">⏳</span>' +
+  '<h3>Загрузка данных…</h3>' +
+  '<p>Подождите секунду</p>' +
+  '</div>';
 
 fetch('data.json')
-  .then(r => {
+  .then(function(r) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   })
-  .then(json => {
-    DATA = json.map(d => ({
-      ...d,
-      _norm: GVS.normalizeQuery(d.address).join(' '),
-    }));
+  .then(function(json) {
+    DATA = json.map(function(d) {
+      return Object.assign({}, d, {
+        _normTokens: GVS.normalizeQuery(d.address),
+      });
+    });
 
     if (searchInput.value.trim()) {
       applySearch();
     } else {
-      resultsEl.innerHTML = `<div class="state-message">
-        <span class="emoji">🏡</span>
-        <h3>Найдите свой адрес</h3>
-        <p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>
-      </div>`;
+      resultsEl.innerHTML = '<div class="state-message">' +
+        '<span class="emoji">🏡</span>' +
+        '<h3>Найдите свой адрес</h3>' +
+        '<p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>' +
+        '</div>';
     }
   })
-  .catch(err => {
+  .catch(function(err) {
     console.error(err);
-    resultsEl.innerHTML = `<div class="state-message">
-      <span class="emoji">❌</span>
-      <h3>Не удалось загрузить данные</h3>
-      <p>Попробуйте обновить страницу</p>
-    </div>`;
+    resultsEl.innerHTML = '<div class="state-message">' +
+      '<span class="emoji">❌</span>' +
+      '<h3>Не удалось загрузить данные</h3>' +
+      '<p>Попробуйте обновить страницу</p>' +
+      '</div>';
   });
 </script>
 
@@ -838,22 +836,35 @@ fetch('data.json')
 </button>
 
 <script>
+'use strict';
+
 (function () {
-  const tracker    = document.getElementById('tracker-widget');
-  const social     = document.getElementById('social-widget');
-  const mini       = document.getElementById('social-mini');
-  const TRACKER_KEY = 'gvs_tracker_hidden_v1';
-  const SOCIAL_KEY  = 'gvs_social_hidden_v1';
+  var tracker    = document.getElementById('tracker-widget');
+  var social     = document.getElementById('social-widget');
+  var mini       = document.getElementById('social-mini');
+  var TRACKER_KEY = 'gvs_tracker_hidden_v1';
+  var SOCIAL_KEY  = 'gvs_social_hidden_v1';
+  var LS = {
+    get: function(key) {
+      try { return localStorage.getItem(key); } catch (e) { return null; }
+    },
+    set: function(key, val) {
+      try { localStorage.setItem(key, val); } catch (e) {}
+    },
+    remove: function(key) {
+      try { localStorage.removeItem(key); } catch (e) {}
+    },
+  };
 
   function updatePositions() {
     if (window.innerWidth <= 640) return;
 
-    const trackerVisible = tracker.style.display !== 'none';
-    const gap            = 12;
-    const base           = 20;
+    var trackerVisible = tracker.style.display !== 'none';
+    var gap            = 12;
+    var base           = 20;
 
     if (trackerVisible) {
-      const trackerH = tracker.offsetHeight;
+      var trackerH = tracker.offsetHeight;
       social.style.bottom = (base + trackerH + gap) + 'px';
       mini.style.bottom   = (base + trackerH + gap) + 'px';
     } else {
@@ -863,7 +874,7 @@ fetch('data.json')
   }
 
   function showTracker() {
-    if (localStorage.getItem(TRACKER_KEY) === 'hidden') return;
+    if (LS.get(TRACKER_KEY) === 'hidden') return;
     tracker.style.display = 'block';
     requestAnimationFrame(function () {
       updatePositions();
@@ -873,7 +884,7 @@ fetch('data.json')
   }
 
   function showSocial() {
-    if (localStorage.getItem(SOCIAL_KEY) === 'hidden') {
+    if (LS.get(SOCIAL_KEY) === 'hidden') {
       showMini();
       return;
     }
@@ -902,7 +913,7 @@ fetch('data.json')
     tracker.classList.remove('show');
     tracker.style.display = 'none';
     tracker.setAttribute('aria-hidden', 'true');
-    localStorage.setItem(TRACKER_KEY, 'hidden');
+    LS.set(TRACKER_KEY, 'hidden');
     updatePositions();
   }
 
@@ -917,12 +928,12 @@ fetch('data.json')
     social.classList.remove('show');
     social.style.display = 'none';
     social.setAttribute('aria-hidden', 'true');
-    localStorage.setItem(SOCIAL_KEY, 'hidden');
+    LS.set(SOCIAL_KEY, 'hidden');
     showMini();
   }
 
   function socialRestore() {
-    localStorage.removeItem(SOCIAL_KEY);
+    LS.remove(SOCIAL_KEY);
     hideMini();
     updatePositions();
     social.style.display = 'block';
@@ -939,8 +950,8 @@ fetch('data.json')
   mini.addEventListener('click', socialRestore);
 
   window.addEventListener('load', function () {
-    const trackerHidden = localStorage.getItem(TRACKER_KEY) === 'hidden';
-    const socialHidden  = localStorage.getItem(SOCIAL_KEY) === 'hidden';
+    var trackerHidden = LS.get(TRACKER_KEY) === 'hidden';
+    var socialHidden  = LS.get(SOCIAL_KEY) === 'hidden';
 
     if (!trackerHidden) {
       setTimeout(showTracker, 2500);
