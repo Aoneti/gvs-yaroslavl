@@ -12,6 +12,9 @@ const SHEET_SNAP_MEDIUM = 0.60;
 const SHEET_SNAP_LARGE  = 0.85;
 
 const FETCH_TIMEOUT_MS  = 12000;
+const FETCH_RETRY_COUNT = 3;
+const FETCH_RETRY_DELAY = 500;
+const MOBILE_BREAKPOINT = 640;
 
 // ─── Вспомогательная: fetch с таймаутом и retry ────────────────────────
 function fetchWithTimeout(url, timeoutMs, retryCount = 0) {
@@ -31,8 +34,8 @@ function fetchWithTimeout(url, timeoutMs, retryCount = 0) {
       }
       
       // Retry с exponential backoff
-      if (retryCount < GVS_CONFIG.FETCH_RETRY_COUNT) {
-        const delay = GVS_CONFIG.FETCH_RETRY_DELAY * Math.pow(2, retryCount);
+      if (retryCount < FETCH_RETRY_COUNT) {
+        const delay = FETCH_RETRY_DELAY * Math.pow(2, retryCount);
         console.warn(`[fetch] Попытка ${retryCount + 1} не удалась, повтор через ${delay}мс:`, url);
         return new Promise(resolve => setTimeout(resolve, delay))
           .then(() => fetchWithTimeout(url, timeoutMs, retryCount + 1));
@@ -363,7 +366,7 @@ document.getElementById('searchClear').addEventListener('click', () => {
   let dragging = false, startY = 0, startH = 0;
   let resizeTimeout = null;
 
-  function isMobile() { return window.innerWidth <= GVS_CONFIG.MOBILE_BREAKPOINT; }
+  function isMobile() { return window.innerWidth <= MOBILE_BREAKPOINT; }
 
   function snapHeight(h) {
     const vh    = window.innerHeight;
