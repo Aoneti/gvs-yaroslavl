@@ -53,8 +53,8 @@ const GVS = (() => {
     const a = new Date(dateA.getFullYear(), dateA.getMonth(), dateA.getDate());
     const b = new Date(dateB.getFullYear(), dateB.getMonth(), dateB.getDate());
     const diffMs = b - a;
-    // Округляем вниз для прошедших дней, вверх для будущих (исправлено: используем floor для консистентности)
-    return Math.floor(diffMs / 86400000);
+    // Округляем вниз для прошедших дней, вверх для будущих
+    return diffMs >= 0 ? Math.floor(diffMs / 86400000) : Math.ceil(diffMs / 86400000);
   }
 
   // ─── Безопасное создание даты с защитой от переполнения ──────
