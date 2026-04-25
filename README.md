@@ -39,11 +39,12 @@
 | `geocoder.ipynb` | Геокодирование адресов через Nominatim API → `geo.json` |
 
 ### Структура проекта
-	
+
 ```
 ├── index.html              # Главная страница
 ├── map.html                # Страница карты
 ├── styles.css              # Основные стили
+├── config.js               # Централизованная конфигурация приложения
 ├── gvs-core.js             # Общая бизнес-логика
 ├── app-index.js            # Логика главной страницы
 ├── app-map.js              # Логика карты
@@ -57,9 +58,8 @@
 ├── vendor/                 # Сторонние библиотеки
 │   ├── leaflet.js/css      # Leaflet
 │   └── leaflet.markercluster.js/css  # MarkerCluster
-└── scripts/                # Скрипты обработки данных
-├── convert.ipynb       # Конвертация данных
-└── geocoder.ipynb      # Геокодирование
+└── convert.ipynb           # Конвертация данных из Excel → data.json
+└── geocoder.ipynb          # Геокодирование адресов → geo.json
 ```
 
 ## Технологический стек

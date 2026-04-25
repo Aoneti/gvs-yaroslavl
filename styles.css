@@ -99,8 +99,20 @@ html.light {
   max-width: 300px;
   width: 300px;
   transform-origin: left bottom;
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
   transition: bottom 360ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* Принудительное применение шрифта Inter для цифр во всём приложении */
+body, .address-card, .status-badge, .date-range, .days-left, 
+.address-card h3, .address-card p, .leaflet-popup-content, 
+.leaflet-popup-content-wrapper, .leaflet-container {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial !important;
+}
+
+/* Красивые цифры с одинаковой шириной */
+.status-badge, .date-range, .days-left, .address-card .meta {
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 #social-widget { z-index: 9998; }
