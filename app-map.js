@@ -162,7 +162,7 @@ function makePopup(pt) {
   if (!rows) rows = '<div class="popup-dates" style="color:var(--muted);font-style:italic">Нет данных</div>';
 
   const approxBadge = pt.approximate
-    ? '<div class="popup-approx-badge">⚠️ Координаты приблизительны — маркер указывает на улицу, а не на конкретный дом</div>'
+    ? '<div class="popup-approx-badge">⚠️ Координаты приблизительны</div>'
     : '';
 
   return '<div class="popup-inner"><div class="popup-addr">' +
