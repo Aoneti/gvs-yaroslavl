@@ -3,40 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               script-src 'self' https://mc.yandex.ru;
+               style-src 'self';
+               font-src 'self';
+               img-src 'self' data: https://*.tile.openstreetmap.org https://mc.yandex.ru;
+               connect-src 'self' https://mc.yandex.ru https://*.tile.openstreetmap.org;
+               frame-src 'none';">
+
 <title>Карта отключений ГВС в Ярославле — 2026</title>
 <meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
 <meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
+<link rel="canonical" href="https://aoneti.github.io/gvs-yaroslavl/map.html">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
-<script>
-(function() {
-  try {
-    if (localStorage.getItem('theme') !== 'dark') document.documentElement.classList.add('light');
-  } catch (e) { /* localStorage недоступен — используем тёмную тему */ }
-})();
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
-<link  rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-       crossorigin="anonymous"/>
-<link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-       crossorigin="anonymous"/>
-<link  rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-       crossorigin="anonymous"/>
+<script src="theme-init.js"></script>
+<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="vendor/MarkerCluster.css">
+<link rel="stylesheet" href="vendor/MarkerCluster.Default.css">
 <link rel="stylesheet" href="styles.css">
-<script src="gvs-core.js"></script>
-
-<script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108168247', 'ym');
-
-    ym(108168247, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/108168247" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
 <style>
   :root      { --panel: 280px; }
@@ -46,44 +31,151 @@
   html.light .leaflet-container  { background: #e8e4dc; }
   html.light .leaflet-tile-pane  { filter: brightness(1.05) saturate(0.85); }
 
-  body { background:var(--bg); color:var(--text); font-family:'Golos Text',sans-serif; height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Golos Text', sans-serif;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
 
-  .topbar { display:flex; align-items:center; gap:12px; padding:10px 16px; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; z-index:1000; }
-  .back-btn { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:'Golos Text',sans-serif; font-size:14px; font-weight:500; padding:7px 14px; border-radius:8px; cursor:pointer; text-decoration:none; transition:border-color .2s,color .2s; white-space:nowrap; }
-  .back-btn:hover { border-color:var(--accent); color:var(--accent2); }
-  .topbar-title { font-family:'Unbounded',sans-serif; font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .topbar-title span { color:var(--accent); }
-  .topbar-sep { flex:1; }
-  .counter-chip { background:rgba(232,93,47,.15); border:1px solid rgba(232,93,47,.3); color:var(--accent2); font-size:12px; font-weight:600; padding:4px 10px; border-radius:20px; white-space:nowrap; cursor:default; }
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 1000;
+  }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Golos Text', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color .2s, color .2s;
+    white-space: nowrap;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent2); }
+  .topbar-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar-title span { color: var(--accent); }
+  .topbar-sep { flex: 1; }
+  .counter-chip {
+    background: rgba(232,93,47,.15);
+    border: 1px solid rgba(232,93,47,.3);
+    color: var(--accent2);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    cursor: default;
+  }
 
-  .main { display:flex; flex:1; overflow:hidden; }
-  .panel { width:var(--panel); flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
-  .panel-section { padding:14px 14px 10px; border-bottom:1px solid var(--border); }
-  .panel-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); margin-bottom:8px; }
-  .search-wrap { position:relative; }
-  .search-wrap input { width:100%; background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Golos Text',sans-serif; font-size:13px; padding:8px 32px 8px 10px; outline:none; transition:border-color .2s; }
-  .search-wrap input::placeholder { color:var(--muted); }
-  .search-wrap input:focus { border-color:var(--accent); }
-  .search-clear { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:13px; display:none; padding:2px; }
-  .search-clear.vis { display:block; }
-  .search-clear:hover { color:var(--accent2); }
-  .filters { display:flex; flex-direction:column; gap:6px; }
-  .filter-item { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; padding:4px 6px; border-radius:6px; transition:background .15s; }
-  .filter-item:hover { background:var(--surface2); }
-  .filter-item input[type=checkbox] { display:none; }
-  .filter-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; opacity:.35; transition:opacity .2s; }
-  .filter-item input:checked~.filter-dot { opacity:1; }
-  .filter-dot.repair { background:var(--accent); }
-  .filter-dot.hydro1 { background:var(--warn); }
-  .filter-dot.hydro2 { background:var(--blue); }
-  .filter-text { font-size:12px; color:var(--muted); transition:color .2s; }
-  .filter-item input:checked~.filter-dot+.filter-text { color:var(--text); }
+  .main { display: flex; flex: 1; overflow: hidden; }
+  .panel {
+    width: var(--panel);
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-section { padding: 14px 14px 10px; border-bottom: 1px solid var(--border); }
+  .panel-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .search-wrap { position: relative; }
+  .search-wrap input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Golos Text', sans-serif;
+    font-size: 13px;
+    padding: 8px 32px 8px 10px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    display: none;
+    padding: 2px;
+  }
+  .search-clear.vis { display: block; }
+  .search-clear:hover { color: var(--accent2); }
 
-  .addr-list { flex:1; overflow-y:auto; padding:8px; }
-  .addr-list::-webkit-scrollbar { width:4px; }
-  .addr-list::-webkit-scrollbar-track { background:transparent; }
-  .addr-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .filters { display: flex; flex-direction: column; gap: 6px; }
+  .filter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: background .15s;
+  }
+  .filter-item:hover { background: var(--surface2); }
+  .filter-item input[type=checkbox] { display: none; }
+  .filter-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    opacity: .35;
+    transition: opacity .2s;
+  }
+  .filter-item input:checked ~ .filter-dot { opacity: 1; }
+  .filter-dot.repair { background: var(--accent); }
+  .filter-dot.hydro1 { background: var(--warn); }
+  .filter-dot.hydro2 { background: var(--blue); }
+  .filter-text { font-size: 12px; color: var(--muted); transition: color .2s; }
+  .filter-item input:checked ~ .filter-dot + .filter-text { color: var(--text); }
 
+  .addr-list { flex: 1; overflow-y: auto; padding: 8px; }
+  .addr-list::-webkit-scrollbar { width: 4px; }
+  .addr-list::-webkit-scrollbar-track { background: transparent; }
+  .addr-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Skeleton loader */
   .sk-item {
     height: 52px;
     background: var(--surface2);
@@ -104,15 +196,22 @@
     to   { transform: translateX(100%); }
   }
 
-  .addr-item { padding:10px 10px; border-radius:8px; cursor:pointer; border:1px solid transparent; transition:all .15s; margin-bottom:5px; }
-  .addr-item:hover { background:var(--surface2); border-color:var(--border); }
-  .addr-item.active { background:rgba(232,93,47,.1); border-color:rgba(232,93,47,.4); }
-  .addr-street { font-size:14px; font-weight:600; color:var(--text); line-height:1.3; margin-bottom:5px; }
-  .addr-dots { display:flex; gap:5px; margin-top:5px; }
-  .dot { width:9px; height:9px; border-radius:2px; opacity:.8; }
-  .dot.repair { background:var(--accent); }
-  .dot.hydro1 { background:var(--warn); }
-  .dot.hydro2 { background:var(--blue); }
+  .addr-item {
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .15s;
+    margin-bottom: 5px;
+  }
+  .addr-item:hover { background: var(--surface2); border-color: var(--border); }
+  .addr-item.active { background: rgba(232,93,47,.1); border-color: rgba(232,93,47,.4); }
+  .addr-street { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 5px; }
+  .addr-dots { display: flex; gap: 5px; margin-top: 5px; }
+  .dot { width: 9px; height: 9px; border-radius: 2px; opacity: .8; }
+  .dot.repair { background: var(--accent); }
+  .dot.hydro1 { background: var(--warn); }
+  .dot.hydro2 { background: var(--blue); }
 
   .addr-overflow {
     text-align: center;
@@ -123,38 +222,74 @@
     margin-top: 4px;
   }
 
-  .empty-list { text-align:center; padding:30px 12px; color:var(--muted); font-size:13px; }
-  .empty-list .big { font-size:28px; display:block; margin-bottom:8px; }
+  .empty-list { text-align: center; padding: 30px 12px; color: var(--muted); font-size: 13px; }
+  .empty-list .big { font-size: 28px; display: block; margin-bottom: 8px; }
 
-  #map { flex:1; background:#0d1117; }
-  .leaflet-container { font-family:'Golos Text',sans-serif; background:#0d1117; }
-  .leaflet-tile-pane { filter:brightness(.82) saturate(.7) hue-rotate(5deg); }
+  #map { flex: 1; background: #0d1117; }
+  .leaflet-container { font-family: 'Golos Text', sans-serif; background: #0d1117; }
+  .leaflet-tile-pane { filter: brightness(.82) saturate(.7) hue-rotate(5deg); }
 
-  .leaflet-popup-content-wrapper { background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,.6); padding:0; color:var(--text); min-width:260px; max-width:320px; }
-  .leaflet-popup-tip-container { display:none; }
-  .leaflet-popup-content { margin:0; }
-  .leaflet-popup-close-button { color:var(--muted)!important; font-size:18px!important; top:10px!important; right:10px!important; }
-  .leaflet-popup-close-button:hover { color:var(--accent2)!important; }
+  .leaflet-popup-content-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6);
+    padding: 0;
+    color: var(--text);
+    min-width: 260px;
+    max-width: 320px;
+  }
+  .leaflet-popup-tip-container { display: none; }
+  .leaflet-popup-content { margin: 0; }
+  .leaflet-popup-close-button { color: var(--muted) !important; font-size: 18px !important; top: 10px !important; right: 10px !important; }
+  .leaflet-popup-close-button:hover { color: var(--accent2) !important; }
 
-  .mc-dot { width:18px; height:18px; border-radius:50%; border:2.5px solid var(--bg); box-shadow:0 2px 6px rgba(0,0,0,.5); cursor:pointer; transition:transform .15s; }
-  .mc-dot:hover { transform:scale(1.3); }
+  .mc-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2.5px solid var(--bg);
+    box-shadow: 0 2px 6px rgba(0,0,0,.5);
+    cursor: pointer;
+    transition: transform .15s;
+  }
+  .mc-dot:hover { transform: scale(1.3); }
   .mc-dot.approximate { border-style: dashed; opacity: 0.65; }
   .mc-dot.approximate:hover { opacity: 1; }
-  .marker-cluster,.marker-cluster div { background:transparent!important; }
-  .marker-cluster-small,.marker-cluster-medium,.marker-cluster-large { background:transparent!important; }
-  .marker-cluster-small div,.marker-cluster-medium div,.marker-cluster-large div { background:transparent!important; color:transparent!important; }
+  .marker-cluster, .marker-cluster div { background: transparent !important; }
+  .marker-cluster-small,
+  .marker-cluster-medium,
+  .marker-cluster-large { background: transparent !important; }
+  .marker-cluster-small div,
+  .marker-cluster-medium div,
+  .marker-cluster-large div { background: transparent !important; color: transparent !important; }
 
-  .popup-inner { padding:16px; }
-  .popup-addr { font-family:'Unbounded',sans-serif; font-size:13px; font-weight:700; line-height:1.3; margin-bottom:12px; }
-  .popup-row { display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; font-size:12px; }
-  .popup-row:last-child { margin-bottom:0; }
-  .popup-badge { flex-shrink:0; padding:2px 7px; border-radius:4px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-top:1px; }
-  .popup-badge.repair { background:rgba(232,93,47,.2); color:var(--accent2); }
-  .popup-badge.hydro1 { background:rgba(210,153,34,.2); color:var(--warn); }
-  .popup-badge.hydro2 { background:rgba(88,166,255,.2); color:var(--blue); }
-  .popup-dates { color:var(--text); line-height:1.5; }
-  .popup-on { color:var(--success); font-size:11px; }
-  .popup-note { color:var(--muted); font-style:italic; font-size:11px; }
+  .popup-inner { padding: 16px; }
+  .popup-addr {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .popup-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+  .popup-row:last-child { margin-bottom: 0; }
+  .popup-badge {
+    flex-shrink: 0;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-top: 1px;
+  }
+  .popup-badge.repair { background: rgba(232,93,47,.2);  color: var(--accent2); }
+  .popup-badge.hydro1 { background: rgba(210,153,34,.2); color: var(--warn); }
+  .popup-badge.hydro2 { background: rgba(88,166,255,.2); color: var(--blue); }
+  .popup-dates { color: var(--text); line-height: 1.5; }
+  .popup-on    { color: var(--success); font-size: 11px; }
+  .popup-note  { color: var(--muted); font-style: italic; font-size: 11px; }
 
   .popup-approx-badge {
     display: flex;
@@ -169,25 +304,62 @@
     color: var(--warn);
   }
 
-  .sheet-handle { display:none; justify-content:center; align-items:center; height:22px; cursor:ns-resize; flex-shrink:0; touch-action:none; }
-  .sheet-handle::after { content:''; width:36px; height:4px; border-radius:2px; background:var(--border); }
+  .sheet-handle {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 22px;
+    cursor: ns-resize;
+    flex-shrink: 0;
+    touch-action: none;
+  }
+  .sheet-handle::after {
+    content: '';
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+  }
 
-  @media(max-width:640px){
-    .main { flex-direction:column-reverse; }
-    .panel { width:100%; height:30dvh; min-height:110px; max-height:85dvh; border-right:none; border-top:1px solid var(--border); transition:height .3s ease; flex-shrink:0; }
-    .sheet-handle { display:flex; }
-    .topbar-title { font-size:11px; }
-    .panel-filters { display:block; padding:6px 10px; border-bottom:1px solid var(--border); }
-    .panel-filters .panel-label { display:none; }
-    .filters { flex-direction:row; overflow-x:auto; gap:6px; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px; }
-    .filters::-webkit-scrollbar { display:none; }
-    .filter-item { flex-shrink:0; border:1px solid var(--border); border-radius:20px; padding:5px 10px; background:var(--surface2); }
-    .filter-dot { width:8px; height:8px; }
-    .filter-text { font-size:12px; }
-    .search-wrap input { font-size:15px; padding:12px 36px 12px 12px; }
-    .search-clear { font-size:16px; right:10px; }
+  @media (max-width: 640px) {
+    .main { flex-direction: column-reverse; }
+    .panel {
+      width: 100%;
+      height: 30dvh;
+      min-height: 110px;
+      max-height: 85dvh;
+      border-right: none;
+      border-top: 1px solid var(--border);
+      transition: height .3s ease;
+      flex-shrink: 0;
+    }
+    .sheet-handle { display: flex; }
+    .topbar-title { font-size: 11px; }
+    .panel-filters { display: block; padding: 6px 10px; border-bottom: 1px solid var(--border); }
+    .panel-filters .panel-label { display: none; }
+    .filters {
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 6px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+    .filter-item {
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 10px;
+      background: var(--surface2);
+    }
+    .filter-dot { width: 8px; height: 8px; }
+    .filter-text { font-size: 12px; }
+    .search-wrap input { font-size: 15px; padding: 12px 36px 12px 12px; }
+    .search-clear { font-size: 16px; right: 10px; }
   }
 </style>
+
 </head>
 <body>
 
@@ -207,7 +379,7 @@
       <div class="search-wrap">
         <input type="text" id="panelSearch" placeholder="Улица, дом…" autocomplete="off" spellcheck="false"
                aria-label="Поиск по адресу на карте">
-        <button class="search-clear" id="searchClear" title="Очистить" aria-label="Очистить поле поиска">✕</button>
+        <button class="search-clear" id="searchClear" title="Очистить" aria-label="Очистить поле поиска" type="button">✕</button>
       </div>
     </div>
 
@@ -244,396 +416,14 @@
   <div id="map"></div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
-        crossorigin="anonymous"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
-        integrity="sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr"
-        crossorigin="anonymous"></script>
-<script>
-'use strict';
+<script src="vendor/leaflet.js"></script>
+<script src="vendor/leaflet.markercluster.js"></script>
+<script src="gvs-core.js"></script>
+<script src="app-map.js"></script>
 
-// ─── Константы ───────────────────────────────────────────────────────────
-var MAP_CENTER       = [57.6261, 39.8845];
-var MAP_ZOOM_DEFAULT = 12;
-var MAP_ZOOM_FOCUS   = 16;
-var CLUSTER_RADIUS   = 50;
-var MAX_LIST_ITEMS   = 200;
+<!-- Yandex Metrika -->
+<script src="analytics.js" async></script>
+<noscript><div><img src="https://mc.yandex.ru/watch/108168247" style="position:absolute; left:-9999px;" alt=""></div></noscript>
 
-// ─── normKey ─────────────────────────────────────────────────────────────
-function normKey(s) {
-  return GVS.normalizeQuery(s).sort().join(' ');
-}
-
-// ─── Склонение «адрес» ───────────────────────────────────────────────────
-function pluralAddr(n) {
-  var mod10 = n % 10, mod100 = n % 100;
-  if (mod100 >= 11 && mod100 <= 19) return n + ' адресов';
-  if (mod10 === 1)                   return n + ' адрес';
-  if (mod10 >= 2 && mod10 <= 4)      return n + ' адреса';
-  return n + ' адресов';
-}
-
-// ─── Карта ───────────────────────────────────────────────────────────────
-var map = L.map('map', {
-  center: MAP_CENTER,
-  zoom: MAP_ZOOM_DEFAULT,
-  attributionControl: true,
-});
-map.zoomControl.setPosition('bottomleft');
-map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
-
-var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© <a href="https://www.openstreetmap.org/copyright" style="color:#7d8590">OpenStreetMap</a>',
-  maxZoom: 19,
-}).addTo(map);
-
-(function() {
-  var errorShown = false;
-  tileLayer.on('tileerror', function() {
-    if (errorShown) return;
-    errorShown = true;
-    var toast = document.createElement('div');
-    toast.style.cssText =
-      'position:fixed;top:60px;left:50%;transform:translateX(-50%);' +
-      'background:var(--surface);border:1px solid var(--border);color:var(--text);' +
-      'padding:8px 18px;border-radius:8px;font-size:13px;z-index:9999;' +
-      'box-shadow:0 4px 16px rgba(0,0,0,.4);white-space:nowrap;';
-    toast.textContent = '⚠️ Не удалось загрузить карту — проверьте соединение';
-    document.body.appendChild(toast);
-    setTimeout(function() { toast.remove(); }, 5000);
-  });
-})();
-
-// ─── Кластерный слой ─────────────────────────────────────────────────────
-var clusterGroup = L.markerClusterGroup({
-  maxClusterRadius: CLUSTER_RADIUS,
-  spiderfyOnMaxZoom: true,
-  showCoverageOnHover: false,
-  zoomToBoundsOnClick: true,
-  iconCreateFunction: function(cluster) {
-    var color = getClusterColor(cluster.getAllChildMarkers());
-    var count = cluster.getChildCount();
-    return L.divIcon({
-      html: '<div style="background:' + color + ';opacity:.82;width:34px;height:34px;border-radius:50%;border:2.5px solid #0d1117;box-shadow:0 2px 8px rgba(0,0,0,.55);line-height:30px;text-align:center;color:#fff;font-family:\'Unbounded\',sans-serif;font-size:11px;font-weight:700;">' + count + '</div>',
-      className: '',
-      iconSize: [40, 40],
-      iconAnchor: [20, 20],
-    });
-  },
-});
-map.addLayer(clusterGroup);
-
-var allPoints = [];
-var activeAddr = null;
-var markerColorMap = new Map();
-
-var escapeHtml = GVS.escapeHtml;
-
-// ─── Цвет маркера ────────────────────────────────────────────────────────
-function makeIcon(color, approximate) {
-  var cls = approximate ? 'mc-dot approximate' : 'mc-dot';
-  return L.divIcon({
-    className: '',
-    html: '<div class="' + cls + '" style="background:' + color + '"></div>',
-    iconSize: [18, 18],
-    iconAnchor: [9, 9],
-  });
-}
-
-var COLOR_PRIORITY = { '#e85d2f': 0, '#d29922': 1, '#58a6ff': 2, '#3fb950': 3, '#7d8590': 4 };
-
-function getClusterColor(children) {
-  var best = '#7d8590', bestRank = 99;
-  for (var i = 0; i < children.length; i++) {
-    var c = markerColorMap.get(children[i]) || '#7d8590';
-    var rank = COLOR_PRIORITY[c] !== undefined ? COLOR_PRIORITY[c] : 99;
-    if (rank < bestRank) { best = c; bestRank = rank; }
-  }
-  return best;
-}
-
-// ─── Попап ───────────────────────────────────────────────────────────────
-function makePopup(pt) {
-  var rows = '';
-  for (var i = 0; i < pt.records.length; i++) {
-    var r = pt.records[i];
-    var fields = [
-      { key: 'repair', label: 'Ремонт',   on: r.repair_on },
-      { key: 'hydro1', label: 'Гидро 1',  on: r.hydro1_on },
-      { key: 'hydro2', label: 'Гидро 2',  on: r.hydro2_on },
-    ];
-    for (var j = 0; j < fields.length; j++) {
-      var f = fields[j];
-      var val = r[f.key];
-      if (!val) continue;
-      var content = GVS.isDateValue(val)
-        ? '<div class="popup-dates">' + escapeHtml(val) + (f.on ? '<br><span class="popup-on">\u25b2 \u0432\u043e\u0434\u0430 \u0441 ' + escapeHtml(f.on) + '</span>' : '') + '</div>'
-        : '<div class="popup-note">' + escapeHtml(val) + '</div>';
-      rows += '<div class="popup-row"><div class="popup-badge ' + f.key + '">' + f.label + '</div>' + content + '</div>';
-    }
-  }
-  if (!rows) rows = '<div class="popup-dates" style="color:var(--muted);font-style:italic">Нет данных</div>';
-
-  var approxBadge = pt.approximate
-    ? '<div class="popup-approx-badge">⚠️ Координаты приблизительны — маркер указывает на улицу, а не на конкретный дом</div>'
-    : '';
-
-  return '<div class="popup-inner"><div class="popup-addr">' + escapeHtml(pt.address) + '</div>' + rows + approxBadge + '</div>';
-}
-
-// ─── Загрузка данных ─────────────────────────────────────────────────────
-function loadData() {
-
-  return Promise.all([
-    fetch('data.json'),
-    fetch('geo.json'),
-  ]).then(function(responses) {
-    if (!responses[0].ok) throw new Error('data.json: HTTP ' + responses[0].status);
-    if (!responses[1].ok) throw new Error('geo.json: HTTP ' + responses[1].status);
-    return Promise.all([responses[0].json(), responses[1].json()]);
-  }).then(function(results) {
-    var data  = results[0];
-    var geoDb = results[1];
-
-    if (!geoDb || typeof geoDb !== 'object' || !Object.keys(geoDb).length) {
-      throw new Error('geo.json пустой или повреждён');
-    }
-
-    // normKey сортирует токены → порядконезависимый матчинг
-    var geoIdx = {};
-    var entries = Object.entries(geoDb);
-    for (var i = 0; i < entries.length; i++) {
-      var k = entries[i][0], v = entries[i][1];
-      if (v && typeof v.lat === 'number' && typeof v.lng === 'number') {
-        geoIdx[normKey(k)] = v;
-      }
-    }
-
-    // Группируем по адресу
-    var byAddr = {};
-    for (var d = 0; d < data.length; d++) {
-      var item = data[d];
-      if (!byAddr[item.address]) byAddr[item.address] = [];
-      byAddr[item.address].push(item);
-    }
-
-    var today = GVS.makeToday();
-
-    var matched = 0, missed = 0;
-    var addrEntries = Object.entries(byAddr);
-    for (var a = 0; a < addrEntries.length; a++) {
-      var addr    = addrEntries[a][0];
-      var records = addrEntries[a][1];
-      var geo = geoIdx[normKey(addr)];
-      if (!geo) { missed++; continue; }
-      matched++;
-      var color       = GVS.getMapColor(records, today);
-      var approximate = geo.approximate === true;
-      var pt = {
-        address: addr,
-        lat: geo.lat, lng: geo.lng,
-        records: records,
-        approximate: approximate,
-        _normTokens: GVS.normalizeQuery(addr),
-      };
-      var marker = L.marker([pt.lat, pt.lng], { icon: makeIcon(color, approximate) });
-
-      markerColorMap.set(marker, color);
-
-      marker.bindPopup(makePopup(pt), { maxWidth: 320 });
-      marker.on('click', (function(address) {
-        return function() { selectAddr(address); };
-      })(pt.address));
-      pt._marker = marker;
-      allPoints.push(pt);
-    }
-
-    console.log('[map] geo совпало: ' + matched + ', без координат: ' + missed);
-
-    var chip = document.getElementById('counterChip');
-    if (missed > 0) chip.title = missed + ' адресов не показаны (нет координат в geo.json)';
-
-    renderAll();
-  });
-}
-
-// ─── Состояние видимых маркеров для диффного обновления ──────────────────
-var _visibleSet = new Set();
-
-// ─── Рендер + ограничение списка ─────────────────────────────────────────
-function renderAll() {
-  var tokens = GVS.normalizeQuery(document.getElementById('panelSearch').value);
-  var fRep   = document.getElementById('fRepair').checked;
-  var fH1    = document.getElementById('fHydro1').checked;
-  var fH2    = document.getElementById('fHydro2').checked;
-
-  var visiblePts = [];
-  var fragment   = document.createDocumentFragment();
-  var listCount  = 0;
-
-  for (var i = 0; i < allPoints.length; i++) {
-    var pt = allPoints[i];
-    var matchSearch = !tokens.length || tokens.every(function(t) {
-      return pt._normTokens.some(function(nt) {
-        return nt === t || nt.startsWith(t);
-      });
-    });
-
-    var hasRep = pt.records.some(function(r) { return GVS.isDateValue(r.repair); });
-    var hasH1  = pt.records.some(function(r) { return GVS.isDateValue(r.hydro1); });
-    var hasH2  = pt.records.some(function(r) { return GVS.isDateValue(r.hydro2); });
-    var matchFilter = (fRep && hasRep) || (fH1 && hasH1) || (fH2 && hasH2);
-
-    if (!matchSearch || !matchFilter) continue;
-
-    visiblePts.push(pt);
-
-    if (listCount < MAX_LIST_ITEMS) {
-      var item = document.createElement('div');
-      item.className = 'addr-item' + (pt.address === activeAddr ? ' active' : '');
-      item.dataset.addr = pt.address;
-      item.innerHTML =
-        '<div class="addr-street">' + escapeHtml(pt.address) +
-        (pt.approximate ? ' <span style="color:var(--muted);font-size:10px">~</span>' : '') +
-        '</div>' +
-        '<div class="addr-dots">' +
-          (hasRep ? '<div class="dot repair"></div>' : '') +
-          (hasH1  ? '<div class="dot hydro1"></div>' : '') +
-          (hasH2  ? '<div class="dot hydro2"></div>' : '') +
-        '</div>';
-      (function(capturedPt) {
-        item.addEventListener('click', function() {
-          selectAddr(capturedPt.address);
-          map.setView([capturedPt.lat, capturedPt.lng], MAP_ZOOM_FOCUS, { animate: true });
-          if (capturedPt._marker) capturedPt._marker.openPopup();
-        });
-      })(pt);
-      fragment.appendChild(item);
-      listCount++;
-    }
-  }
-
-  var visibleAddrs = new Set(visiblePts.map(function(p) { return p.address; }));
-  if (activeAddr && !visibleAddrs.has(activeAddr)) {
-    activeAddr = null;
-  }
-
-  // Плашка с количеством скрытых адресов
-  if (visiblePts.length > MAX_LIST_ITEMS) {
-    var overflow = document.createElement('div');
-    overflow.className = 'addr-overflow';
-    overflow.textContent = '↑ и ещё ' + (visiblePts.length - MAX_LIST_ITEMS) + ' — уточните поиск';
-    fragment.appendChild(overflow);
-  }
-
-  var newSet = new Set(visiblePts.map(function(p) { return p._marker; }));
-  var toRemove = [];
-  var toAdd    = [];
-  _visibleSet.forEach(function(m) { if (!newSet.has(m)) toRemove.push(m); });
-  newSet.forEach(function(m) { if (!_visibleSet.has(m)) toAdd.push(m); });
-  if (toRemove.length) clusterGroup.removeLayers(toRemove);
-  if (toAdd.length)    clusterGroup.addLayers(toAdd);
-  _visibleSet = newSet;
-
-  var listEl = document.getElementById('addrList');
-  listEl.innerHTML = '';
-  if (visiblePts.length) {
-    listEl.appendChild(fragment);
-  } else {
-    listEl.innerHTML = '<div class="empty-list"><span class="big">🔍</span>Ничего не найдено. Попробуйте другое написание или воспользуйтесь основным поиском</div>';
-  }
-
-  document.getElementById('counterChip').textContent = pluralAddr(visiblePts.length);
-}
-
-function selectAddr(address) {
-  activeAddr = address;
-  document.querySelectorAll('.addr-item').forEach(function(el) {
-    el.classList.toggle('active', el.dataset.addr === address);
-    if (el.dataset.addr === address) el.scrollIntoView({ block: 'nearest' });
-  });
-}
-
-// ─── События ─────────────────────────────────────────────────────────────
-var _mapSearchDebounce;
-document.getElementById('panelSearch').addEventListener('input', function() {
-  document.getElementById('searchClear').classList.toggle('vis', this.value.length > 0);
-  clearTimeout(_mapSearchDebounce);
-  _mapSearchDebounce = setTimeout(renderAll, 150);
-});
-document.getElementById('searchClear').addEventListener('click', function() {
-  document.getElementById('panelSearch').value = '';
-  this.classList.remove('vis');
-  renderAll();
-});
-['fRepair', 'fHydro1', 'fHydro2'].forEach(function(id) {
-  document.getElementById(id).addEventListener('change', renderAll);
-});
-
-// ─── Bottom sheet drag handle (только mobile) ────────────────────────────
-(function() {
-  var handle = document.getElementById('sheetHandle');
-  var panel  = handle.parentElement;
-  var SNAP_RATIOS = [0.30, 0.60, 0.85];
-  var dragging = false, startY = 0, startH = 0;
-
-  function isMobile() { return window.innerWidth <= 640; }
-
-  function snapHeight(h) {
-    var vh    = window.innerHeight;
-    var snaps = SNAP_RATIOS.map(function(r) { return Math.round(vh * r); });
-    return snaps.reduce(function(a, b) { return Math.abs(b - h) < Math.abs(a - h) ? b : a; });
-  }
-
-  function onMove(e) {
-    if (!dragging) return;
-    if (e.cancelable) e.preventDefault();
-    var y    = e.touches ? e.touches[0].clientY : e.clientY;
-    var newH = startH - (y - startY);
-    panel.style.height = Math.min(Math.max(newH, 80), window.innerHeight * 0.88) + 'px';
-    panel.style.transition = 'none';
-  }
-
-  function onEnd() {
-    if (!dragging) return;
-    dragging = false;
-    panel.style.transition = 'height .3s ease';
-    panel.style.height = snapHeight(panel.offsetHeight) + 'px';
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup',   onEnd);
-    document.removeEventListener('touchmove', onMove);
-    document.removeEventListener('touchend',  onEnd);
-  }
-
-  function onStart(e) {
-    if (!isMobile()) return;
-    dragging = true;
-    startY = e.touches ? e.touches[0].clientY : e.clientY;
-    startH = panel.offsetHeight;
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup',   onEnd);
-    document.addEventListener('touchmove', onMove, { passive: false });
-    document.addEventListener('touchend',  onEnd);
-  }
-
-  function initHeight() {
-    panel.style.height = isMobile() ? Math.round(window.innerHeight * SNAP_RATIOS[0]) + 'px' : '';
-  }
-
-  handle.addEventListener('mousedown',  onStart);
-  handle.addEventListener('touchstart', onStart, { passive: true });
-  window.addEventListener('resize', initHeight);
-  initHeight();
-})();
-
-// ─── Запуск ──────────────────────────────────────────────────────────────
-loadData().catch(function(err) {
-  document.getElementById('addrList').innerHTML =
-    '<div class="empty-list"><span class="big">⚠️</span>Ошибка загрузки данных.<br><small style="color:var(--muted)">' + GVS.escapeHtml(err.message) + '</small></div>';
-  document.getElementById('counterChip').textContent = 'Ошибка';
-  console.error('[map] loadData failed:', err);
-});
-</script>
 </body>
 </html>

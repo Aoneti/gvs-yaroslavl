@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               script-src 'self' https://mc.yandex.ru;
+               style-src 'self';
+               font-src 'self';
+               img-src 'self' data: https://mc.yandex.ru;
+               connect-src 'self' https://mc.yandex.ru;
+               frame-src 'none';">
+
 <title>Отключение горячей воды в Ярославле — 2026</title>
 <meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
 <meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
+<link rel="canonical" href="https://aoneti.github.io/gvs-yaroslavl/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💦</text></svg>">
-
-<script>
-(function() {
-  try {
-    if (localStorage.getItem('theme') !== 'dark') document.documentElement.classList.add('light');
-  } catch (e) { /* localStorage недоступен — используем тёмную тему */ }
-})();
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="theme-init.js"></script>
 <link rel="stylesheet" href="styles.css">
-<script src="gvs-core.js"></script>
+
 <style>
   html.light body::before {
     background-image:
@@ -320,17 +320,10 @@
     border-left-color: var(--blue);
     background: color-mix(in srgb, var(--surface2) 94%, var(--blue) 6%);
   }
+  html.light .period-item.hydro2 { border-left-color: var(--blue); }
 
-  html.light .period-item.hydro2 {
-    border-left-color: var(--blue);
-  }
-
-  .period-item.period-active {
-    border-left-width: 4px;
-  }
-  .result-card.status-active .period-item:not(.period-active) {
-    opacity: 0.38;
-  }
+  .period-item.period-active { border-left-width: 4px; }
+  .result-card.status-active .period-item:not(.period-active) { opacity: 0.38; }
 
   .period-label {
     font-size: 12px;
@@ -416,24 +409,11 @@
     letter-spacing: 0.5px;
     color: var(--muted);
   }
-  .status-block.active .status-num {
-    color: var(--accent2);
-  }
-  .status-block.active .status-label {
-    color: var(--accent2);
-    opacity: 0.7;
-  }
-  .status-block.soon .status-num {
-    color: var(--warn);
-  }
-  .status-block.soon .status-label {
-    color: var(--warn);
-    opacity: 0.7;
-  }
-  .status-block.past .status-label {
-    font-style: italic;
-    font-size: 12px;
-  }
+  .status-block.active .status-num   { color: var(--accent2); }
+  .status-block.active .status-label { color: var(--accent2); opacity: 0.7; }
+  .status-block.soon .status-num     { color: var(--warn); }
+  .status-block.soon .status-label   { color: var(--warn); opacity: 0.7; }
+  .status-block.past .status-label   { font-style: italic; font-size: 12px; }
 
   .result-card.status-active { border-color: rgba(232,93,47,0.5); }
 
@@ -446,43 +426,54 @@
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.65; }
   }
-  .status-block.active .status-num {
-    animation: pulse-active 2.5s ease-in-out infinite;
-  }
+  .status-block.active .status-num { animation: pulse-active 2.5s ease-in-out infinite; }
 
-  @media (max-width: 900px) {
-    .periods-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+  @media (max-width: 900px) { .periods-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 600px) {
     header { padding: 32px 0 20px; }
     .periods-grid { grid-template-columns: 1fr; }
     .card-header { flex-direction: row; }
-    .page-btn {
-      padding: 12px 14px;
-      min-height: 44px;
-    }
+    .page-btn { padding: 12px 14px; min-height: 44px; }
   }
 </style>
- 
-<script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108168247', 'ym');
 
-    ym(108168247, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Отключение горячей воды в Ярославле 2026",
+  "description": "Поиск по адресу: даты плановых отключений горячего водоснабжения, ремонтных работ и гидравлических испытаний в Ярославле",
+  "url": "https://aoneti.github.io/gvs-yaroslavl/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ru",
+  "author": {
+    "@type": "Person",
+    "name": "Арсений Дыбов",
+    "url": "https://t.me/xoroshik"
+  },
+  "publisher": {
+    "@type": "NewsMediaOrganization",
+    "name": "Яркуб",
+    "url": "https://yarcube.ru"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Ярославль",
+    "addressCountry": "RU"
+  }
+}
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/108168247" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
 </head>
 <body>
-<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему" type="button">
   <span class="theme-emoji">🌑</span>
-<div class="theme-track"><div class="theme-thumb"></div></div>
-<span class="theme-emoji" id="themeEmoji">🌕</span>
+  <div class="theme-track"><div class="theme-thumb"></div></div>
+  <span class="theme-emoji" id="themeEmoji">🌕</span>
 </button>
+
 <div class="container">
   <header>
     <div class="logo-icon">🔥</div>
@@ -496,14 +487,14 @@
     <span class="search-icon">🔍</span>
     <input type="text" id="searchInput" placeholder="Введите улицу и дом..." autocomplete="off" spellcheck="false"
            autofocus aria-label="Поиск по адресу" aria-controls="results" aria-autocomplete="list">
-    <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска">✕</button>
+    <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска" type="button">✕</button>
     <div class="hints-dropdown" id="hintsDropdown">
-      <button class="hint" data-value="Толбухина"><span class="hint-icon">⚡</span>Толбухина</button>
-      <button class="hint" data-value="Некрасова"><span class="hint-icon">⚡</span>Некрасова</button>
-      <button class="hint" data-value="Ленина"><span class="hint-icon">⚡</span>Ленина</button>
-      <button class="hint" data-value="Чайковского"><span class="hint-icon">⚡</span>Чайковского</button>
-      <button class="hint" data-value="Свердлова"><span class="hint-icon">⚡</span>Свердлова</button>
-      <button class="hint" data-value="Угличская"><span class="hint-icon">⚡</span>Угличская</button>
+      <button class="hint" data-value="Толбухина"  type="button"><span class="hint-icon">⚡</span>Толбухина</button>
+      <button class="hint" data-value="Некрасова"  type="button"><span class="hint-icon">⚡</span>Некрасова</button>
+      <button class="hint" data-value="Ленина"     type="button"><span class="hint-icon">⚡</span>Ленина</button>
+      <button class="hint" data-value="Чайковского" type="button"><span class="hint-icon">⚡</span>Чайковского</button>
+      <button class="hint" data-value="Свердлова"  type="button"><span class="hint-icon">⚡</span>Свердлова</button>
+      <button class="hint" data-value="Угличская"  type="button"><span class="hint-icon">⚡</span>Угличская</button>
     </div>
   </div>
 
@@ -515,304 +506,24 @@
   <div class="pagination" id="pagination" style="display:none"></div>
 </div>
 
-<script>
-'use strict';
-
-// ─── Тема ───────────────────────────────────────────────────────────────
-document.getElementById('themeToggle').addEventListener('click', function() {
-  var isLight = document.documentElement.classList.toggle('light');
-  try { localStorage.setItem('theme', isLight ? 'light' : 'dark'); } catch (e) {}
-});
-
-// ─── Состояние ──────────────────────────────────────────────────────────
-var PER_PAGE = GVS.PER_PAGE;
-
-var DATA        = [];
-var filtered    = [];
-var currentPage = 1;
-var currentTokens = [];
-
-// ─── DOM ────────────────────────────────────────────────────────────────
-var searchInput  = document.getElementById('searchInput');
-var clearBtn     = document.getElementById('clearBtn');
-var resultsEl    = document.getElementById('results');
-var statsBar     = document.getElementById('statsBar');
-var foundCount   = document.getElementById('foundCount');
-var paginationEl = document.getElementById('pagination');
-
-// ─── Подсветка совпадений ───────────────────────────────────────────────
-function hl(text, tokens) {
-  if (!tokens || !tokens.length) return GVS.escapeHtml(text);
-
-  var ranges = [];
-  for (var i = 0; i < tokens.length; i++) {
-    var token = tokens[i];
-    if (!token) continue;
-    var escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var re = new RegExp(escaped, 'gi');
-    var m;
-    while ((m = re.exec(text)) !== null) {
-      ranges.push([m.index, m.index + m[0].length]);
-    }
-  }
-
-  if (!ranges.length) return GVS.escapeHtml(text);
-
-  ranges.sort(function(a, b) { return a[0] - b[0]; });
-  var merged = [ranges[0]];
-  for (var j = 1; j < ranges.length; j++) {
-    var prev = merged[merged.length - 1];
-    if (ranges[j][0] <= prev[1]) prev[1] = Math.max(prev[1], ranges[j][1]);
-    else merged.push(ranges[j]);
-  }
-
-  var out = '', pos = 0;
-  for (var k = 0; k < merged.length; k++) {
-    var start = merged[k][0], end = merged[k][1];
-    out += GVS.escapeHtml(text.slice(pos, start));
-    out += '<mark>' + GVS.escapeHtml(text.slice(start, end)) + '</mark>';
-    pos = end;
-  }
-  out += GVS.escapeHtml(text.slice(pos));
-  return out;
-}
-
-// ─── Рендер одного блока периода ──────────────
-function renderPeriodItem(type, label, rangeStr, onStr, isActive) {
-  if (!rangeStr) return '';
-  var isDate = GVS.isDateValue(rangeStr);
-  var activeClass = isActive ? ' period-active' : '';
-  var inner = isDate
-    ? '<div class="period-dates">' + GVS.escapeHtml(rangeStr) + '</div>' +
-      (onStr ? '<div class="period-on">\u25b2 \u0432\u043e\u0434\u0430 \u0441 ' + GVS.escapeHtml(onStr) + '</div>' : '')
-    : '<div class="period-note">' + GVS.escapeHtml(rangeStr) + '</div>';
-  return '<div class="period-item ' + type + activeClass + '">' +
-    '<div class="period-label">' + label + '</div>' +
-    inner +
-    '</div>';
-}
-
-// ─── Карточка адреса ─────────────────────────────────────────────────────
-function renderCard(d, tokens, today) {
-  var status           = GVS.getStatus(d, today);
-  var daysInfo         = GVS.getDaysInfo(d, today);
-  var activePeriodType = GVS.getActivePeriodType(d, today);
-
-  var unifiedBadge = '';
-  if (status === 'active' && daysInfo) {
-    var numLabel = daysInfo.days <= 0 ? 'сегодня'
-                 : daysInfo.days === 1 ? '1 день'
-                 : daysInfo.days + ' дн.';
-    unifiedBadge = '<div class="status-block active">' +
-      '<span class="status-num">' + numLabel + '</span>' +
-      '<span class="status-label">Нет воды</span>' +
-      '</div>';
-  } else if (status === 'soon' && daysInfo) {
-    var numLabelSoon = daysInfo.days === 1 ? 'завтра' : 'через ' + daysInfo.days + ' дн.';
-    unifiedBadge = '<div class="status-block soon">' +
-      '<span class="status-num">' + numLabelSoon + '</span>' +
-      '<span class="status-label">Скоро</span>' +
-      '</div>';
-  } else if (status === 'past') {
-    unifiedBadge = '<div class="status-block past">' +
-      '<span class="status-label">Завершено</span>' +
-      '</div>';
-  }
-
-  var cardClass = status === 'active' ? ' status-active'
-                : status === 'past'   ? ' status-past' : '';
-
-  var periodsHtml = [
-    renderPeriodItem('repair', 'Текущий ремонт',   d.repair,  d.repair_on,  activePeriodType === 'repair'),
-    renderPeriodItem('hydro1', 'Гидроиспытания 1', d.hydro1,  d.hydro1_on,  activePeriodType === 'hydro1'),
-    renderPeriodItem('hydro2', 'Гидроиспытания 2', d.hydro2,  d.hydro2_on,  activePeriodType === 'hydro2'),
-  ].filter(Boolean).join('') || '<div class="period-empty">Нет данных о периодах</div>';
-
-  return '<div class="result-card' + cardClass + '">' +
-    '<div class="card-header">' +
-      '<div class="address-badge">' + hl(d.address, tokens) + '</div>' +
-      unifiedBadge +
-    '</div>' +
-    '<div class="periods-grid">' + periodsHtml + '</div>' +
-    (d.source ? '<div class="card-footer"><span class="source-tag">🏘️ ' + GVS.escapeHtml(d.source) + '</span></div>' : '') +
-    '</div>';
-}
-
-// ─── Рендер страницы результатов ────────────────────────────────────────
-function renderPage(tokens) {
-  var today = GVS.makeToday();
-  var start = (currentPage - 1) * PER_PAGE;
-  var page  = filtered.slice(start, start + PER_PAGE);
-
-  resultsEl.innerHTML = page.length
-    ? page.map(function(d) { return renderCard(d, tokens, today); }).join('')
-    : '<div class="state-message">' +
-        '<span class="emoji">🤔</span>' +
-        '<h3>Ничего не найдено</h3>' +
-        '<p>Попробуйте другое написание адреса</p>' +
-      '</div>';
-
-  renderPagination();
-}
-
-// ─── Пагинация ───────────────────────────────────────────────────────────
-function renderPagination() {
-  var total = Math.ceil(filtered.length / PER_PAGE);
-  if (total <= 1) { paginationEl.style.display = 'none'; return; }
-
-  paginationEl.style.display = 'flex';
-  var pages = [];
-  if (total <= 7) {
-    for (var i = 1; i <= total; i++) pages.push(i);
-  } else {
-    pages = [1];
-    if (currentPage > 3) pages.push('…');
-    for (var p = Math.max(2, currentPage - 1); p <= Math.min(total - 1, currentPage + 1); p++) pages.push(p);
-    if (currentPage < total - 2) pages.push('…');
-    pages.push(total);
-  }
-
-  var html = '<button class="page-btn" data-page="' + (currentPage - 1) + '" ' + (currentPage === 1 ? 'disabled' : '') + '>← Назад</button>';
-  pages.forEach(function(p) {
-    html += p === '…'
-      ? '<span class="page-info">…</span>'
-      : '<button class="page-btn ' + (p === currentPage ? 'active' : '') + '" data-page="' + p + '">' + p + '</button>';
-  });
-  html += '<button class="page-btn" data-page="' + (currentPage + 1) + '" ' + (currentPage === total ? 'disabled' : '') + '>Вперёд →</button>';
-  html += '<span class="page-info">' + currentPage + ' / ' + total + '</span>';
-  paginationEl.innerHTML = html;
-}
-
-function goPage(n) {
-  var total = Math.ceil(filtered.length / PER_PAGE);
-  currentPage = Math.max(1, Math.min(n, total));
-  renderPage(currentTokens);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ─── Поиск ───────────────────────────────────────────────────────────────
-function applySearch() {
-  var raw = searchInput.value.trim();
-  clearBtn.classList.toggle('visible', raw.length > 0);
-
-  if (!raw) {
-    currentTokens = [];
-    filtered = [];
-    resultsEl.innerHTML = '<div class="state-message">' +
-      '<span class="emoji">🏡</span>' +
-      '<h3>Найдите свой адрес</h3>' +
-      '<p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>' +
-      '</div>';
-    statsBar.style.display = 'none';
-    paginationEl.style.display = 'none';
-    return;
-  }
-
-  currentTokens = GVS.normalizeQuery(raw);
-
-  filtered = DATA.filter(function(d) {
-    return currentTokens.every(function(token) {
-      return d._normTokens.some(function(t) {
-        return t === token || t.startsWith(token);
-      });
-    });
-  });
-
-  currentPage = 1;
-  statsBar.style.display = 'flex';
-  foundCount.textContent = filtered.length;
-  renderPage(currentTokens);
-}
-
-// ─── События ─────────────────────────────────────────────────────────────
-var _searchDebounce;
-searchInput.addEventListener('input', function() {
-  if (searchInput.value) hintsDropdown.classList.remove('open');
-  else hintsDropdown.classList.add('open');
-  clearTimeout(_searchDebounce);
-  _searchDebounce = setTimeout(applySearch, 150);
-});
-
-paginationEl.addEventListener('click', function(e) {
-  var btn = e.target.closest('[data-page]');
-  if (btn && !btn.disabled) goPage(+btn.dataset.page);
-});
-
-clearBtn.addEventListener('click', function() {
-  searchInput.value = '';
-  applySearch();
-  searchInput.focus();
-});
-
-// ─── Hints dropdown ──────────────────────────────────────────────────────
-var hintsDropdown = document.getElementById('hintsDropdown');
-function openHints()  { if (!searchInput.value) hintsDropdown.classList.add('open'); }
-function closeHints() { setTimeout(function() { hintsDropdown.classList.remove('open'); }, 150); }
-searchInput.addEventListener('focus', openHints);
-searchInput.addEventListener('blur',  closeHints);
-
-document.querySelectorAll('.hint').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    searchInput.value = btn.dataset.value || btn.textContent.trim();
-    hintsDropdown.classList.remove('open');
-    applySearch();
-    searchInput.focus();
-  });
-});
-
-// ─── Загрузка data.json ───────────────────────────────────────────────────
-resultsEl.innerHTML = '<div class="state-message">' +
-  '<span class="emoji">⏳</span>' +
-  '<h3>Загрузка данных…</h3>' +
-  '<p>Подождите секунду</p>' +
-  '</div>';
-
-fetch('data.json')
-  .then(function(r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return r.json();
-  })
-  .then(function(json) {
-    DATA = json.map(function(d) {
-      return Object.assign({}, d, {
-        _normTokens: GVS.normalizeQuery(d.address),
-      });
-    });
-
-    if (searchInput.value.trim()) {
-      applySearch();
-    } else {
-      resultsEl.innerHTML = '<div class="state-message">' +
-        '<span class="emoji">🏡</span>' +
-        '<h3>Найдите свой адрес</h3>' +
-        '<p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>' +
-        '</div>';
-    }
-  })
-  .catch(function(err) {
-    console.error(err);
-    resultsEl.innerHTML = '<div class="state-message">' +
-      '<span class="emoji">❌</span>' +
-      '<h3>Не удалось загрузить данные</h3>' +
-      '<p>Попробуйте обновить страницу</p>' +
-      '</div>';
-  });
-</script>
+<!-- Application scripts -->
+<script src="gvs-core.js"></script>
+<script src="app-index.js"></script>
 
 <footer style="text-align:center; padding: 24px 20px 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); position: relative; z-index: 1;">
-  Автор: <a href="https://t.me/xoroshik" target="_blank" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" style="color:var(--accent2);text-decoration:none;">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener" title="Исходный код" style="color:var(--accent2);text-decoration:none;"><svg height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:3px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, 2026 год.
+  Автор: <a href="https://t.me/xoroshik" target="_blank" rel="noopener noreferrer" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" rel="noopener noreferrer" style="color:var(--accent2);text-decoration:none;">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener noreferrer" title="Исходный код" style="color:var(--accent2);text-decoration:none;"><svg height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:3px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, 2026 год.
 </footer>
 
-<!-- Tracker widget (notebook style) -->
+<!-- Tracker widget -->
 <div id="tracker-widget" aria-hidden="true">
   <div class="notebook" role="dialog" aria-label="Аналитика сайта">
-    <button class="minimize" id="tracker-minimize-btn" aria-label="Свернуть" title="Свернуть">✕</button>
+    <button class="minimize" id="tracker-minimize-btn" aria-label="Свернуть" title="Свернуть" type="button">✕</button>
     <div class="lines" aria-hidden="true"></div>
     <h3>📊 Аналитика</h3>
     <p>Мы используем Яндекс.Метрику для анализа посещений и улучшения работы сайта.</p>
     <div class="actions">
-      <button class="secondary" id="tracker-learn-btn">Подробнее</button>
-      <button class="primary"   id="tracker-ok-btn">Понятно</button>
+      <button class="secondary" id="tracker-learn-btn" type="button">Подробнее</button>
+      <button class="primary"   id="tracker-ok-btn"   type="button">Понятно</button>
     </div>
   </div>
 </div>
@@ -820,156 +531,26 @@ fetch('data.json')
 <!-- Social subscribe widget -->
 <div id="social-widget" aria-hidden="true">
   <div class="notebook" role="dialog" aria-label="Подписка на MAX">
-    <button class="minimize" id="social-minimize-btn" aria-label="Свернуть" title="Свернуть">✕</button>
+    <button class="minimize" id="social-minimize-btn" aria-label="Свернуть" title="Свернуть" type="button">✕</button>
     <div class="lines" aria-hidden="true"></div>
     <h3>🔥 Свежие новости Ярославля</h3>
-    <p>Подпишитесь, чтобы быть  в курсе событий!</p>
+    <p>Подпишитесь, чтобы быть в курсе событий!</p>
     <div class="actions">
-      <a href="https://max.ru/yarcube_ru" target="_blank" rel="noopener" class="button">Подписаться</a>
+      <a href="https://max.ru/yarcube_ru" target="_blank" rel="noopener noreferrer" class="button">Подписаться</a>
     </div>
   </div>
 </div>
 
 <!-- Мини-иконка -->
-<button id="social-mini" aria-label="Свежие новости Ярославля" title="Свежие новости Ярославля">
+<button id="social-mini" aria-label="Свежие новости Ярославля" title="Свежие новости Ярославля" type="button">
   🔔
 </button>
 
-<script>
-'use strict';
+<script src="ui-widgets.js"></script>
 
-(function () {
-  var tracker    = document.getElementById('tracker-widget');
-  var social     = document.getElementById('social-widget');
-  var mini       = document.getElementById('social-mini');
-  var TRACKER_KEY = 'gvs_tracker_hidden_v1';
-  var SOCIAL_KEY  = 'gvs_social_hidden_v1';
-  var LS = {
-    get: function(key) {
-      try { return localStorage.getItem(key); } catch (e) { return null; }
-    },
-    set: function(key, val) {
-      try { localStorage.setItem(key, val); } catch (e) {}
-    },
-    remove: function(key) {
-      try { localStorage.removeItem(key); } catch (e) {}
-    },
-  };
-
-  function updatePositions() {
-    if (window.innerWidth <= 640) return;
-
-    var trackerVisible = tracker.style.display !== 'none';
-    var gap            = 12;
-    var base           = 20;
-
-    if (trackerVisible) {
-      var trackerH = tracker.offsetHeight;
-      social.style.bottom = (base + trackerH + gap) + 'px';
-      mini.style.bottom   = (base + trackerH + gap) + 'px';
-    } else {
-      social.style.bottom = base + 'px';
-      mini.style.bottom   = base + 'px';
-    }
-  }
-
-  function showTracker() {
-    if (LS.get(TRACKER_KEY) === 'hidden') return;
-    tracker.style.display = 'block';
-    requestAnimationFrame(function () {
-      updatePositions();
-      tracker.classList.add('show');
-      tracker.setAttribute('aria-hidden', 'false');
-    });
-  }
-
-  function showSocial() {
-    if (LS.get(SOCIAL_KEY) === 'hidden') {
-      showMini();
-      return;
-    }
-    updatePositions();
-    social.style.display = 'block';
-    requestAnimationFrame(function () {
-      social.classList.add('show');
-      social.setAttribute('aria-hidden', 'false');
-    });
-  }
-
-  function showMini() {
-    mini.style.display = 'flex';
-    updatePositions();
-  }
-
-  function hideMini() {
-    mini.style.opacity = '0';
-    setTimeout(function () {
-      mini.style.display  = 'none';
-      mini.style.opacity  = '1';
-    }, 220);
-  }
-
-  function trackerOk() {
-    tracker.classList.remove('show');
-    tracker.style.display = 'none';
-    tracker.setAttribute('aria-hidden', 'true');
-    LS.set(TRACKER_KEY, 'hidden');
-    updatePositions();
-  }
-
-  function trackerLearn() {
-    window.open(
-      'https://yandex.ru/legal/metrica_termsofuse/ru/#5-personalnye-dannye-i-konfidencialnost',
-      '_blank'
-    );
-  }
-
-  function socialMinimize() {
-    social.classList.remove('show');
-    social.style.display = 'none';
-    social.setAttribute('aria-hidden', 'true');
-    LS.set(SOCIAL_KEY, 'hidden');
-    showMini();
-  }
-
-  function socialRestore() {
-    LS.remove(SOCIAL_KEY);
-    hideMini();
-    updatePositions();
-    social.style.display = 'block';
-    requestAnimationFrame(function () {
-      social.classList.add('show');
-      social.setAttribute('aria-hidden', 'false');
-    });
-  }
-
-  document.getElementById('tracker-minimize-btn').addEventListener('click', trackerOk);
-  document.getElementById('tracker-learn-btn').addEventListener('click', trackerLearn);
-  document.getElementById('tracker-ok-btn').addEventListener('click', trackerOk);
-  document.getElementById('social-minimize-btn').addEventListener('click', socialMinimize);
-  mini.addEventListener('click', socialRestore);
-
-  window.addEventListener('load', function () {
-    var trackerHidden = LS.get(TRACKER_KEY) === 'hidden';
-    var socialHidden  = LS.get(SOCIAL_KEY) === 'hidden';
-
-    if (!trackerHidden) {
-      setTimeout(showTracker, 2500);
-      setTimeout(showSocial, 3500);
-    } else {
-      setTimeout(showSocial, 2500);
-    }
-
-    if (socialHidden) {
-      setTimeout(function () {
-        showMini();
-      }, trackerHidden ? 2500 : 4000);
-    }
-  });
-
-  window.addEventListener('resize', updatePositions);
-})();
-</script>
+<!-- Yandex Metrika -->
+<script src="analytics.js" async></script>
+<noscript><div><img src="https://mc.yandex.ru/watch/108168247" style="position:absolute; left:-9999px;" alt=""></div></noscript>
 
 </body>
 </html>
