@@ -47,19 +47,18 @@
 ├── gvs-core.js             # Общая бизнес-логика
 ├── app-index.js            # Логика главной страницы
 ├── app-map.js              # Логика карты
-├── ui-widgets.js           # UI-виджеты
+├── ui-widgets.js           # Виджеты
 ├── analytics.js            # Аналитика
 ├── theme-init.js           # Тема оформления
 ├── data.json               # Данные об отключениях
-├── geo.json                # Геоданные адресов
-├── _headers                # HTTP-заголовки
-├── fonts/                  # Шрифты (Golos Text, Unbounded)
+├── geo.json                # Геоданные
+├── fonts/                  # Шрифты
 ├── vendor/                 # Сторонние библиотеки
 │   ├── leaflet.js/css      # Leaflet
 │   └── leaflet.markercluster.js/css  # MarkerCluster
 └── scripts/                # Скрипты обработки данных
-├── convert.ipynb       # Конвертация данных
-└── geocoder.ipynb      # Геокодирование
+│   ├── convert.ipynb       # Конвертация данных
+│   └── geocoder.ipynb      # Геокодирование
 ```
 
 ## Технологический стек
