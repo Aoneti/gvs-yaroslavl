@@ -26,16 +26,46 @@
 | `index.html` | Главная страница — поиск по адресу с пагинацией |
 | `map.html` | Интерактивная карта отключений |
 | `gvs-core.js` | Общая логика для `index.html` и `map.html` |
+| `app-index.js` | Логика главной страницы: поиск, фильтрация, пагинация |
+| `app-map.js` | Логика карты: инициализация Leaflet, кластеризация маркеров |
+| `ui-widgets.js` | UI-компоненты: модальные окна, уведомления, кнопки |
+| `analytics.js` | Модуль аналитики: отслеживание событий и метрик |
+| `theme-init.js` | Инициализация темы (светлая/тёмная) |
 | `data.json` | База отключений: адреса, даты ремонта и гидравлических испытаний |
 | `geo.json` | Координаты адресов, полученные через геокодирование |
 | `styles.css` | Базовые стили интерфейса |
+| `_headers` | Заголовки безопасности (CSP, кэширование) для сервера |
 | `convert.ipynb` | Jupyter-ноутбук для предобработки исходных данных из Excel → `data.json` |
 | `geocoder.ipynb` | Геокодирование адресов через Nominatim API → `geo.json` |
+
+### Структура проекта
+	
+```
+├── index.html              # Главная страница
+├── map.html                # Страница карты
+├── styles.css              # Основные стили
+├── gvs-core.js             # Общая бизнес-логика
+├── app-index.js            # Логика главной страницы
+├── app-map.js              # Логика карты
+├── ui-widgets.js           # UI-виджеты
+├── analytics.js            # Аналитика
+├── theme-init.js           # Тема оформления
+├── data.json               # Данные об отключениях
+├── geo.json                # Геоданные адресов
+├── _headers                # HTTP-заголовки
+├── fonts/                  # Шрифты (Golos Text, Unbounded)
+├── vendor/                 # Сторонние библиотеки
+│   ├── leaflet.js/css      # Leaflet
+│   └── leaflet.markercluster.js/css  # MarkerCluster
+└── scripts/                # Скрипты обработки данных
+├── convert.ipynb       # Конвертация данных
+└── geocoder.ipynb      # Геокодирование
+```
 
 ## Технологический стек
 
 ### Фронтенд
-- **HTML5 / CSS /  JavaScript** — вёрстка и логика
+- **HTML5 / CSS / JavaScript** — вёрстка и логика
 - **[Leaflet](https://leafletjs.com/)** + **[MarkerCluster](https://github.com/Leaflet/Leaflet.markercluster)** — интерактивная карта с кластеризацией
 
 ### Обработка данных
