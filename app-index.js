@@ -1,15 +1,29 @@
 'use strict';
-// ─── Вспомогательная: fetch с таймаутом ────────────────────────
-function fetchWithTimeout(url, timeoutMs) {
+// ─── Вспомогательная: fetch с таймаутом и retry ────────────────────────
+function fetchWithTimeout(url, timeoutMs, retryCount = 0) {
   const controller = new AbortController();
   const timerId = setTimeout(() => controller.abort(), timeoutMs);
+  
   return fetch(url, { signal: controller.signal })
-    .then(res => { clearTimeout(timerId); return res; })
+    .then(res => { 
+      clearTimeout(timerId); 
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res; 
+    })
     .catch(err => {
       clearTimeout(timerId);
       if (err.name === 'AbortError') {
-        throw new Error('Превышено время ожидания загрузки данных');
+        err = new Error('Превышено время ожидания загрузки данных');
       }
+      
+      // Retry с exponential backoff
+      if (retryCount < GVS_CONFIG.FETCH_RETRY_COUNT) {
+        const delay = GVS_CONFIG.FETCH_RETRY_DELAY * Math.pow(2, retryCount);
+        console.warn(`[fetch] Попытка ${retryCount + 1} не удалась, повтор через ${delay}мс:`, url);
+        return new Promise(resolve => setTimeout(resolve, delay))
+          .then(() => fetchWithTimeout(url, timeoutMs, retryCount + 1));
+      }
+      
       throw err;
     });
 }
@@ -62,14 +76,18 @@ function hl(text, tokens) {
     else merged.push(ranges[j]);
   }
 
-  let out = '', pos = 0;
+  // Безопасная вставка через DOM-элементы вместо конкатенации строк
+  const container = document.createElement('span');
+  let pos = 0;
   for (const [start, end] of merged) {
-    out += GVS.escapeHtml(text.slice(pos, start));
-    out += '<mark>' + GVS.escapeHtml(text.slice(start, end)) + '</mark>';
+    container.appendChild(document.createTextNode(text.slice(pos, start)));
+    const mark = document.createElement('mark');
+    mark.textContent = text.slice(start, end);
+    container.appendChild(mark);
     pos = end;
   }
-  out += GVS.escapeHtml(text.slice(pos));
-  return out;
+  container.appendChild(document.createTextNode(text.slice(pos)));
+  return container.innerHTML;
 }
 
 // ─── Рендер одного блока периода ────────────────────────────────────────
@@ -184,7 +202,14 @@ function goPage(n) {
   const total = Math.ceil(filtered.length / PER_PAGE);
   currentPage = Math.max(1, Math.min(n, total));
   renderPage(currentTokens);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // Учёт высоты хедера при скролле
+  const header = document.querySelector('header');
+  const offset = header ? header.offsetHeight : 0;
+  window.scrollTo({ 
+    top: -offset, 
+    behavior: 'smooth' 
+  });
 }
 
 // ─── Поиск ───────────────────────────────────────────────────────────────
@@ -261,17 +286,28 @@ resultsEl.innerHTML = '<div class="state-message">' +
   '<p>Подождите секунду</p>' +
   '</div>';
 
-fetchWithTimeout('data.json', 12000)
-  .then(r => {
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return r.json();
-  })
+fetchWithTimeout('data.json', GVS_CONFIG.FETCH_TIMEOUT_MS)
+  .then(r => r.json())
   .then(json => {
+    // Валидация данных
+    if (!Array.isArray(json)) {
+      throw new Error('data.json должен содержать массив');
+    }
+    
     DATA = json.map(d => {
+      // Валидация каждой записи
+      if (!d || typeof d !== 'object') {
+        console.warn('[index] Пропущена некорректная запись:', d);
+        return null;
+      }
+      if (!d.address || typeof d.address !== 'string') {
+        console.warn('[index] Запись без адреса:', d);
+        return null;
+      }
       GVS.cacheRecordPeriods(d);
       d._normTokens = GVS.normalizeQuery(d.address);
       return d;
-    });
+    }).filter(Boolean); // Удаляем null-записи
 
     if (searchInput.value.trim()) {
       applySearch();
@@ -289,5 +325,18 @@ fetchWithTimeout('data.json', 12000)
       '<span class="emoji">❌</span>' +
       '<h3>Не удалось загрузить данные</h3>' +
       '<p>Попробуйте обновить страницу. Если ошибка повторяется — проверьте соединение.</p>' +
+      '<button id="retryBtn" class="map-btn" type="button" style="margin-top:16px">🔄 Попробовать снова</button>' +
       '</div>';
+    
+    // Кнопка retry
+    const retryBtn = document.getElementById('retryBtn');
+    if (retryBtn) {
+      retryBtn.addEventListener('click', () => {
+        resultsEl.innerHTML = '<div class="state-message">' +
+          '<span class="emoji">⏳</span>' +
+          '<h3>Повторная загрузка…</h3>' +
+          '</div>';
+        location.reload();
+      });
+    }
   });

@@ -52,7 +52,9 @@ const GVS = (() => {
   function _daysDiff(dateA, dateB) {
     const a = new Date(dateA.getFullYear(), dateA.getMonth(), dateA.getDate());
     const b = new Date(dateB.getFullYear(), dateB.getMonth(), dateB.getDate());
-    return Math.ceil((b - a) / 86400000);
+    const diffMs = b - a;
+    // Округляем вниз для прошедших дней, вверх для будущих
+    return diffMs >= 0 ? Math.floor(diffMs / 86400000) : Math.ceil(diffMs / 86400000);
   }
 
   // ─── Безопасное создание даты с защитой от переполнения ──────
@@ -72,8 +74,11 @@ const GVS = (() => {
 
   // ─── Парсинг периода dd.mm.yyyy[-dd.mm.yyyy] ─────────────────
   function parsePeriod(rangeStr, onStr) {
-    if (!isDateValue(rangeStr)) return null;
+    if (!rangeStr || typeof rangeStr !== 'string') return null;
+    
     const clean = String(rangeStr).replace(/\.{2,}/g, '.').trim();
+    if (!isDateValue(clean)) return null;
+    
     let start = null, end2 = null;
 
     // 1. dd.mm.yyyy-dd.mm.yyyy
@@ -184,8 +189,8 @@ const GVS = (() => {
     const periods = _getPeriods(d);
     if (!periods.length)                                                    return 'normal';
     if (periods.some(p => today >= p.start && today <= p.end))             return 'active';
-    if (periods.some(p => p.start > today && p.start <= soonLimit))        return 'soon';
     if (periods.every(p => p.end < today))                                  return 'past';
+    if (periods.some(p => p.start > today && p.start <= soonLimit))        return 'soon';
     return 'normal';
   }
 
