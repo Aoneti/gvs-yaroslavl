@@ -338,11 +338,14 @@ document.getElementById('searchClear').addEventListener('click', () => {
 // ─── Bottom sheet drag handle (только mobile) ────────────────────────────
 (function () {
   const handle = document.getElementById('sheetHandle');
+  if (!handle) return; // Защита от отсутствия элемента
+  
   const panel  = handle.parentElement;
   const SNAP_RATIOS = [SHEET_SNAP_SMALL, SHEET_SNAP_MEDIUM, SHEET_SNAP_LARGE];
   let dragging = false, startY = 0, startH = 0;
+  let resizeTimeout = null;
 
-  function isMobile() { return window.innerWidth <= 640; }
+  function isMobile() { return window.innerWidth <= GVS_CONFIG.MOBILE_BREAKPOINT; }
 
   function snapHeight(h) {
     const vh    = window.innerHeight;
@@ -382,9 +385,13 @@ document.getElementById('searchClear').addEventListener('click', () => {
   }
 
   function initHeight() {
-    panel.style.height = isMobile()
-      ? Math.round(window.innerHeight * SHEET_SNAP_SMALL) + 'px'
-      : '';
+    // Debounced resize handler
+    if (resizeTimeout) clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      panel.style.height = isMobile()
+        ? Math.round(window.innerHeight * SHEET_SNAP_SMALL) + 'px'
+        : '';
+    }, 150);
   }
 
   handle.addEventListener('mousedown',  onStart);
@@ -400,6 +407,17 @@ loadData().catch(err => {
     '<div class="empty-list"><span class="big">⚠️</span>' +
     'Ошибка загрузки данных.<br>' +
     '<small style="color:var(--muted)">Попробуйте обновить страницу или проверьте соединение.</small>' +
+    '<button id="mapRetryBtn" class="map-btn" type="button" style="margin-top:16px">🔄 Попробовать снова</button>' +
     '</div>';
   document.getElementById('counterChip').textContent = 'Ошибка';
+  
+  // Кнопка retry для карты
+  const retryBtn = document.getElementById('mapRetryBtn');
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => {
+      document.getElementById('addrList').innerHTML =
+        '<div class="empty-list"><span class="big">⏳</span>Повторная загрузка...</div>';
+      loadData().catch(e => location.reload());
+    });
+  }
 });

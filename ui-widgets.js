@@ -107,15 +107,23 @@
     const trackerHidden = LS.get(TRACKER_KEY) === 'hidden';
     const socialHidden  = LS.get(SOCIAL_KEY)  === 'hidden';
 
-    if (!trackerHidden) {
-      setTimeout(showTracker, 2500);
-      setTimeout(showSocial,  3500);
-    } else {
-      setTimeout(showSocial, 2500);
-    }
-
+    // Promise-based sequencing для предотвращения race conditions
+    const showTrackerPromise = !trackerHidden 
+      ? new Promise(resolve => setTimeout(() => { showTracker(); resolve(); }, GVS_CONFIG.WIDGET_TRACKER_DELAY))
+      : Promise.resolve();
+    
+    const showSocialPromise = showTrackerPromise.then(() => {
+      if (!trackerHidden) {
+        return new Promise(resolve => setTimeout(() => { showSocial(); resolve(); }, GVS_CONFIG.WIDGET_SOCIAL_DELAY - GVS_CONFIG.WIDGET_TRACKER_DELAY));
+      } else {
+        return new Promise(resolve => setTimeout(() => { showSocial(); resolve(); }, GVS_CONFIG.WIDGET_TRACKER_DELAY));
+      }
+    });
+    
     if (socialHidden) {
-      setTimeout(showMini, trackerHidden ? 2500 : 4000);
+      showSocialPromise.then(() => {
+        setTimeout(showMini, trackerHidden ? GVS_CONFIG.WIDGET_TRACKER_DELAY : GVS_CONFIG.WIDGET_SOCIAL_DELAY + 500);
+      });
     }
   });
 
