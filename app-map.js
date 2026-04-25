@@ -406,7 +406,7 @@ document.getElementById('searchClear').addEventListener('click', () => {
   }
 
   function initHeight() {
-    // Debounced resize handler с пересозданием обработчиков
+    // Debounced resize handler
     if (resizeTimeout) clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       panel.style.height = isMobile()
