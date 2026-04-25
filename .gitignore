@@ -1,3 +1,1 @@
-(config.js, app-index.js, app-map.js, gvs-core.js, index.html, map.html, styles.css, theme-init.js, ui-widgets.js are all source/config files, no build artifacts, dependencies, or temp files in the changes)
-
-(empty)
+Nothing should be ignored based on the provided file changes, as they only include source code files (.js) and HTML files, which are not build artifacts, dependencies, or temporary files.

@@ -13,17 +13,31 @@ const SHEET_SNAP_LARGE  = 0.85;
 
 const FETCH_TIMEOUT_MS  = 12000;
 
-// ─── Вспомогательная: fetch с таймаутом ────────────────────────
-function fetchWithTimeout(url, timeoutMs) {
+// ─── Вспомогательная: fetch с таймаутом и retry ────────────────────────
+function fetchWithTimeout(url, timeoutMs, retryCount = 0) {
   const controller = new AbortController();
   const timerId = setTimeout(() => controller.abort(), timeoutMs);
+  
   return fetch(url, { signal: controller.signal })
-    .then(res => { clearTimeout(timerId); return res; })
+    .then(res => { 
+      clearTimeout(timerId); 
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res; 
+    })
     .catch(err => {
       clearTimeout(timerId);
       if (err.name === 'AbortError') {
-        throw new Error('Превышено время ожидания загрузки данных');
+        err = new Error('Превышено время ожидания загрузки данных');
       }
+      
+      // Retry с exponential backoff
+      if (retryCount < GVS_CONFIG.FETCH_RETRY_COUNT) {
+        const delay = GVS_CONFIG.FETCH_RETRY_DELAY * Math.pow(2, retryCount);
+        console.warn(`[fetch] Попытка ${retryCount + 1} не удалась, повтор через ${delay}мс:`, url);
+        return new Promise(resolve => setTimeout(resolve, delay))
+          .then(() => fetchWithTimeout(url, timeoutMs, retryCount + 1));
+      }
+      
       throw err;
     });
 }
@@ -289,6 +303,7 @@ function renderAll() {
     fragment.appendChild(overflow);
   }
 
+  // Диффное обновление маркеров для предотвращения утечек памяти
   const newSet = new Set(visiblePts.map(p => p._marker));
   const toRemove = [];
   const toAdd    = [];
@@ -296,7 +311,10 @@ function renderAll() {
   newSet.forEach(m    => { if (!_visibleSet.has(m)) toAdd.push(m); });
   if (toRemove.length) clusterGroup.removeLayers(toRemove);
   if (toAdd.length)    clusterGroup.addLayers(toAdd);
-  _visibleSet = newSet;
+  
+  // Очистка старых ссылок для предотвращения утечек памяти
+  _visibleSet.clear();
+  newSet.forEach(m => _visibleSet.add(m));
 
   const listEl = document.getElementById('addrList');
   listEl.innerHTML = '';
@@ -385,7 +403,7 @@ document.getElementById('searchClear').addEventListener('click', () => {
   }
 
   function initHeight() {
-    // Debounced resize handler
+    // Debounced resize handler с пересозданием обработчиков
     if (resizeTimeout) clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       panel.style.height = isMobile()
@@ -396,7 +414,14 @@ document.getElementById('searchClear').addEventListener('click', () => {
 
   handle.addEventListener('mousedown',  onStart);
   handle.addEventListener('touchstart', onStart, { passive: true });
-  window.addEventListener('resize', initHeight);
+  
+  // Debounced resize listener для корректной работы при изменении размера окна
+  let resizeDebounce = null;
+  window.addEventListener('resize', () => {
+    if (resizeDebounce) clearTimeout(resizeDebounce);
+    resizeDebounce = setTimeout(initHeight, 200);
+  });
+  
   initHeight();
 }());
 

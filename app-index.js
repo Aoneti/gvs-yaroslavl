@@ -207,7 +207,7 @@ function goPage(n) {
   const header = document.querySelector('header');
   const offset = header ? header.offsetHeight : 0;
   window.scrollTo({ 
-    top: -offset, 
+    top: offset, 
     behavior: 'smooth' 
   });
 }
