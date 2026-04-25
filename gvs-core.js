@@ -119,7 +119,7 @@ const GVS = (() => {
       }
     }
 
-    // 5. Одиночная дата
+    // 5. Одиночная дата dd.mm.yyyy
     if (!start) start = _parseOneDate(clean);
     if (!start) return null;
 
@@ -187,7 +187,9 @@ const GVS = (() => {
     );
 
     const periods = _getPeriods(d);
-    if (!periods.length)                                                    return 'normal';
+    if (!periods.length) return 'normal';
+    
+    // Приоритет: active > past > soon > normal
     if (periods.some(p => today >= p.start && today <= p.end))             return 'active';
     if (periods.every(p => p.end < today))                                  return 'past';
     if (periods.some(p => p.start > today && p.start <= soonLimit))        return 'soon';
