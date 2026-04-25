@@ -50,7 +50,6 @@ const resultsEl    = document.getElementById('results');
 const statsBar     = document.getElementById('statsBar');
 const foundCount   = document.getElementById('foundCount');
 const paginationEl = document.getElementById('pagination');
-const hintsDropdown = document.getElementById('hintsDropdown');
 
 // ─── Подсветка совпадений ───────────────────────────────────────────────
 function hl(text, tokens) {
@@ -248,8 +247,6 @@ function applySearch() {
 // ─── События ─────────────────────────────────────────────────────────────
 let _searchDebounce;
 searchInput.addEventListener('input', () => {
-  if (searchInput.value) hintsDropdown.classList.remove('open');
-  else hintsDropdown.classList.add('open');
   clearTimeout(_searchDebounce);
   _searchDebounce = setTimeout(applySearch, 250);
 });
@@ -263,21 +260,6 @@ clearBtn.addEventListener('click', () => {
   searchInput.value = '';
   applySearch();
   searchInput.focus();
-});
-
-// ─── Hints dropdown ──────────────────────────────────────────────────────
-function openHints()  { if (!searchInput.value) hintsDropdown.classList.add('open'); }
-function closeHints() { setTimeout(() => hintsDropdown.classList.remove('open'), 150); }
-searchInput.addEventListener('focus', openHints);
-searchInput.addEventListener('blur',  closeHints);
-
-document.querySelectorAll('.hint').forEach(btn => {
-  btn.addEventListener('click', () => {
-    searchInput.value = btn.dataset.value || btn.textContent.trim();
-    hintsDropdown.classList.remove('open');
-    applySearch();
-    searchInput.focus();
-  });
 });
 
 // ─── Загрузка data.json ─────────────────
