@@ -1,4 +1,5 @@
 'use strict';
+
 // ─── Вспомогательная: fetch с таймаутом и retry ────────────────────────
 function fetchWithTimeout(url, timeoutMs, retryCount = 0) {
   const controller = new AbortController();
@@ -35,7 +36,7 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 });
 
 // ─── Состояние ──────────────────────────────────────────────────────────
-const PER_PAGE = GVS.PER_PAGE;
+const PER_PAGE = GVS_CONFIG.PER_PAGE;
 
 let DATA          = [];
 let filtered      = [];
