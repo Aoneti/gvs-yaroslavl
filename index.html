@@ -202,40 +202,6 @@
   .clear-btn:hover { background: var(--accent); color: white; }
   .clear-btn.visible { display: flex; }
 
-  /* Hints dropdown */
-  .hints-dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0; right: 0;
-    background: var(--surface);
-    border: 1.5px solid var(--accent);
-    border-radius: 12px;
-    padding: 6px;
-    z-index: 100;
-    display: none;
-    flex-direction: column;
-    gap: 2px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
-  }
-  .hints-dropdown.open { display: flex; }
-  .hint {
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    padding: 9px 14px;
-    font-size: 14px;
-    color: var(--muted);
-    cursor: pointer;
-    text-align: left;
-    font-family: 'Golos Text', sans-serif;
-    transition: background 0.15s, color 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .hint-icon { font-size: 12px; opacity: 0.5; flex-shrink: 0; }
-  .hint:hover { background: var(--surface2); color: var(--accent2); }
-
   /* Stats bar */
   .stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
   .stat-chip {
@@ -488,14 +454,6 @@
     <input type="text" id="searchInput" placeholder="Введите улицу и дом..." autocomplete="off" spellcheck="false"
            autofocus aria-label="Поиск по адресу" aria-autocomplete="list">
     <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска" type="button">✕</button>
-    <div class="hints-dropdown" id="hintsDropdown">
-      <button class="hint" data-value="Толбухина"  type="button"><span class="hint-icon">⚡</span>Толбухина</button>
-      <button class="hint" data-value="Некрасова"  type="button"><span class="hint-icon">⚡</span>Некрасова</button>
-      <button class="hint" data-value="Ленина"     type="button"><span class="hint-icon">⚡</span>Ленина</button>
-      <button class="hint" data-value="Чайковского" type="button"><span class="hint-icon">⚡</span>Чайковского</button>
-      <button class="hint" data-value="Свердлова"  type="button"><span class="hint-icon">⚡</span>Свердлова</button>
-      <button class="hint" data-value="Угличская"  type="button"><span class="hint-icon">⚡</span>Угличская</button>
-    </div>
   </div>
 
   <div id="statsBar" class="stats" style="display:none" aria-live="polite">
