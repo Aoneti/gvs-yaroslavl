@@ -1,5 +1,4 @@
 'use strict';
-
 const GVS = (() => {
 
   // ─── Константы ──────────────────────────────────────────────
@@ -11,7 +10,7 @@ const GVS = (() => {
     return Boolean(v && DATE_PERIOD_RE.test(String(v)));
   }
 
-  // ─── HTML-экранирование ──────────────────────────────────────
+  // ─── HTML-экранирование ───
   function escapeHtml(s) {
     return String(s)
       .replace(/&/g, '&amp;')
@@ -20,7 +19,7 @@ const GVS = (() => {
       .replace(/"/g, '&quot;');
   }
 
-  // ─── Нормализация поискового запроса ────────
+  // ─── Нормализация поискового запроса ───
   const _STREET_ALIASES = {
     'пр-кт':    'проспект',
     'пр-д':     'проезд',
@@ -41,14 +40,14 @@ const GVS = (() => {
       .filter(t => !_NOISE_TOKENS.has(t));
   }
 
-  // ─── Вспомогательная: нормализованный сегодня ──────────────
+  // ─── Вспомогательная: нормализованный сегодня ───
   function makeToday() {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
     return d;
   }
 
-  // ─── DST-безопасная разность дат в днях ──────────────────────
+  // ─── DST-безопасная разность дат в днях ───
   function _daysDiff(dateA, dateB) {
     const a = new Date(dateA.getFullYear(), dateA.getMonth(), dateA.getDate());
     const b = new Date(dateB.getFullYear(), dateB.getMonth(), dateB.getDate());
@@ -57,7 +56,7 @@ const GVS = (() => {
     return diffMs >= 0 ? Math.floor(diffMs / 86400000) : Math.ceil(diffMs / 86400000);
   }
 
-  // ─── Безопасное создание даты с защитой от переполнения ──────
+  // ─── Создание даты с защитой от переполнения ───
   function _safeDate(year, month0, day) {
     if (month0 < 0 || month0 > 11 || day < 1 || day > 31) return null;
     const d = new Date(year, month0, day);
@@ -65,14 +64,14 @@ const GVS = (() => {
     return d;
   }
 
-  // ─── Парсинг одиночной даты «dd.mm.yyyy» ─────────────────────
+  // ─── Парсинг одиночной даты «dd.mm.yyyy» ───
   function _parseOneDate(s) {
     const m = String(s).match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
     if (!m) return null;
     return _safeDate(+m[3], +m[2] - 1, +m[1]);
   }
 
-  // ─── Парсинг периода dd.mm.yyyy[-dd.mm.yyyy] ─────────────────
+  // ─── Парсинг периода dd.mm.yyyy[-dd.mm.yyyy] ───
   function parsePeriod(rangeStr, onStr) {
     if (!rangeStr || typeof rangeStr !== 'string') return null;
     
@@ -127,7 +126,7 @@ const GVS = (() => {
     return { start, end: endFromOn || end2 || start };
   }
 
-  // ─── Кешированный доступ к периодам одной записи ─────────────
+  // ─── Кешированный доступ к периодам одной записи ───
   function _getPeriods(d) {
     if (d._periods) {
       return [d._periods.repair, d._periods.hydro1, d._periods.hydro2].filter(Boolean);
@@ -139,7 +138,7 @@ const GVS = (() => {
     ].filter(Boolean);
   }
 
-  // ─── Кешированный доступ к именованным периодам одной записи ──
+  // ─── Кешированный доступ к периодам одной записи ───
   function _getNamedPeriods(d) {
     return d._periods || {
       repair: parsePeriod(d.repair,  d.repair_on),
@@ -148,7 +147,7 @@ const GVS = (() => {
     };
   }
 
-  // ─── Разбирает и кеширует периоды одной записи ───────────────
+  // ─── Кешир периодов одной записи ───
   function cacheRecordPeriods(d) {
     d._periods = {
       repair: parsePeriod(d.repair,  d.repair_on),
@@ -158,7 +157,7 @@ const GVS = (() => {
     return d;
   }
 
-  // ─── Счётчик дней (для чипа на карточке) ─────────────────────
+  // ─── Счётчик дней ───
   function getDaysInfo(d, today) {
     if (!today) today = makeToday();
     const periods = _getPeriods(d);
@@ -179,7 +178,7 @@ const GVS = (() => {
     return null;
   }
 
-  // ─── Статус карточки относительно сегодня ────────────────────
+  // ─── Статус карточки относительно сегодня ───
   function getStatus(d, today) {
     if (!today) today = makeToday();
     const soonLimit = new Date(
@@ -196,7 +195,7 @@ const GVS = (() => {
     return 'normal';
   }
 
-  // ─── Тип активного периода ───────────────────────────────────
+  // ─── Тип активного периода ───
   function getActivePeriodType(d, today) {
     if (!today) today = makeToday();
     const np = _getNamedPeriods(d);
@@ -206,7 +205,7 @@ const GVS = (() => {
     return null;
   }
 
-  // ─── Цвет маркера для карты ──────────────────────────────────
+  // ─── Цвет маркера для карты ───
   const _COLOR_BY_TYPE = {
     repair: '#e85d2f',
     hydro1: '#d29922',
@@ -241,7 +240,7 @@ const GVS = (() => {
     return '#7d8590';
   }
 
-  // ─── Public API ───────────────────────────────────────────────
+  // ─── Public API ───
   return {
     PER_PAGE,
     SOON_DAYS,
