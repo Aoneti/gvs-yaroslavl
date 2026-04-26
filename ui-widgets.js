@@ -5,7 +5,6 @@
   const mini      = document.getElementById('social-mini');
   const TRACKER_KEY = 'gvs_tracker_hidden_v1';
   const SOCIAL_KEY  = 'gvs_social_hidden_v1';
-
   const LS = {
     get(key)        { try { return localStorage.getItem(key); }  catch (e) { return null; } },
     set(key, val)   { try { localStorage.setItem(key, val); }    catch (e) {} },
