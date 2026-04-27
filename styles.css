@@ -325,16 +325,16 @@ html {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transform: rotate(-2deg);
+  transform: rotate(0deg);
   font-size: 20px;
   border: none;
   transition: bottom 360ms cubic-bezier(.2,.9,.2,1), opacity 200ms, transform .15s;
 }
-#social-mini:hover { transform: rotate(-2deg) scale(1.1); }
+#social-mini:hover { transform: rotate(0deg) scale(1.1); }
 
 @keyframes notebookIn {
   from { transform: translateY(20px) rotate(-5deg); opacity: 0; }
-  to   { transform: translateY(0)    rotate(-2deg); opacity: 1; }
+  to   { transform: translateY(0)    rotate(0deg); opacity: 1; }
 }
 .show .notebook { animation: notebookIn 380ms cubic-bezier(.2,.9,.2,1); }
 
