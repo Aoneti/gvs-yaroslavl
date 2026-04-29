@@ -57,8 +57,8 @@
 │   ├── leaflet.js/css      # Leaflet
 │   └── leaflet.markercluster.js/css  # MarkerCluster
 ├── scripts/
-│   ├── convert.ipynb           # Конвертация данных из Excel → data.json
-│   └── geocoder.ipynb          # Геокодирование адресов → geo.json
+│   ├── convert.ipynb       # Конвертация данных из Excel → data.json
+│   └── geocoder.ipynb      # Геокодирование адресов → geo.json
 ```
 
 ## Технологический стек
@@ -74,6 +74,8 @@
 
 ### Инфраструктура
 - **GitHub Pages** — хостинг статического контента
+
+---
 
 ## Лицензия
 
