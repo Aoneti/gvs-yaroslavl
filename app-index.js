@@ -1,6 +1,6 @@
 'use strict';
 
-// ─── Вспомогательная: fetch с таймаутом и retry ────────────────────────
+// ─── fetch с таймаутом и retry ────────────────────────
 function fetchWithTimeout(url, timeoutMs, retryCount = 0) {
   const controller = new AbortController();
   const timerId = setTimeout(() => controller.abort(), timeoutMs);
@@ -17,7 +17,7 @@ function fetchWithTimeout(url, timeoutMs, retryCount = 0) {
         err = new Error('Превышено время ожидания загрузки данных');
       }
       
-      // Retry с exponential backoff
+      // Retry
       if (retryCount < GVS_CONFIG.FETCH_RETRY_COUNT) {
         const delay = GVS_CONFIG.FETCH_RETRY_DELAY * Math.pow(2, retryCount);
         console.warn(`[fetch] Попытка ${retryCount + 1} не удалась, повтор через ${delay}мс:`, url);
@@ -76,7 +76,7 @@ function hl(text, tokens) {
     else merged.push(ranges[j]);
   }
 
-  // Безопасная вставка через DOM-элементы вместо конкатенации строк
+  // Безопасная вставка через DOM-элементы
   const container = document.createElement('span');
   let pos = 0;
   for (const [start, end] of merged) {
@@ -203,7 +203,7 @@ function goPage(n) {
   currentPage = Math.max(1, Math.min(n, total));
   renderPage(currentTokens);
   
-  // Учёт высоты хедера при скролле
+  // Учёт высоты хедера
   const header = document.querySelector('header');
   const offset = header ? header.offsetHeight : 0;
   window.scrollTo({ 
@@ -272,13 +272,11 @@ resultsEl.innerHTML = '<div class="state-message">' +
 fetchWithTimeout('data.json', GVS_CONFIG.FETCH_TIMEOUT_MS)
   .then(r => r.json())
   .then(json => {
-    // Валидация данных
     if (!Array.isArray(json)) {
       throw new Error('data.json должен содержать массив');
     }
     
     DATA = json.map(d => {
-      // Валидация каждой записи
       if (!d || typeof d !== 'object') {
         console.warn('[index] Пропущена некорректная запись:', d);
         return null;
