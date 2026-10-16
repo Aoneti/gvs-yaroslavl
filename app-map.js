@@ -304,6 +304,13 @@ function renderAll() {
     fragment.appendChild(overflow);
   }
 
+  if (missedCount > 0) {
+  const note = document.createElement('div');
+  note.className = 'addr-overflow';
+  note.textContent = 'Не показано на карте: ' + pluralAddr(missedCount) + ' (нет координат). Их можно найти через поиск на главной.';
+  fragment.appendChild(note);
+}
+
   // Диффное обновление маркеров для предотвращения утечек памяти
   const newSet = new Set(visiblePts.map(p => p._marker));
   const toRemove = [];
