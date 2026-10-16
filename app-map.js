@@ -113,6 +113,7 @@ map.addLayer(clusterGroup);
 
 const allPoints    = [];
 let   activeAddr   = null;
+let   missedCount  = 0;
 const markerColorMap = new Map();
 
 const { escapeHtml } = GVS;
@@ -231,6 +232,7 @@ function loadData() {
     }
 
     console.info('[map] geo совпало: ' + matched + ', без координат: ' + missed);
+    missedCount = missed;
 
     const chip = document.getElementById('counterChip');
     if (missed > 0) {
@@ -305,11 +307,11 @@ function renderAll() {
   }
 
   if (missedCount > 0) {
-  const note = document.createElement('div');
-  note.className = 'addr-overflow';
-  note.textContent = 'Не показано на карте: ' + pluralAddr(missedCount) + ' (нет координат). Их можно найти через поиск на главной.';
-  fragment.appendChild(note);
-}
+    const note = document.createElement('div');
+    note.className   = 'addr-overflow';
+    note.textContent = 'Не показано на карте: ' + pluralAddr(missedCount) + ' (нет координат). Их можно найти через поиск на главной.';
+    fragment.appendChild(note);
+  }
 
   // Диффное обновление маркеров для предотвращения утечек памяти
   const newSet = new Set(visiblePts.map(p => p._marker));

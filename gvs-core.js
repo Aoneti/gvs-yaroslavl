@@ -212,31 +212,31 @@ const GVS = (() => {
     hydro2: '#58a6ff',
   };
 
-function getMapColor(records, today) {
-  if (!today) today = makeToday();
- 
-  const TYPES = ['repair', 'hydro1', 'hydro2'];              // порядок = приоритет
-  const named = records.map(r => _getNamedPeriods(r));
-  const all   = named.flatMap(np => TYPES.map(t => np[t]).filter(Boolean));
- 
-  // 1. Отключение идёт сейчас: побеждает тип с наивысшим приоритетом среди ВСЕХ записей адреса
-  for (const t of TYPES) {
-    if (named.some(np => np[t] && today >= np[t].start && today <= np[t].end)) {
-      return _COLOR_BY_TYPE[t];
+  function getMapColor(records, today) {
+    if (!today) today = makeToday();
+
+    const TYPES = ['repair', 'hydro1', 'hydro2'];              // порядок = приоритет
+    const named = records.map(r => _getNamedPeriods(r));
+    const all   = named.flatMap(np => TYPES.map(t => np[t]).filter(Boolean));
+
+    // 1. Отключение идёт сейчас: побеждает тип с наивысшим приоритетом среди ВСЕХ записей адреса
+    for (const t of TYPES) {
+      if (named.some(np => np[t] && today >= np[t].start && today <= np[t].end)) {
+        return _COLOR_BY_TYPE[t];
+      }
     }
+
+    // 2. Все периоды позади
+    if (all.length > 0 && all.every(p => p.end < today)) return '#3fb950';
+
+    // 3. Есть предстоящие
+    for (const t of TYPES) {
+      if (named.some(np => np[t] && np[t].start > today)) return _COLOR_BY_TYPE[t];
+    }
+
+    return '#7d8590';
   }
- 
-  // 2. Все периоды позади
-  if (all.length > 0 && all.every(p => p.end < today)) return '#3fb950';
- 
-  // 3. Есть предстоящие
-  for (const t of TYPES) {
-    if (named.some(np => np[t] && np[t].start > today)) return _COLOR_BY_TYPE[t];
-  }
- 
-  return '#7d8590';
-}
- 
+
   // ─── Public API ───
   return {
     PER_PAGE,
