@@ -212,34 +212,31 @@ const GVS = (() => {
     hydro2: '#58a6ff',
   };
 
-  function getMapColor(records, today) {
-    if (!today) today = makeToday();
-
-    const allPeriods = records.reduce(
-      (acc, r) => acc.concat(_getPeriods(r)),
-      []
-    );
-
-    for (const r of records) {
-      const np = _getNamedPeriods(r);
-      if (np.repair && today >= np.repair.start && today <= np.repair.end) return _COLOR_BY_TYPE.repair;
-      if (np.hydro1 && today >= np.hydro1.start && today <= np.hydro1.end) return _COLOR_BY_TYPE.hydro1;
-      if (np.hydro2 && today >= np.hydro2.start && today <= np.hydro2.end) return _COLOR_BY_TYPE.hydro2;
+function getMapColor(records, today) {
+  if (!today) today = makeToday();
+ 
+  const TYPES = ['repair', 'hydro1', 'hydro2'];              // порядок = приоритет
+  const named = records.map(r => _getNamedPeriods(r));
+  const all   = named.flatMap(np => TYPES.map(t => np[t]).filter(Boolean));
+ 
+  // 1. Отключение идёт сейчас: побеждает тип с наивысшим приоритетом среди ВСЕХ записей адреса
+  for (const t of TYPES) {
+    if (named.some(np => np[t] && today >= np[t].start && today <= np[t].end)) {
+      return _COLOR_BY_TYPE[t];
     }
-
-    if (allPeriods.length > 0 && allPeriods.every(p => p.end < today)) return '#3fb950';
-
-    const types = ['repair', 'hydro1', 'hydro2'];
-    for (const type of types) {
-      for (const r of records) {
-        const np = _getNamedPeriods(r);
-        if (np[type] && np[type].start > today) return _COLOR_BY_TYPE[type];
-      }
-    }
-
-    return '#7d8590';
   }
-
+ 
+  // 2. Все периоды позади
+  if (all.length > 0 && all.every(p => p.end < today)) return '#3fb950';
+ 
+  // 3. Есть предстоящие
+  for (const t of TYPES) {
+    if (named.some(np => np[t] && np[t].start > today)) return _COLOR_BY_TYPE[t];
+  }
+ 
+  return '#7d8590';
+}
+ 
   // ─── Public API ───
   return {
     PER_PAGE,
