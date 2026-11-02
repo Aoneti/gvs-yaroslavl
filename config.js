@@ -29,6 +29,10 @@ const GVS_CONFIG = {
   // Retry configuration
   FETCH_RETRY_COUNT: 3,
   FETCH_RETRY_DELAY: 1000,  // базовая задержка, увеличивается экспоненциально
+
+  // Аварии и отключения ЖКХ (incidents.json обновляет GitHub Actions)
+  INCIDENTS_URL: 'incidents.json',  // путь БЕЗ ведущего «/»: сайт живёт в подпапке /gvs-yaroslavl/
+  INCIDENTS_STALE_HOURS: 30,        // через сколько часов без обновления показывать плашку «данные устарели»
 };
 
 // Экспорт для использования в других модулях

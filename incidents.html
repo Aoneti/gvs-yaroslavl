@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               script-src 'self' https://mc.yandex.ru;
+               style-src 'self' 'unsafe-inline';
+               font-src 'self';
+               img-src 'self' data: https://mc.yandex.ru;
+               connect-src 'self' https://mc.yandex.ru;
+               frame-src 'none';">
+
+<title>Аварии и отключения ЖКХ в Ярославле — сегодня</title>
+<meta name="description" content="Действующие аварии и плановые отключения горячей и холодной воды, отопления, электричества и газа в Ярославле. Поиск по улице и дому, сроки работ и телефоны служб.">
+<meta name="keywords" content="аварии ЖКХ Ярославль, отключение воды Ярославль сегодня, отключение света Ярославль, отключение газа Ярославль, отключение отопления Ярославль">
+<link rel="canonical" href="https://aoneti.github.io/gvs-yaroslavl/incidents.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚨</text></svg>">
+<script src="theme-init.js"></script>
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  /* Красный для аварий: в палитре сайта его нет, а оранжевый занят фирменным акцентом */
+  :root      { --danger: #f85149; }
+  html.light { --danger: #cf222e; }
+
+  html { overflow-x: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Сетка на фоне — как на главной */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,93,47,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,93,47,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  html.light body::before {
+    background-image:
+      linear-gradient(rgba(232,93,47,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,93,47,0.06) 1px, transparent 1px);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+  }
+
+  .u-visually-hidden {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ── Верхняя строка: назад + тема ── */
+  .page-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 0 0;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: border-color .2s, color .2s;
+  }
+  .back-link:hover { border-color: var(--accent); color: var(--accent2); }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 30px;
+    padding: 4px 6px 4px 10px;
+    cursor: pointer;
+    transition: border-color .2s;
+    user-select: none;
+    font: inherit;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .theme-emoji { font-size: 15px; line-height: 1; }
+  .theme-track {
+    width: 36px; height: 20px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    position: relative;
+    flex-shrink: 0;
+    transition: background .2s;
+  }
+  .theme-thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: transform .2s, background .2s;
+  }
+  html.light .theme-thumb { transform: translateX(16px); background: var(--accent); }
+  html.light .theme-track { background: rgba(232,93,47,0.12); border-color: rgba(232,93,47,0.3); }
+
+  /* ── Заголовок ── */
+  .page-head { padding: 36px 0 4px; }
+  h1 {
+    font-family: 'Unbounded', system-ui, sans-serif;
+    font-size: clamp(22px, 4.6vw, 34px);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 14px;
+  }
+  .lead { color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 64ch; min-height: 3.2em; }
+  .lead b { color: var(--text); font-weight: 600; }
+
+  .info-alert {
+    margin-top: 20px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--warn) 45%, transparent);
+    background: color-mix(in srgb, var(--warn) 12%, transparent);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .info-alert a { color: var(--accent2); }
+
+  /* ── Поиск ── */
+  .info-filter { position: relative; margin: 28px 0 14px; }
+  .info-filter__icon {
+    position: absolute;
+    left: 18px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 18px;
+    pointer-events: none;
+    transition: color .2s;
+  }
+  .info-filter:focus-within .info-filter__icon { color: var(--accent); }
+  .info-filter__input {
+    width: 100%;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 16px;
+    padding: 15px 52px 15px 50px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .info-filter__input::placeholder { color: var(--muted); }
+  .info-filter__input::-webkit-search-cancel-button { display: none; }
+  .info-filter__input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(232,93,47,0.15);
+  }
+  .clear-btn {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    background: var(--border);
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 8px;
+    width: 30px; height: 30px;
+    font-size: 14px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s, color .2s;
+  }
+  .clear-btn:hover { background: var(--accent); color: #fff; }
+  .clear-btn.visible { display: flex; }
+
+  .info-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+  .info-filter__count { color: var(--muted); font-size: 14px; }
+
+  /* Переключатель «Все / Аварии / Плановые» */
+  .seg {
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .seg button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 6px 14px;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    color: var(--muted);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color .15s, background .15s;
+  }
+  .seg button:hover { color: var(--text); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  .seg .n { font-variant-numeric: tabular-nums; opacity: .75; }
+
+  /* Быстрый переход к разделу */
+  .info-jump {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-top: 16px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .info-jump[hidden] { display: none; }
+  .info-jump::-webkit-scrollbar { display: none; }
+  .info-jump button {
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .info-jump button:hover { border-color: var(--accent); }
+  .info-jump .n { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* ── Разделы и таблицы ── */
+  .info-block { margin-top: 32px; scroll-margin-top: 16px; }
+  .info-block h2 {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    margin-bottom: 12px;
+    font-family: 'Unbounded', system-ui, sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .info-flame { font-size: 15px; }
+  .info-muted { color: var(--muted); font-family: 'Golos Text', system-ui, sans-serif; font-size: 13px; font-weight: 400; }
+
+  .info-table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow-x: auto;
+  }
+  .info-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .info-table th {
+    text-align: left;
+    white-space: nowrap;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .info-table td {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.45;
+  }
+  .info-table tbody tr:first-child td { border-top: 0; }
+  .info-table tbody tr:hover td { background: color-mix(in srgb, var(--surface2) 55%, transparent); }
+  .info-table th:nth-child(1), .info-table td:nth-child(1) { width: 28%; min-width: 220px; }
+  .info-table th:nth-child(2), .info-table td:nth-child(2) { width: 25%; min-width: 190px; }
+  .info-table th:nth-child(3), .info-table td:nth-child(3) { min-width: 185px; }
+  .info-table th:nth-child(4), .info-table td:nth-child(4) { min-width: 200px; }
+
+  /* Красная полоса слева — аварии заметны при беглом просмотре */
+  .info-table tr.is-emergency td:first-child { box-shadow: inset 3px 0 0 var(--danger); }
+
+  .info-addr { font-weight: 600; font-size: 15px; }
+  .info-addr a {
+    color: inherit;
+    text-decoration: underline dotted var(--muted);
+    text-underline-offset: 4px;
+  }
+  .info-addr a:hover { color: var(--accent2); text-decoration-color: currentColor; }
+
+  .info-more { margin-top: 8px; font-size: 13px; font-weight: 400; }
+  .info-more summary { cursor: pointer; color: var(--accent2); }
+  .info-more p { margin-top: 6px; color: var(--muted); line-height: 1.55; overflow-wrap: anywhere; }
+
+  .info-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .info-badge--emergency {
+    color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 14%, transparent);
+    border-color: color-mix(in srgb, var(--danger) 38%, transparent);
+  }
+  .info-badge--planned {
+    color: var(--blue);
+    background: color-mix(in srgb, var(--blue) 14%, transparent);
+    border-color: color-mix(in srgb, var(--blue) 38%, transparent);
+  }
+  .info-kind .info-muted { margin-top: 6px; }
+
+  .info-term span { display: block; white-space: nowrap; }   /* «с … / по …» — две короткие строки, не рвём */
+  .info-overdue { margin-top: 6px; color: var(--warn); font-size: 12px; font-weight: 600; }
+
+  .info-contacts a { color: var(--accent2); text-decoration: none; white-space: nowrap; }
+  .info-contacts a:hover { text-decoration: underline; }
+
+  mark { background: rgba(232,93,47,0.25); color: var(--accent2); border-radius: 3px; padding: 0 2px; }
+  html.light mark { background: rgba(232,93,47,0.18); }
+
+  /* ── Пустые состояния, кнопки ── */
+  .state-message { text-align: center; padding: 56px 20px; color: var(--muted); }
+  .state-message .emoji { display: block; margin-bottom: 16px; font-size: 48px; }
+  .state-message h3 { margin-bottom: 8px; color: var(--text); font-family: 'Unbounded', system-ui, sans-serif; font-size: 18px; }
+  .state-message p { max-width: 52ch; margin: 0 auto; font-size: 15px; line-height: 1.6; }
+  .state-message a { color: var(--accent2); }
+
+  .info-btn {
+    margin-top: 18px;
+    padding: 11px 20px;
+    background: var(--accent);
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .info-btn:hover { opacity: .9; }
+
+  /* ── Примечание и источник ── */
+  .info-note {
+    max-width: 72ch;
+    margin-top: 36px;
+    padding: 2px 0 2px 16px;
+    border-left: 3px solid var(--border);
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .info-note a, .info-source a { color: var(--accent2); }
+  .info-source { margin-top: 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+  /* ── Планшет и телефон: строки таблицы превращаются в карточки ──
+     Таблице нужно ≈ 800 px; уже этого — карточки, чтобы не скроллить вбок. */
+  @media (max-width: 900px) {
+    .info-table-wrap { background: transparent; border: 0; overflow: visible; }
+    .info-table, .info-table tbody, .info-table tr, .info-table td { display: block; }
+    /* Заголовок таблицы скрыт визуально, но остаётся для скринридеров */
+    .info-table thead {
+      position: absolute; width: 1px; height: 1px; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+    }
+    .info-table tr {
+      margin-bottom: 10px;
+      padding: 12px 16px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .info-table tr.is-emergency { border-left: 3px solid var(--danger); }
+    .info-table tr.is-emergency td:first-child { box-shadow: none; }
+    .info-table tbody tr:hover td { background: transparent; }
+    .info-table th:nth-child(n), .info-table td:nth-child(n) { width: auto; min-width: 0; }
+    .info-table td { padding: 4px 0; border: 0; }
+    .info-table td:first-child { padding-top: 0; font-size: 16px; }
+    .info-table td.info-kind { padding-bottom: 8px; }
+    .info-table td[data-label]::before {
+      content: attr(data-label);
+      display: block;
+      margin-bottom: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .info-table td.info-term, .info-table td.info-contacts { padding-top: 8px; }
+    .info-contacts a { white-space: normal; }
+  }
+
+  /* ── Телефон ── */
+  @media (max-width: 720px) {
+    .container { padding: 0 16px 32px; }
+    .page-head { padding-top: 28px; }
+    .info-filter { margin-top: 22px; }
+    .info-controls { align-items: stretch; }
+    .seg { width: 100%; }
+    .seg button { flex: 1; justify-content: center; padding: 6px 8px; }
+    .info-filter__count { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="page-top">
+    <a href="index.html" class="back-link">← На главную</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему" type="button">
+      <span class="theme-emoji">🌑</span>
+      <div class="theme-track"><div class="theme-thumb"></div></div>
+      <span class="theme-emoji">🌕</span>
+    </button>
+  </div>
+
+  <header class="page-head">
+    <h1>Аварии и отключения ЖКХ в Ярославле</h1>
+    <p class="lead" id="lead"></p>
+  </header>
+
+  <div id="staleAlert"></div>
+
+  <div class="info-filter">
+    <span class="info-filter__icon" aria-hidden="true">🔍</span>
+    <label class="u-visually-hidden" for="info-filter-input">Поиск по улице и дому</label>
+    <input class="info-filter__input" id="info-filter-input" type="search"
+           placeholder="Введите улицу и дом…" autocomplete="off" spellcheck="false">
+    <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска" type="button">✕</button>
+  </div>
+
+  <div class="info-controls">
+    <div class="seg" id="typeFilter" role="group" aria-label="Тип записей"></div>
+    <span class="info-filter__count" id="filterCount" aria-live="polite"></span>
+  </div>
+
+  <nav class="info-jump" id="jump" aria-label="Разделы" hidden></nav>
+
+  <div id="results">
+    <noscript>
+      <div class="state-message">
+        <span class="emoji">📄</span>
+        <h3>Нужен JavaScript</h3>
+        <p>Список строится в браузере. Актуальные данные можно посмотреть на сайте
+          «<a href="https://moydom-yaroslavl.ru/incident" target="_blank" rel="noopener noreferrer">Мой Дом</a>».</p>
+      </div>
+    </noscript>
+  </div>
+
+  <p class="info-note">
+    Данные могут отставать от реальности: аварийные службы не всегда сразу отмечают устранение, поэтому запись
+    с истёкшим сроком ещё какое-то время может оставаться в списке. Если вашего адреса здесь нет, это не гарантия,
+    что отключений нет, — уточните в управляющей компании. График летних отключений горячей воды —
+    <a href="index.html">на главной странице</a>.
+  </p>
+  <p class="info-source">
+    Источник: диспетчерская служба ЖКХ Ярославля через сервис
+    «<a href="https://moydom-yaroslavl.ru/incident" target="_blank" rel="noopener noreferrer">Мой Дом</a>».
+    Страница обновляется автоматически.
+  </p>
+
+</div>
+
+<footer style="text-align:center; padding: 24px 20px 40px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); position: relative; z-index: 1;">
+  Автор: <a href="https://t.me/xoroshik" target="_blank" rel="noopener noreferrer" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" rel="noopener noreferrer" style="color:var(--accent2);text-decoration:none;">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener noreferrer" title="Исходный код" style="color:var(--accent2);text-decoration:none;"><svg height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:3px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, 2026 год.
+</footer>
+
+<script src="config.js"></script>
+<script src="gvs-core.js"></script>
+<script src="app-incidents.js"></script>
+
+<!-- Yandex Metrika -->
+<script src="analytics.js" async></script>
+<noscript><div><img src="https://mc.yandex.ru/watch/108168247" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+
+</body>
+</html>
