@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-02T21:29:16.872Z",
+  "fetchedAt": "2026-11-03T05:44:22.383Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 46,
-  "total": 46,
-  "emergency": 32,
-  "planned": 14,
+  "apiTotal": 48,
+  "total": 48,
+  "emergency": 33,
+  "planned": 15,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -46,6 +46,20 @@
     {
       "name": "Холодное и горячее водоснабжение",
       "items": [
+        {
+          "id": 20067,
+          "address": "ул. Урицкого: д. 42",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы на линии",
+          "dateInterval": "с 3 ноября, 00:32 по 3 ноября, 23:55",
+          "startTs": 1793655120,
+          "endTs": 1793739300,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avar-vosst-raboti-na-linii-20067"
+        },
         {
           "id": 20047,
           "address": "ул. Строителей: д. 3, к. 4",
@@ -480,6 +494,20 @@
             "+7 (4852) 307-525"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20064"
+        },
+        {
+          "id": 20068,
+          "address": "ул. Блюхера: д. 82а",
+          "typeLabel": "план",
+          "typeDescription": "Плановое отключение электроэнергии",
+          "dateInterval": "с 3 ноября, 09:00 по 3 ноября, 19:00",
+          "startTs": 1793685600,
+          "endTs": 1793721600,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20068"
         },
         {
           "id": 20061,
