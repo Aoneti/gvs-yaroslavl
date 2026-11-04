@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-04T05:16:54.366Z",
+  "fetchedAt": "2026-11-04T19:28:53.831Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 24,
-  "total": 24,
-  "emergency": 13,
-  "planned": 11,
+  "apiTotal": 41,
+  "total": 39,
+  "emergency": 10,
+  "planned": 29,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -63,70 +63,6 @@
       ]
     },
     {
-      "name": "Отопление и горячее водоснабжение",
-      "items": [
-        {
-          "id": 20080,
-          "address": "ул. 8 Марта: д. 22, д. 20, д. 16, д. 14а, д. 12а; ул. Бахвалова: д. 13, д. 3, д. 11, д. 5а, д. 3а, д. 5, д. 9а, д. 9, д. 1а; ул. Закгейма: д. 32/15, д. 24, д. 28, д. 35, д. 37, д. 33/1, д. 26, д. 22а, д. 30",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы на тепловой сети",
-          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 12:00",
-          "startTs": 1793858400,
-          "endTs": 1793869200,
-          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
-          "phones": [
-            "+7 (4852) 797-321",
-            "+7 (4852) 253-895"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20080"
-        },
-        {
-          "id": 20079,
-          "address": "пл. Советская: д. 1/19; ул. Нахимсона: д. 1а",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы на тепловой сети",
-          "dateInterval": "с 4 ноября, 09:00 по 4 ноября, 18:00",
-          "startTs": 1793772000,
-          "endTs": 1793804400,
-          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
-          "phones": [
-            "+7 (4852) 797-321",
-            "+7 (4852) 253-895"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20079"
-        },
-        {
-          "id": 20078,
-          "address": "ш. Тутаевское: д. 55",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы на тепловой сети",
-          "dateInterval": "с 4 ноября, 09:00 по 4 ноября, 15:00",
-          "startTs": 1793772000,
-          "endTs": 1793793600,
-          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
-          "phones": [
-            "+7 (4852) 593-519"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20078"
-        },
-        {
-          "id": 20077,
-          "address": "ул. Нахимсона: д. 1б",
-          "typeLabel": "план",
-          "typeDescription": "Ремонтные работы на тепловой сети",
-          "dateInterval": "с 4 ноября, 08:00 по 4 ноября, 18:00",
-          "startTs": 1793768400,
-          "endTs": 1793804400,
-          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
-          "phones": [
-            "+7 (4852) 797-321",
-            "+7 (4852) 253-895"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnye-raboti-na-teplovoy-seti-20077"
-        }
-      ]
-    },
-    {
       "name": "Холодное водоснабжение",
       "items": [
         {
@@ -142,21 +78,6 @@
             "+7 (485) 259-42-06"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20082"
-        },
-        {
-          "id": 20088,
-          "address": "ул. Свободы: д. 13а",
-          "typeLabel": "план",
-          "typeDescription": "Устранение мелких неисправностей",
-          "dateInterval": "с 3 ноября, 23:10 по 4 ноября, 18:00",
-          "startTs": 1793736600,
-          "endTs": 1793804400,
-          "contacts": "АО «Ярославльводоканал»: +7 (4852) 734-477, +7 (4852) 736-631",
-          "phones": [
-            "+7 (4852) 734-477",
-            "+7 (4852) 736-631"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/ustranenie-melkih-neispravnostej-20088"
         },
         {
           "id": 20085,
@@ -281,6 +202,286 @@
     {
       "name": "Электроснабжение",
       "items": [
+        {
+          "id": 20095,
+          "address": "ул. Жукова: д. 17",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 10:00 по 5 ноября, 14:00",
+          "startTs": 1793862000,
+          "endTs": 1793876400,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20095"
+        },
+        {
+          "id": 20096,
+          "address": "ул. Жукова: д. 17б",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 10:00 по 5 ноября, 14:00",
+          "startTs": 1793862000,
+          "endTs": 1793876400,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20096"
+        },
+        {
+          "id": 20101,
+          "address": "ул. Березовая: д. 28, д. 4, д. 2, д. 38а, д. 14, д. 8, д. 6, д. 24, д. 34, д. 44, д. 16, д. 30, д. 22",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20101"
+        },
+        {
+          "id": 20092,
+          "address": "ул. Гагарина: д. 65",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20092"
+        },
+        {
+          "id": 20105,
+          "address": "ул. Гагарина: д. 65",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20105"
+        },
+        {
+          "id": 20093,
+          "address": "ул. Гагарина: д. 65б",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20093"
+        },
+        {
+          "id": 20106,
+          "address": "ул. Гагарина: д. 65б",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20106"
+        },
+        {
+          "id": 20094,
+          "address": "ул. Гагарина: д. 67а",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20094"
+        },
+        {
+          "id": 20107,
+          "address": "ул. Гагарина: д. 67а",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20107"
+        },
+        {
+          "id": 20104,
+          "address": "ул. Кленовая: д. 22, д. 34, д. 30, д. 2, д. 14, д. 6, д. 8, д. 38, д. 28/19, д. 18, д. 10, д. 36, д. 4б, д. 32, д. 16, д. 12, д. 20, д. 26/32, д. 4, д. 24, д. 4а",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20104"
+        },
+        {
+          "id": 20110,
+          "address": "ул. Комкора Хрипина: д. 2",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20110"
+        },
+        {
+          "id": 20111,
+          "address": "ул. Комкора Хрипина: д. 9",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20111"
+        },
+        {
+          "id": 20108,
+          "address": "ул. Куропаткова: д. 59в, д. 59б, д. 59а, д. 57, д. 59",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20108"
+        },
+        {
+          "id": 20109,
+          "address": "ул. Куропаткова: д. 64, д. 58, д. 67, д. 65, д. 63, д. 61, д. 68а, д. 59в, д. 59б, д. 69, д. 67а, д. 59а, д. 68, д. 62, д. 57, д. 59, д. 60, д. 70",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20109"
+        },
+        {
+          "id": 20102,
+          "address": "ул. Магистральная: д. 22, д. 52а, д. 30в, д. 72, д. 70, д. 24, стр. 7, д. 60б, д. 24, стр. 6, д. 54а, д. 76, д. 14, стр. 8, д. 24, стр. 3, д. 2, д. 74, д. 12, д. 50, д. 42, д. 32д, д. 14, стр. 5, д. 50а, стр. 2, д. 30а, д. 40, д. 58, д. 52, д. 26, д. 30, стр. 3, д. 20а, д. 46, д. 30, д. 36, д. 66, д. 64/25, д. 84, д. 68, д. 14, стр. 7, д. 30д, д. 38, д. 24, стр. 5, д. 80, д. 60а, д. 48/22, д. 14, стр. 4, д. 32, стр. 5, д. 14, стр. 3, д. 62/38, д. 16, д. 34, д. 82, д. 50а, стр. 1, д. 68а, д. 14, д. 24, стр. 4, д. 54, д. 24а, д. 10, д. 56, д. 32, д. 10б, д. 90, д. 20, д. 14, стр. 2, д. 38в, д. 14, стр. 6, д. 24, д. 44/33, д. 60, д. 88, д. 86, д. 16а, д. 4, д. 24, стр. 2, д. 78",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20102"
+        },
+        {
+          "id": 20097,
+          "address": "ул. Магистральная: д. 101",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20097"
+        },
+        {
+          "id": 20098,
+          "address": "ул. Магистральная: д. 103",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20098"
+        },
+        {
+          "id": 20103,
+          "address": "ул. Механическая: д. 32, д. 22, д. 10, д. 18а, д. 16б, д. 20, д. 16а, д. 36а, д. 8, д. 2, д. 18, д. 12, д. 28/12, д. 4, д. 26, д. 16, д. 6, д. 30/1, д. 34, д. 14а, д. 14, д. 24",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20103"
+        },
+        {
+          "id": 20099,
+          "address": "ул. Парниковая: д. 32, д. 36а, д. 34, д. 12, д. 14, д. 18, д. 30, д. 10, д. 16, д. 2, д. 22, д. 20, д. 8, д. 24, д. 6, д. 2а, д. 26/20, д. 28/7, д. 4",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20099"
+        },
+        {
+          "id": 20100,
+          "address": "ул. Полярная: д. 2б, д. 34, д. 18, д. 46, д. 2а, д. 32, д. 2д, д. 2г, д. 2, д. 10б, д. 40, д. 36, д. 28, д. 12, д. 16, д. 22, д. 10, д. 14, д. 10а, д. 42, д. 26, д. 24, д. 8, д. 30, д. 4а, д. 38/13, д. 6/15, д. 20, д. 48, д. 26а, д. 14а, д. 4, д. 44, д. 14б",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт системы электроснабжения",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "ЕДС ЖКХ: +7 (4852) 404-040",
+          "phones": [
+            "+7 (4852) 404-040"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20100"
+        },
         {
           "id": 19961,
           "address": "ул. Панина: д. 42",
