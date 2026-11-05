@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-04T19:28:53.831Z",
+  "fetchedAt": "2026-11-05T05:37:31.588Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 41,
-  "total": 39,
-  "emergency": 10,
+  "apiTotal": 40,
+  "total": 40,
+  "emergency": 11,
   "planned": 29,
   "groups": [
     {
@@ -45,40 +45,46 @@
             "+7 (485) 259-42-06"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avar-vosst-raboti-na-linii-20048"
+        }
+      ]
+    },
+    {
+      "name": "Отопление и горячее водоснабжение",
+      "items": [
+        {
+          "id": 20080,
+          "address": "ул. 8 Марта: д. 22, д. 20, д. 16, д. 14а, д. 12а; ул. Бахвалова: д. 13, д. 3, д. 11, д. 5а, д. 3а, д. 5, д. 9а, д. 9, д. 1а; ул. Закгейма: д. 32/15, д. 24, д. 28, д. 35, д. 37, д. 33/1, д. 26, д. 22а, д. 30",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы на тепловой сети",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 12:00",
+          "startTs": 1793858400,
+          "endTs": 1793869200,
+          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
+          "phones": [
+            "+7 (4852) 797-321",
+            "+7 (4852) 253-895"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20080"
         },
         {
-          "id": 20086,
-          "address": "ул. Батова: д. 5",
+          "id": 20112,
+          "address": "пр-кт Ленинградский: д. 60, к. 2, д. 62, д. 60, к. 3, д. 62, к. 4, д. 60, к. 4, д. 62, к. 5, д. 60, к. 5, д. 56/18, д. 60, д. 58, д. 62, к. 3; ул. Батова: д. 12, к. 2, д. 6, д. 12, д. 10, д. 8, д. 10, к. 3, д. 10, к. 2, д. 14; ул. Бахвалова: д. 9а, д. 3, д. 9б, д. 3а, д. 13, д. 9, д. 11, д. 1а, д. 5, д. 14/2; ул. Панина: д. 5, к. 6, д. 12, д. 5, к. 5, д. 16, д. 5, к. 7, д. 14",
           "typeLabel": "план",
-          "typeDescription": "Засор стояка канализации",
-          "dateInterval": "с 3 ноября, 22:21 по 4 ноября, 23:55",
-          "startTs": 1793733660,
-          "endTs": 1793825700,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "typeDescription": "Плановый ремонт оборудования",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 12:00",
+          "startTs": 1793858400,
+          "endTs": 1793869200,
+          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
           "phones": [
-            "+7 (485) 259-42-06"
+            "+7 (4852) 593-519"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zasor-stoyaka-kanal-20086"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovij-remont-oborudovaniya-20112"
         }
       ]
     },
     {
       "name": "Холодное водоснабжение",
       "items": [
-        {
-          "id": 20082,
-          "address": "ул. Труфанова: д. 34, к. 3",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы",
-          "dateInterval": "с 3 ноября, 11:40 по 4 ноября, 23:55",
-          "startTs": 1793695200,
-          "endTs": 1793825700,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20082"
-        },
         {
           "id": 20085,
           "address": "ул. Урицкого: д. 7",
@@ -112,6 +118,21 @@
             "+7 (4852) 253-895"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-teploseti-20081"
+        },
+        {
+          "id": 20113,
+          "address": "пр-кт Ленинградский: д. 60, к. 4",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы на линии",
+          "dateInterval": "с 5 ноября, 09:00 по 5 ноября, 16:00",
+          "startTs": 1793858400,
+          "endTs": 1793883600,
+          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
+          "phones": [
+            "+7 (4852) 797-321",
+            "+7 (4852) 253-895"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-linii-20113"
         },
         {
           "id": 19938,
