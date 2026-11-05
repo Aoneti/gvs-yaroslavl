@@ -1,13 +1,11 @@
 name: Fetch incidents
 
-# Раз в 12 часов скачивает действующие аварии и отключения ЖКХ с moydom-yaroslavl.ru,
-# кладёт их в incidents.json и коммитит. Браузер читает уже этот файл — CORS не мешает.
+# Скачивает действующие аварии и отключения ЖКХ с moydom-yaroslavl.ru,
+# кладёт их в incidents.json и коммитит.
 
 on:
   schedule:
-    # cron в UTC: 00:00 и 12:00 UTC — это 03:00 и 15:00 по Москве.
-    # Нужно 00:00 и 12:00 по Москве? Поставьте '0 9,21 * * *'.
-    - cron: '0 0,12 * * *'
+    - cron: '0 1,8,15 * * *'
   workflow_dispatch: # ручной запуск: Actions → Fetch incidents → Run workflow
 
 permissions:
@@ -56,11 +54,7 @@ jobs:
           # Если за время работы в ветку что-то запушили, подтягиваем и пробуем ещё раз
           git push || { git pull --rebase origin "$GITHUB_REF_NAME" && git push; }
           echo "changed=true" >> "$GITHUB_OUTPUT"
-
-      # Коммиты, отправленные с GITHUB_TOKEN, сами не запускают сборку GitHub Pages
-      # (так сказано в документации Pages), поэтому просим её явно.
-      # Если Pages у вас настроен через собственный workflow («Source: GitHub Actions»),
-      # замените этот шаг на запуск вашего deploy-workflow: gh workflow run <файл>.yml
+          
       - name: Request GitHub Pages build
         if: steps.commit.outputs.changed == 'true'
         env:
