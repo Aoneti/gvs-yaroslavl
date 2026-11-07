@@ -1,18 +1,32 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-07T14:33:48.250Z",
+  "fetchedAt": "2026-11-07T19:13:25.672Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 45,
-  "total": 44,
-  "emergency": 26,
+  "apiTotal": 46,
+  "total": 45,
+  "emergency": 27,
   "planned": 18,
   "groups": [
     {
       "name": "Горячее водоснабжение",
       "items": [
+        {
+          "id": 20187,
+          "address": "ул. Елены Колесовой: д. 50",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийная подпитка (ГВС)",
+          "dateInterval": "с 7 ноября, 18:22 по 9 ноября, 23:55",
+          "startTs": 1794064920,
+          "endTs": 1794257700,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijnaya-podpitka-20187"
+        },
         {
           "id": 20183,
           "address": "ул. Панина: д. 31",
