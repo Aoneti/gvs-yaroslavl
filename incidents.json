@@ -1,18 +1,32 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-07T06:45:03.349Z",
+  "fetchedAt": "2026-11-07T14:33:48.250Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 41,
-  "total": 40,
-  "emergency": 23,
-  "planned": 17,
+  "apiTotal": 45,
+  "total": 44,
+  "emergency": 26,
+  "planned": 18,
   "groups": [
     {
       "name": "Горячее водоснабжение",
       "items": [
+        {
+          "id": 20183,
+          "address": "ул. Панина: д. 31",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийная подпитка (ГВС)",
+          "dateInterval": "с 7 ноября, 13:26 по 9 ноября, 23:35",
+          "startTs": 1794047160,
+          "endTs": 1794256500,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijnaya-podpitka-20183"
+        },
         {
           "id": 20157,
           "address": "пр-кт Ленинградский: д. 47",
@@ -101,6 +115,20 @@
             "+7 (485) 259-42-06"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avar-vosst-raboti-na-linii-20154"
+        },
+        {
+          "id": 20182,
+          "address": "ул. Громова: д. 30",
+          "typeLabel": "план",
+          "typeDescription": "Устранение утечки на внутренней сети",
+          "dateInterval": "с 7 ноября, 11:55 по 7 ноября, 23:55",
+          "startTs": 1794041700,
+          "endTs": 1794084900,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/ustranenie-utechki-na-vnutrennej-seti-20182"
         }
       ]
     },
@@ -200,6 +228,21 @@
     {
       "name": "Холодное водоснабжение",
       "items": [
+        {
+          "id": 20186,
+          "address": "пр-кт Авиаторов: д. 161, д. 104, д. 159, д. 106; ул. 3-я Яковлевская: д. 9; ул. Космонавтов: д. 8, д. 3, д. 17, д. 10, д. 14а, д. 18, д. 6, к. 2, д. 16, д. 6, д. 14б, д. 7, д. 12",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы",
+          "dateInterval": "с 07.11.2026 16:00 до устранения",
+          "startTs": 1794056400,
+          "endTs": null,
+          "contacts": "АО «Ярославльводоканал»: +7 (4852) 734-477, +7 (4852) 736-631",
+          "phones": [
+            "+7 (4852) 734-477",
+            "+7 (4852) 736-631"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20186"
+        },
         {
           "id": 20178,
           "address": "пр-кт Дзержинского: д. 3",
@@ -569,6 +612,21 @@
     {
       "name": "Газоснабжение",
       "items": [
+        {
+          "id": 20184,
+          "address": "ул. Урицкого: д. 63",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийное отключение",
+          "dateInterval": "с 07.11.2026 14:45 до устранения",
+          "startTs": 1794051900,
+          "endTs": null,
+          "contacts": "АО «Яргазсервис»: +7 (4852) 494-539, +7 (4852) 494-532",
+          "phones": [
+            "+7 (4852) 494-539",
+            "+7 (4852) 494-532"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijnoe-otkluchenie-20184"
+        },
         {
           "id": 20122,
           "address": "ул. Пирогова: д. 43",
