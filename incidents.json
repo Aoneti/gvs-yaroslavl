@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-08T14:40:17.003Z",
+  "fetchedAt": "2026-11-08T19:15:33.679Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
@@ -270,21 +270,6 @@
             "+7 (4852) 736-631"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20114"
-        },
-        {
-          "id": 20181,
-          "address": "пр-кт Октября: д. 88, д. 83, д. 85, д. 75",
-          "typeLabel": "план",
-          "typeDescription": "Плановое отключение холодного водоснабжения",
-          "dateInterval": "с 7 ноября, 19:00 по 8 ноября, 19:00",
-          "startTs": 1794067200,
-          "endTs": 1794153600,
-          "contacts": "АО «Ярославльводоканал»: +7 (4852) 734-477, +7 (4852) 736-631",
-          "phones": [
-            "+7 (4852) 734-477",
-            "+7 (4852) 736-631"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-holodnogo-vodosnabzheniya-20181"
         }
       ]
     },
@@ -577,6 +562,22 @@
             "+7 (485) 259-42-06"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20149"
+        },
+        {
+          "id": 20189,
+          "address": "пр-кт Дзержинского: д. 41, д. 33а, д. 47, д. 31а, д. 33, д. 39, д. 51, д. 29/71, д. 49, д. 53, д. 43, д. 45, д. 31, д. 37; пр-кт Ленинградский: д. 55, д. 57, д. 59, д. 69, д. 63, д. 65, д. 61, д. 67, д. 69а, д. 63а, д. 63б, д. 65а, д. 53, д. 61а; ул. Труфанова: д. 4, д. 6, к. 2, д. 8, к. 2, д. 2, д. 8, к. 3, д. 6, к. 3, д. 6, д. 8; ул. Урицкого: д. 58, д. 68, д. 66, д. 62, д. 56, д. 54/51, д. 64, д. 60",
+          "typeLabel": "план",
+          "typeDescription": "Авария на электросети",
+          "dateInterval": "с 8 ноября, 18:00 по 8 ноября, 23:55",
+          "startTs": 1794150000,
+          "endTs": 1794171300,
+          "contacts": "Филиал ПАО «Россети Центр Ярэнерго»: +7 (4852) 744-008, +7 (4852) 301-947, +7 (4852) 307-525 (Диспетчерская)",
+          "phones": [
+            "+7 (4852) 744-008",
+            "+7 (4852) 301-947",
+            "+7 (4852) 307-525"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avariya-na-elektroseti-20189"
         },
         {
           "id": 19961,
