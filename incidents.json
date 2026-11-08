@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-07T19:13:25.672Z",
+  "fetchedAt": "2026-11-08T14:40:17.003Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 46,
-  "total": 45,
-  "emergency": 27,
+  "apiTotal": 45,
+  "total": 44,
+  "emergency": 26,
   "planned": 18,
   "groups": [
     {
@@ -129,20 +129,6 @@
             "+7 (485) 259-42-06"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avar-vosst-raboti-na-linii-20154"
-        },
-        {
-          "id": 20182,
-          "address": "ул. Громова: д. 30",
-          "typeLabel": "план",
-          "typeDescription": "Устранение утечки на внутренней сети",
-          "dateInterval": "с 7 ноября, 11:55 по 7 ноября, 23:55",
-          "startTs": 1794041700,
-          "endTs": 1794084900,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/ustranenie-utechki-na-vnutrennej-seti-20182"
         }
       ]
     },
@@ -242,21 +228,6 @@
     {
       "name": "Холодное водоснабжение",
       "items": [
-        {
-          "id": 20186,
-          "address": "пр-кт Авиаторов: д. 161, д. 104, д. 159, д. 106; ул. 3-я Яковлевская: д. 9; ул. Космонавтов: д. 8, д. 3, д. 17, д. 10, д. 14а, д. 18, д. 6, к. 2, д. 16, д. 6, д. 14б, д. 7, д. 12",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы",
-          "dateInterval": "с 07.11.2026 16:00 до устранения",
-          "startTs": 1794056400,
-          "endTs": null,
-          "contacts": "АО «Ярославльводоканал»: +7 (4852) 734-477, +7 (4852) 736-631",
-          "phones": [
-            "+7 (4852) 734-477",
-            "+7 (4852) 736-631"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20186"
-        },
         {
           "id": 20178,
           "address": "пр-кт Дзержинского: д. 3",
@@ -502,6 +473,20 @@
             "+7 (4852) 404-040"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-otopleniya-20174"
+        },
+        {
+          "id": 20188,
+          "address": "ул. Панина: д. 25",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт стояков",
+          "dateInterval": "с 8 ноября, 23:07 по 9 ноября, 23:55",
+          "startTs": 1794168420,
+          "endTs": 1794257700,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20188"
         },
         {
           "id": 20118,
