@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-11T07:24:51.601Z",
+  "fetchedAt": "2026-11-11T15:44:21.393Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 44,
-  "total": 44,
-  "emergency": 17,
-  "planned": 27,
+  "apiTotal": 43,
+  "total": 43,
+  "emergency": 19,
+  "planned": 24,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -40,20 +40,6 @@
             "+7 (4852) 593-519"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-teploseti-20211"
-        },
-        {
-          "id": 20226,
-          "address": "пр-кт Дзержинского: д. 73",
-          "typeLabel": "план",
-          "typeDescription": "Плановое отключение горячего водоснабжения",
-          "dateInterval": "с 11 ноября, 09:00 по 11 ноября, 15:00",
-          "startTs": 1794376800,
-          "endTs": 1794398400,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-goryachego-vodosnabzheniya-20226"
         },
         {
           "id": 20236,
@@ -206,19 +192,34 @@
       "name": "Отопление и горячее водоснабжение",
       "items": [
         {
-          "id": 20237,
-          "address": "ул. Кудрявцева: д. 22/31, д. 20, д. 18; ул. Радищева: д. 31а, д. 29, д. 29а, д. 29б; ул. Свердлова: д. 110, д. 114, д. 101, д. 112, д. 99; ул. Чехова: д. 30/16, д. 22, д. 26, д. 28, д. 24; ул. Чкалова: д. 9",
+          "id": 20248,
+          "address": "ш. Тутаевское: д. 31а, д. 31б",
           "typeLabel": "авария",
           "typeDescription": "Аварийно-восстановительные работы на тепловой сети",
-          "dateInterval": "с 11 ноября, 09:00 по 11 ноября, 12:30",
-          "startTs": 1794376800,
-          "endTs": 1794389400,
+          "dateInterval": "с 12 ноября, 09:00 по 12 ноября, 15:00",
+          "startTs": 1794463200,
+          "endTs": 1794484800,
           "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
           "phones": [
             "+7 (4852) 797-321",
             "+7 (4852) 253-895"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20237"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20248"
+        },
+        {
+          "id": 20250,
+          "address": "пр-кт Ленина: д. 8, д. 8б, д. 10",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы на тепловой сети",
+          "dateInterval": "с 12 ноября, 06:00 по 12 ноября, 15:00",
+          "startTs": 1794452400,
+          "endTs": 1794484800,
+          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
+          "phones": [
+            "+7 (4852) 797-321",
+            "+7 (4852) 253-895"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20250"
         },
         {
           "id": 20241,
@@ -234,63 +235,6 @@
             "+7 (4852) 253-895"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20241"
-        },
-        {
-          "id": 20231,
-          "address": "пр-кт Московский: д. 102; пр-кт Октября: д. 70а; проезд Матросова: д. 2; проезд Моторостроителей: д. 14/84; ул. Овинная: д. 63",
-          "typeLabel": "план",
-          "typeDescription": "Плановое отключение отопления и горячего водоснабжения",
-          "dateInterval": "с 11 ноября, 09:30 по 11 ноября, 17:00",
-          "startTs": 1794378600,
-          "endTs": 1794405600,
-          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
-          "phones": [
-            "+7 (4852) 593-519"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-otopleniya-i-goryachego-vodosnabzheniya-20231"
-        },
-        {
-          "id": 20229,
-          "address": "пр-кт Октября: д. 72, д. 70, д. 72а/2, д. 68а, д. 68; ул. Менжинского: д. 4",
-          "typeLabel": "план",
-          "typeDescription": "Плановое отключение отопления и горячего водоснабжения",
-          "dateInterval": "с 11 ноября, 09:30 по 11 ноября, 15:30",
-          "startTs": 1794378600,
-          "endTs": 1794400200,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-otopleniya-i-goryachego-vodosnabzheniya-20229"
-        },
-        {
-          "id": 20230,
-          "address": "пр-кт Ленина: д. 19; пр-кт Октября: д. 70а; ул. Автозаводская: д. 97; ул. Чайковского: д. 10",
-          "typeLabel": "план",
-          "typeDescription": "Плановое отключение отопления и горячего водоснабжения",
-          "dateInterval": "с 11 ноября, 09:00 по 11 ноября, 16:00",
-          "startTs": 1794376800,
-          "endTs": 1794402000,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-otopleniya-i-goryachego-vodosnabzheniya-20230"
-        },
-        {
-          "id": 20228,
-          "address": "ул. Автозаводская: д. 97а, д. 97",
-          "typeLabel": "план",
-          "typeDescription": "Плановое отключение отопления и горячего водоснабжения",
-          "dateInterval": "с 11 ноября, 09:00 по 11 ноября, 15:00",
-          "startTs": 1794376800,
-          "endTs": 1794398400,
-          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
-          "phones": [
-            "+7 (4852) 797-321",
-            "+7 (4852) 253-895"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-otopleniya-i-goryachego-vodosnabzheniya-20228"
         }
       ]
     },
@@ -404,6 +348,20 @@
       "name": "Отопление",
       "items": [
         {
+          "id": 20254,
+          "address": "ул. Блюхера: д. 31а, д. 31",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы на теплосети",
+          "dateInterval": "с 12 ноября, 09:00 по 12 ноября, 14:00",
+          "startTs": 1794463200,
+          "endTs": 1794481200,
+          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
+          "phones": [
+            "+7 (4852) 593-519"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-teploseti-20254"
+        },
+        {
           "id": 20243,
           "address": "пер. 2-й Норский: д. 9",
           "typeLabel": "авария",
@@ -475,6 +433,20 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-linii-20221"
         },
         {
+          "id": 20255,
+          "address": "пр-кт Ленинградский: д. 63",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт стояков",
+          "dateInterval": "с 11 ноября, 00:00 по 12 ноября, 23:55",
+          "startTs": 1794344400,
+          "endTs": 1794516900,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20255"
+        },
+        {
           "id": 20217,
           "address": "пр-кт Дзержинского: д. 36; ул. Громова: д. 28",
           "typeLabel": "план",
@@ -536,36 +508,52 @@
       "name": "Электроснабжение",
       "items": [
         {
-          "id": 20224,
-          "address": "ул. Советская: д. 15а; ул. Трефолева: д. 18/2, д. 16",
+          "id": 20251,
+          "address": "ул. Жуковского: д. 31, д. 29б; ул. Летная: д. 16а, д. 16, д. 14",
           "typeLabel": "план",
           "typeDescription": "Плановое отключение электроэнергии",
-          "dateInterval": "с 11 ноября, 13:00 по 11 ноября, 16:00",
-          "startTs": 1794391200,
-          "endTs": 1794402000,
+          "dateInterval": "с 12 ноября, 10:00 по 12 ноября, 16:00",
+          "startTs": 1794466800,
+          "endTs": 1794488400,
           "contacts": "Филиал ПАО «Россети Центр Ярэнерго»: +7 (4852) 744-008, +7 (4852) 301-947, +7 (4852) 307-525 (Диспетчерская)",
           "phones": [
             "+7 (4852) 744-008",
             "+7 (4852) 301-947",
             "+7 (4852) 307-525"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20224"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20251"
         },
         {
-          "id": 20223,
-          "address": "ул. Комкора Хрипина: д. 2; ул. Советская: д. 15а, д. 15; ул. Трефолева: д. 16",
+          "id": 20252,
+          "address": "линия 10-я поселок Починки: д. 32, д. 35, д. 21, д. 17, д. 9, д. 10, д. 33, д. 27, д. 29, д. 39, д. 13, д. 34, д. 36, д. 6, д. 15, д. 18, д. 26, д. 24, д. 23, д. 38, д. 14, д. 25, д. 42, д. 19, д. 20, д. 40, д. 7, д. 8, д. 12, д. 22, д. 16, д. 38а, д. 37, д. 31, д. 28, д. 11; линия 11-я поселок Починки: д. 12, д. 18, д. 14, д. 9, д. 4, д. 7, д. 2, д. 6, д. 3, д. 5, д. 10, д. 8, д. 16, д. 11; линия 12-я поселок Починки: д. 6б, д. 4, д. 3, д. 2, д. 5, д. 6; линия 9-я поселок Починки: д. 35, д. 30, д. 22, д. 21, д. 31, д. 26, д. 4, д. 15, д. 28, д. 14, д. 12, д. 9, д. 38, д. 10, д. 39, д. 40, стр. 2, д. 40, д. 3, д. 8, д. 7, д. 33, д. 24, д. 27, д. 25, д. 37, д. 29, д. 23, д. 17, д. 36, д. 6, д. 20, д. 2, д. 34, д. 32, д. 5, д. 13, д. 19, д. 11, д. 16",
           "typeLabel": "план",
           "typeDescription": "Плановое отключение электроэнергии",
-          "dateInterval": "с 11 ноября, 09:00 по 11 ноября, 13:00",
-          "startTs": 1794376800,
-          "endTs": 1794391200,
+          "dateInterval": "с 12 ноября, 09:00 по 12 ноября, 16:00",
+          "startTs": 1794463200,
+          "endTs": 1794488400,
           "contacts": "Филиал ПАО «Россети Центр Ярэнерго»: +7 (4852) 744-008, +7 (4852) 301-947, +7 (4852) 307-525 (Диспетчерская)",
           "phones": [
             "+7 (4852) 744-008",
             "+7 (4852) 301-947",
             "+7 (4852) 307-525"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20223"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20252"
+        },
+        {
+          "id": 20253,
+          "address": "ул. Гагарина: д. 65б, д. 65",
+          "typeLabel": "план",
+          "typeDescription": "Плановое отключение электроэнергии",
+          "dateInterval": "с 12 ноября, 09:00 по 12 ноября, 16:00",
+          "startTs": 1794463200,
+          "endTs": 1794488400,
+          "contacts": "Филиал ПАО «Россети Центр Ярэнерго»: +7 (4852) 744-008, +7 (4852) 301-947, +7 (4852) 307-525 (Диспетчерская)",
+          "phones": [
+            "+7 (4852) 744-008",
+            "+7 (4852) 301-947",
+            "+7 (4852) 307-525"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20253"
         },
         {
           "id": 20192,
