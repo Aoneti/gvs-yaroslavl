@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-14T07:15:38.742Z",
+  "fetchedAt": "2026-11-14T14:40:57.013Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 34,
-  "total": 34,
+  "apiTotal": 35,
+  "total": 35,
   "emergency": 10,
-  "planned": 24,
+  "planned": 25,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -289,6 +289,20 @@
             "+7 (4852) 253-895"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-otopleniya-20300"
+        },
+        {
+          "id": 20309,
+          "address": "наб. Которосльная: д. 66, д. 58, д. 62, д. 56, д. 60; пр-кт Толбухина: д. 4, д. 4, к. 2, д. 6, к. 2, д. 8/75, д. 2/68, д. 6; ул. Большая Октябрьская: д. 67а, д. 67, д. 73, к. 2, д. 71, д. 73; ул. Володарского: д. 1а, д. 3, д. 3а, д. 5, д. 1, д. 7",
+          "typeLabel": "план",
+          "typeDescription": "Плановый ремонт оборудования",
+          "dateInterval": "с 14 ноября, 16:00 по 14 ноября, 19:00",
+          "startTs": 1794661200,
+          "endTs": 1794672000,
+          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
+          "phones": [
+            "+7 (4852) 593-519"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovij-remont-oborudovaniya-20309"
         },
         {
           "id": 20308,
