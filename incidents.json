@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-14T19:38:52.317Z",
+  "fetchedAt": "2026-11-15T07:24:59.831Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 34,
-  "total": 34,
+  "apiTotal": 32,
+  "total": 32,
   "emergency": 10,
-  "planned": 24,
+  "planned": 22,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -75,20 +75,6 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-vvodnih-kranov-20286"
         },
         {
-          "id": 20292,
-          "address": "пр-кт Ленинградский: д. 60, к. 4",
-          "typeLabel": "план",
-          "typeDescription": "Замена стояков",
-          "dateInterval": "с 13 ноября, 00:00 по 16 ноября, 23:00",
-          "startTs": 1794517200,
-          "endTs": 1794859200,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20292"
-        },
-        {
           "id": 20293,
           "address": "ул. 18 Марта: д. 6",
           "typeLabel": "план",
@@ -115,20 +101,6 @@
             "+7 (485) 259-42-06"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnye-raboty-na-vodoprovode-20227"
-        },
-        {
-          "id": 20206,
-          "address": "пр-кт Ленинградский: д. 34",
-          "typeLabel": "план",
-          "typeDescription": "Засор стояка канализации",
-          "dateInterval": "с 09.11.2026 17:50 до устранения",
-          "startTs": 1794235800,
-          "endTs": null,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zasor-stoyaka-kanal-20206"
         }
       ]
     },
@@ -291,6 +263,20 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-otopleniya-20300"
         },
         {
+          "id": 20310,
+          "address": "пр-кт Дзержинского: д. 36а",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт стояков",
+          "dateInterval": "с 14 ноября, 22:49 по 15 ноября, 23:55",
+          "startTs": 1794685740,
+          "endTs": 1794776100,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20310"
+        },
+        {
           "id": 20308,
           "address": "пр-кт Ленинградский: д. 34",
           "typeLabel": "план",
@@ -323,9 +309,9 @@
           "address": "ул. Блюхера: д. 86/9",
           "typeLabel": "план",
           "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 12 ноября, 17:00 по 14 ноября, 23:55",
+          "dateInterval": "с 12 ноября, 17:00 по 15 ноября, 23:55",
           "startTs": 1794492000,
-          "endTs": 1794689700,
+          "endTs": 1794776100,
           "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
           "phones": [
             "+7 (485) 259-42-06"
@@ -440,22 +426,6 @@
             "+7 (4852) 307-525"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-sistemi-electrosnabzheniya-20283"
-        },
-        {
-          "id": 20193,
-          "address": "ул. Урицкого: д. 55",
-          "typeLabel": "план",
-          "typeDescription": "Плановое отключение электроэнергии",
-          "dateInterval": "с 09.11.2026 09:00 до устранения",
-          "startTs": 1794204000,
-          "endTs": null,
-          "contacts": "Филиал ПАО «Россети Центр Ярэнерго»: +7 (4852) 744-008, +7 (4852) 301-947, +7 (4852) 307-525 (Диспетчерская)",
-          "phones": [
-            "+7 (4852) 744-008",
-            "+7 (4852) 301-947",
-            "+7 (4852) 307-525"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20193"
         }
       ]
     },
