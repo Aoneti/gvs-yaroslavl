@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-15T07:24:59.831Z",
+  "fetchedAt": "2026-11-15T15:09:47.609Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 32,
-  "total": 32,
+  "apiTotal": 31,
+  "total": 31,
   "emergency": 10,
-  "planned": 22,
+  "planned": 21,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -135,20 +135,6 @@
             "+7 (4852) 253-895"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnie-raboti-20306"
-        },
-        {
-          "id": 20295,
-          "address": "пл. Советская: д. 1/19; ул. Нахимсона: д. 1а, д. 1б",
-          "typeLabel": "план",
-          "typeDescription": "Ремонтные работы на тепловой сети",
-          "dateInterval": "с 14 ноября, 09:30 по 15 ноября, 18:00",
-          "startTs": 1794637800,
-          "endTs": 1794754800,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnye-raboti-na-teplovoy-seti-20295"
         }
       ]
     },
