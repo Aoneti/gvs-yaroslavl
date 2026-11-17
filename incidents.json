@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-16T17:43:59.586Z",
+  "fetchedAt": "2026-11-17T08:42:35.064Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 39,
-  "total": 39,
-  "emergency": 13,
-  "planned": 26,
+  "apiTotal": 56,
+  "total": 56,
+  "emergency": 16,
+  "planned": 40,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -42,18 +42,46 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-goryachego-vodosnabzheniya-20330"
         },
         {
-          "id": 20304,
-          "address": "ул. Панина: д. 16",
+          "id": 20343,
+          "address": "ул. Панина: д. 14",
           "typeLabel": "план",
-          "typeDescription": "Замена стояков",
-          "dateInterval": "с 13 ноября, 12:00 по 16 ноября, 23:00",
-          "startTs": 1794560400,
-          "endTs": 1794859200,
+          "typeDescription": "Плановое отключение горячего водоснабжения",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
           "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
           "phones": [
             "+7 (485) 259-42-06"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20304"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-goryachego-vodosnabzheniya-20343"
+        },
+        {
+          "id": 20342,
+          "address": "ул. Панина: д. 16",
+          "typeLabel": "план",
+          "typeDescription": "Течь стояка (ГВС)",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/tech-stoyaka-20342"
+        },
+        {
+          "id": 20356,
+          "address": "ул. Труфанова: д. 25, к. 4",
+          "typeLabel": "план",
+          "typeDescription": "Течь стояка (ГВС)",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/tech-stoyaka-20356"
         },
         {
           "id": 20297,
@@ -74,6 +102,76 @@
     {
       "name": "Холодное и горячее водоснабжение",
       "items": [
+        {
+          "id": 20358,
+          "address": "пр-кт Дзержинского: д. 31",
+          "typeLabel": "план",
+          "typeDescription": "Замена стояков",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20358"
+        },
+        {
+          "id": 20357,
+          "address": "пр-кт Дзержинского: д. 46",
+          "typeLabel": "план",
+          "typeDescription": "Замена стояков",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20357"
+        },
+        {
+          "id": 20345,
+          "address": "ул. Панина: д. 14",
+          "typeLabel": "план",
+          "typeDescription": "Плановое отключение холодного и горячего водоснабжения",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-holodnogo-i-goryachego-vodosnabzheniya-20345"
+        },
+        {
+          "id": 20346,
+          "address": "ул. Пионерская: д. 13",
+          "typeLabel": "план",
+          "typeDescription": "Плановое отключение холодного и горячего водоснабжения",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-holodnogo-i-goryachego-vodosnabzheniya-20346"
+        },
+        {
+          "id": 20347,
+          "address": "ш. Тутаевское: д. 47",
+          "typeLabel": "план",
+          "typeDescription": "Плановое отключение холодного и горячего водоснабжения",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-holodnogo-i-goryachego-vodosnabzheniya-20347"
+        },
         {
           "id": 20319,
           "address": "пр-кт Ленинградский: д. 66, к. 5",
@@ -103,34 +201,6 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20322"
         },
         {
-          "id": 20286,
-          "address": "пр-кт Дзержинского: д. 33",
-          "typeLabel": "план",
-          "typeDescription": "Замена вводных кранов",
-          "dateInterval": "с 13 ноября, 00:00 по 16 ноября, 23:00",
-          "startTs": 1794517200,
-          "endTs": 1794859200,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-vvodnih-kranov-20286"
-        },
-        {
-          "id": 20293,
-          "address": "ул. 18 Марта: д. 6",
-          "typeLabel": "план",
-          "typeDescription": "Замена стояков",
-          "dateInterval": "с 13 ноября, 00:00 по 16 ноября, 23:59",
-          "startTs": 1794517200,
-          "endTs": 1794862740,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20293"
-        },
-        {
           "id": 20227,
           "address": "пер. 2-й Норский: д. 9",
           "typeLabel": "план",
@@ -150,6 +220,20 @@
       "name": "Отопление и горячее водоснабжение",
       "items": [
         {
+          "id": 20340,
+          "address": "ул. Нефтяников: д. 27",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы на тепловой сети",
+          "dateInterval": "с 17 ноября, 09:30 по 17 ноября, 15:30",
+          "startTs": 1794897000,
+          "endTs": 1794918600,
+          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
+          "phones": [
+            "+7 (4852) 593-519"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20340"
+        },
+        {
           "id": 20337,
           "address": "ул. Победы: д. 5б",
           "typeLabel": "авария",
@@ -162,6 +246,20 @@
             "+7 (4852) 797-086"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20337"
+        },
+        {
+          "id": 20339,
+          "address": "пр-кт Ленинградский: д. 54",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы на тепловой сети",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 15:00",
+          "startTs": 1794895200,
+          "endTs": 1794916800,
+          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
+          "phones": [
+            "+7 (4852) 593-519"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20339"
         },
         {
           "id": 20338,
@@ -204,12 +302,54 @@
             "+7 (4852) 797-086"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20336"
+        },
+        {
+          "id": 20359,
+          "address": "пр-кт Дзержинского: д. 52; ш. Тутаевское: д. 49",
+          "typeLabel": "план",
+          "typeDescription": "Ремонтные работы",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnie-raboti-20359"
+        },
+        {
+          "id": 20348,
+          "address": "ул. Урицкого: д. 7",
+          "typeLabel": "план",
+          "typeDescription": "Ремонтные работы",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnie-raboti-20348"
         }
       ]
     },
     {
       "name": "Холодное водоснабжение",
       "items": [
+        {
+          "id": 20360,
+          "address": "пр-кт Ленинградский: д. 32",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы",
+          "dateInterval": "с 17.11.2026 09:30 до устранения",
+          "startTs": 1794897000,
+          "endTs": null,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20360"
+        },
         {
           "id": 20212,
           "address": "пр-кт Ленинградский: д. 54",
@@ -225,19 +365,32 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20212"
         },
         {
-          "id": 20329,
-          "address": "наб. Волгостроевская: д. 15, д. 20, д. 12, д. 21, д. 17, д. 13, д. 14, д. 19, д. 18, д. 16, д. 5, д. 7а",
+          "id": 20344,
+          "address": "пр-кт Ленинградский: д. 32",
           "typeLabel": "план",
           "typeDescription": "Плановое отключение холодного водоснабжения",
-          "dateInterval": "с 17 ноября, 09:30 по 17 ноября, 11:00",
-          "startTs": 1794897000,
-          "endTs": 1794902400,
-          "contacts": "АО «Ярославльводоканал»: +7 (4852) 734-477, +7 (4852) 736-631",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
           "phones": [
-            "+7 (4852) 734-477",
-            "+7 (4852) 736-631"
+            "+7 (485) 259-42-06"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-holodnogo-vodosnabzheniya-20329"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/planovoe-otklyuchenie-holodnogo-vodosnabzheniya-20344"
+        },
+        {
+          "id": 20350,
+          "address": "ул. 1-я Кольцова: д. 40",
+          "typeLabel": "план",
+          "typeDescription": "Течь ввода (ХВС)",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/tech-vvoda-20350"
         }
       ]
     },
@@ -272,6 +425,76 @@
             "+7 (4852) 253-895"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-teploseti-20218"
+        },
+        {
+          "id": 20351,
+          "address": "пр-кт Дзержинского: д. 36",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт стояков",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20351"
+        },
+        {
+          "id": 20355,
+          "address": "пр-кт Дзержинского: д. 36а",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт стояков",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20355"
+        },
+        {
+          "id": 20349,
+          "address": "пр-кт Ленинградский: д. 34",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт прибора отопления",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-pribora-otopleniya-20349"
+        },
+        {
+          "id": 20353,
+          "address": "пр-кт Ленинградский: д. 63",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт прибора отопления",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-pribora-otopleniya-20353"
+        },
+        {
+          "id": 20352,
+          "address": "ул. Громова: д. 28",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт прибора отопления",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-pribora-otopleniya-20352"
         },
         {
           "id": 20323,
@@ -527,6 +750,22 @@
             "+7 (4852) 307-525"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Planovoe-otklyuchenie-elektroenergii-20332"
+        },
+        {
+          "id": 20341,
+          "address": "ул. Панина: д. 41",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт электропроводки",
+          "dateInterval": "с 17 ноября, 09:00 по 17 ноября, 23:59",
+          "startTs": 1794895200,
+          "endTs": 1794949140,
+          "contacts": "Филиал ПАО «Россети Центр Ярэнерго»: +7 (4852) 744-008, +7 (4852) 301-947, +7 (4852) 307-525 (Диспетчерская)",
+          "phones": [
+            "+7 (4852) 744-008",
+            "+7 (4852) 301-947",
+            "+7 (4852) 307-525"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-electroprovodki-20341"
         }
       ]
     },
