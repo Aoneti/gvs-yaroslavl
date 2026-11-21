@@ -12,45 +12,62 @@
                connect-src 'self' https://mc.yandex.ru;
                frame-src 'none';">
 
-<title>Аварии и отключения ЖКХ в Ярославле — сегодня</title>
-<meta name="description" content="Действующие аварии и плановые отключения горячей и холодной воды, отопления, электричества и газа в Ярославле. Поиск по улице и дому, сроки работ и телефоны служб.">
-<meta name="keywords" content="аварии ЖКХ Ярославль, отключение воды Ярославль сегодня, отключение света Ярославль, отключение газа Ярославль, отключение отопления Ярославль">
+<title>Аварии и отключения ЖКХ в Ярославле сегодня: вода, отопление, свет, газ</title>
+<meta name="description" content="Действующие аварии и плановые отключения воды, отопления, электричества и газа в Ярославле: поиск по улице и дому, сроки работ и телефоны диспетчерских служб.">
+<meta name="keywords" content="аварии ЖКХ Ярославль, отключение воды Ярославль сегодня, отключение света Ярославль, отключение газа Ярославль, отключение отопления Ярославль, авария на теплосети Ярославль">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="author" content="Арсений Дыбов">
 <link rel="canonical" href="https://aoneti.github.io/gvs-yaroslavl/incidents.html">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚨</text></svg>">
+<link rel="alternate" hreflang="ru" href="https://aoneti.github.io/gvs-yaroslavl/incidents.html">
+<link rel="alternate" hreflang="x-default" href="https://aoneti.github.io/gvs-yaroslavl/incidents.html">
+
+<!-- Геопривязка: Ярославль -->
+<meta name="geo.region" content="RU-YAR">
+<meta name="geo.placename" content="Ярославль">
+<meta name="geo.position" content="57.6261;39.8845">
+<meta name="ICBM" content="57.6261, 39.8845">
+
+<!-- Соцсети и мессенджеры -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Отключение горячей воды в Ярославле">
+<meta property="og:title" content="Аварии и отключения ЖКХ в Ярославле сегодня">
+<meta property="og:description" content="Действующие аварии и плановые отключения воды, отопления, света и газа: поиск по адресу, сроки и телефоны служб.">
+<meta property="og:url" content="https://aoneti.github.io/gvs-yaroslavl/incidents.html">
+<meta property="og:image" content="https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Отключение горячей воды в Ярославле: график по адресам, карта и аварии ЖКХ">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Аварии и отключения ЖКХ в Ярославле сегодня">
+<meta name="twitter:description" content="Действующие аварии и плановые отключения воды, отопления, света и газа: поиск по адресу, сроки и телефоны служб.">
+<meta name="twitter:image" content="https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png">
+
+<!-- Иконки, манифест, цвет браузера -->
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f5f0" media="(prefers-color-scheme: light)">
+
+<!-- Шрифты: кириллические начертания нужны сразу, поэтому грузим заранее -->
+<link rel="preload" href="fonts/dela-gothic-one-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/golos-text-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+
 <script src="theme-init.js"></script>
 <link rel="stylesheet" href="styles.css">
 
 <style>
-  /* Красный для аварий: в палитре сайта его нет, а оранжевый занят фирменным акцентом */
-  :root      { --danger: #f85149; }
-  html.light { --danger: #cf222e; }
 
   html { overflow-x: hidden; }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-  }
-
-  /* Сетка на фоне — как на главной */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(232,93,47,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(232,93,47,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-  html.light body::before {
-    background-image:
-      linear-gradient(rgba(232,93,47,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(232,93,47,0.06) 1px, transparent 1px);
   }
 
   .container {
@@ -68,11 +85,6 @@
     overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
 
-  a:focus-visible, button:focus-visible, summary:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
   /* ── Верхняя строка: назад + тема ── */
   .page-top {
     display: flex;
@@ -84,6 +96,7 @@
   .back-link {
     display: inline-flex;
     align-items: center;
+    gap: 8px;
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text);
@@ -110,7 +123,10 @@
     font: inherit;
   }
   .theme-toggle:hover { border-color: var(--accent); }
-  .theme-emoji { font-size: 15px; line-height: 1; }
+  .theme-icon { width: 15px; height: 15px; color: var(--muted); transition: color .2s; }
+  .theme-icon--moon { color: var(--text); }
+  html.light .theme-icon--moon { color: var(--muted); }
+  html.light .theme-icon--sun  { color: var(--accent); }
   .theme-track {
     width: 36px; height: 20px;
     border-radius: 10px;
@@ -134,14 +150,14 @@
   /* ── Заголовок ── */
   .page-head { padding: 36px 0 4px; }
   h1 {
-    font-family: 'Unbounded', system-ui, sans-serif;
-    font-size: clamp(22px, 4.6vw, 34px);
-    font-weight: 900;
-    line-height: 1.15;
-    letter-spacing: -0.5px;
+    font-family: var(--font-display);
+    font-size: clamp(22px, 4.2vw, 32px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0;
     margin-bottom: 14px;
   }
-  .lead { color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 64ch; min-height: 3.2em; }
+  .lead { color: var(--muted); font-size: 16px; line-height: 1.6; min-height: 3.2em; }
   .lead b { color: var(--text); font-weight: 600; }
 
   .info-alert {
@@ -162,10 +178,11 @@
     left: 18px; top: 50%;
     transform: translateY(-50%);
     color: var(--muted);
-    font-size: 18px;
+    display: flex;
     pointer-events: none;
     transition: color .2s;
   }
+  .info-filter__icon .icon { width: 18px; height: 18px; }
   .info-filter:focus-within .info-filter__icon { color: var(--accent); }
   .info-filter__input {
     width: 100%;
@@ -203,6 +220,7 @@
     justify-content: center;
     transition: background .2s, color .2s;
   }
+  .clear-btn .icon { width: 14px; height: 14px; }
   .clear-btn:hover { background: var(--accent); color: #fff; }
   .clear-btn.visible { display: flex; }
 
@@ -246,15 +264,11 @@
   /* Быстрый переход к разделу */
   .info-jump {
     display: flex;
+    flex-wrap: wrap;                 /* на широком экране все разделы видны сразу, без прокрутки */
     gap: 8px;
-    overflow-x: auto;
     margin-top: 16px;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
   }
   .info-jump[hidden] { display: none; }
-  .info-jump::-webkit-scrollbar { display: none; }
   .info-jump button {
     flex-shrink: 0;
     background: var(--surface);
@@ -263,7 +277,7 @@
     color: var(--text);
     font: inherit;
     font-size: 13px;
-    padding: 6px 12px;
+    padding: 7px 14px;
     cursor: pointer;
     transition: border-color .15s;
   }
@@ -278,13 +292,12 @@
     flex-wrap: wrap;
     gap: 4px 10px;
     margin-bottom: 12px;
-    font-family: 'Unbounded', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-size: 17px;
-    font-weight: 700;
+    font-weight: 400;
     line-height: 1.3;
   }
-  .info-flame { font-size: 15px; }
-  .info-muted { color: var(--muted); font-family: 'Golos Text', system-ui, sans-serif; font-size: 13px; font-weight: 400; }
+  .info-muted { color: var(--muted); font-family: var(--font-body); font-size: 13px; font-weight: 400; }
 
   .info-table-wrap {
     background: var(--surface);
@@ -363,8 +376,7 @@
 
   /* ── Пустые состояния, кнопки ── */
   .state-message { text-align: center; padding: 56px 20px; color: var(--muted); }
-  .state-message .emoji { display: block; margin-bottom: 16px; font-size: 48px; }
-  .state-message h3 { margin-bottom: 8px; color: var(--text); font-family: 'Unbounded', system-ui, sans-serif; font-size: 18px; }
+  .state-message h3 { margin-bottom: 8px; color: var(--text); font-family: var(--font-display); font-size: 18px; font-weight: 400; }
   .state-message p { max-width: 52ch; margin: 0 auto; font-size: 15px; line-height: 1.6; }
   .state-message a { color: var(--accent2); }
 
@@ -385,7 +397,6 @@
 
   /* ── Примечание и источник ── */
   .info-note {
-    max-width: 72ch;
     margin-top: 36px;
     padding: 2px 0 2px 16px;
     border-left: 3px solid var(--border);
@@ -433,6 +444,14 @@
 
   /* ── Телефон ── */
   @media (max-width: 720px) {
+    .info-jump {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .info-jump::-webkit-scrollbar { display: none; }
     .container { padding: 0 16px 32px; }
     .page-head { padding-top: 28px; }
     .info-filter { margin-top: 22px; }
@@ -442,17 +461,136 @@
     .info-filter__count { width: 100%; }
   }
 </style>
-</head>
-<body>
 
-<div class="container">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/incidents.html#webpage",
+      "url": "https://aoneti.github.io/gvs-yaroslavl/incidents.html",
+      "name": "Аварии и отключения ЖКХ в Ярославле сегодня",
+      "description": "Действующие аварии и плановые отключения воды, отопления, электричества и газа в Ярославле: сроки работ и телефоны служб.",
+      "inLanguage": "ru",
+      "isPartOf": {
+        "@id": "https://aoneti.github.io/gvs-yaroslavl/#website"
+      },
+      "breadcrumb": {
+        "@id": "https://aoneti.github.io/gvs-yaroslavl/incidents.html#breadcrumb"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png",
+        "width": 1200,
+        "height": 630
+      },
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "Ярославль",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 57.6261,
+          "longitude": 39.8845
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/incidents.html#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Отключение горячей воды в Ярославле",
+          "item": "https://aoneti.github.io/gvs-yaroslavl/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Аварии и отключения ЖКХ",
+          "item": "https://aoneti.github.io/gvs-yaroslavl/incidents.html"
+        }
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/incidents.html#dataset",
+      "name": "Действующие аварии и отключения ЖКХ в Ярославле",
+      "description": "Аварии и плановые отключения воды, отопления, электроснабжения и газоснабжения в Ярославле: адрес, вид работ, срок и контакты служб. Обновляется автоматически.",
+      "url": "https://aoneti.github.io/gvs-yaroslavl/incidents.html",
+      "inLanguage": "ru",
+      "isAccessibleForFree": true,
+      "isBasedOn": "https://moydom-yaroslavl.ru/incident",
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "Ярославль",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 57.6261,
+          "longitude": 39.8845
+        }
+      },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://aoneti.github.io/gvs-yaroslavl/incidents.json"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/incidents.html#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Что значат «авария» и «план»?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "«Авария» — внеплановое отключение или аварийно-восстановительные работы. «План» — заранее объявленные работы: ремонт, замена оборудования, плановые отключения. Тип определяется по описанию записи в сервисе «Мой Дом»."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Почему запись с истёкшим сроком всё ещё в списке?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Аварийные службы не всегда сразу отмечают устранение, поэтому запись может оставаться в списке после планового срока. У такой записи стоит пометка «срок истёк». Это не обязательно означает, что отключение продолжается: уточняйте у службы по телефону из записи."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Как часто обновляется страница?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Данные собираются автоматически, время последней проверки указано вверху страницы. Если обновления давно не было, появится предупреждение."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Куда звонить, если нет воды, света или газа?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "В каждой записи указаны телефоны ответственных организаций — их можно набрать прямо со страницы. Если вашего дома в списке нет, обратитесь в управляющую компанию или в единую диспетчерскую службу."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body class="bg-waves">
+
+<main class="container">
 
   <div class="page-top">
-    <a href="index.html" class="back-link">← На главную</a>
+    <a href="index.html" class="back-link"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-arrow-left"></use></svg> На главную</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему" type="button">
-      <span class="theme-emoji">🌑</span>
+      <svg class="icon theme-icon theme-icon--moon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-moon"></use></svg>
       <div class="theme-track"><div class="theme-thumb"></div></div>
-      <span class="theme-emoji">🌕</span>
+      <svg class="icon theme-icon theme-icon--sun" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-sun"></use></svg>
     </button>
   </div>
 
@@ -464,11 +602,11 @@
   <div id="staleAlert"></div>
 
   <div class="info-filter">
-    <span class="info-filter__icon" aria-hidden="true">🔍</span>
+    <span class="info-filter__icon" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-search"></use></svg></span>
     <label class="u-visually-hidden" for="info-filter-input">Поиск по улице и дому</label>
     <input class="info-filter__input" id="info-filter-input" type="search"
            placeholder="Введите улицу и дом…" autocomplete="off" spellcheck="false">
-    <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска" type="button">✕</button>
+    <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-x"></use></svg></button>
   </div>
 
   <div class="info-controls">
@@ -481,7 +619,7 @@
   <div id="results">
     <noscript>
       <div class="state-message">
-        <span class="emoji">📄</span>
+        <svg class="icon state-icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-file"></use></svg>
         <h3>Нужен JavaScript</h3>
         <p>Список строится в браузере. Актуальные данные можно посмотреть на сайте
           «<a href="https://moydom-yaroslavl.ru/incident" target="_blank" rel="noopener noreferrer">Мой Дом</a>».</p>
@@ -501,12 +639,40 @@
     Страница обновляется автоматически.
   </p>
 
-</div>
+  <section class="about" id="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Аварии и отключения в Ярославле: вопросы и ответы</h2>
+    <div class="faq">
+      <details>
+        <summary>Что значат «авария» и «план»?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">«Авария» — внеплановое отключение или аварийно-восстановительные работы. «План» — заранее объявленные работы: ремонт, замена оборудования, плановые отключения. Тип определяется по описанию записи в сервисе «Мой Дом».</p>
+      </details>
+      <details>
+        <summary>Почему запись с истёкшим сроком всё ещё в списке?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">Аварийные службы не всегда сразу отмечают устранение, поэтому запись может оставаться в списке после планового срока. У такой записи стоит пометка «срок истёк». Это не обязательно означает, что отключение продолжается: уточняйте у службы по телефону из записи.</p>
+      </details>
+      <details>
+        <summary>Как часто обновляется страница?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">Данные собираются автоматически, время последней проверки указано вверху страницы. Если обновления давно не было, появится предупреждение.</p>
+      </details>
+      <details>
+        <summary>Куда звонить, если нет воды, света или газа?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">В каждой записи указаны телефоны ответственных организаций — их можно набрать прямо со страницы. Если вашего дома в списке нет, обратитесь в управляющую компанию или в единую диспетчерскую службу.</p>
+      </details>
+    </div>
+  </section>
 
-<footer style="text-align:center; padding: 24px 20px 40px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); position: relative; z-index: 1;">
-  Автор: <a href="https://t.me/xoroshik" target="_blank" rel="noopener noreferrer" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" rel="noopener noreferrer" style="color:var(--accent2);text-decoration:none;">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener noreferrer" title="Исходный код" style="color:var(--accent2);text-decoration:none;"><svg height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:3px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, 2026 год.
+</main>
+
+<footer class="site-footer">
+  <nav class="footer-nav" aria-label="Разделы сайта">
+    <a href="./">Поиск по адресу</a>
+    <a href="map.html">Карта отключений</a>
+    <a href="incidents.html">Аварии и отключения ЖКХ</a>
+  </nav>
+  Автор: <a href="https://t.me/xoroshik" target="_blank" rel="noopener noreferrer">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" rel="noopener noreferrer">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener noreferrer" title="Исходный код"><svg height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, <span data-year>2026</span> год.
 </footer>
 
+<script src="site.js"></script>
 <script src="config.js"></script>
 <script src="gvs-core.js"></script>
 <script src="app-incidents.js"></script>

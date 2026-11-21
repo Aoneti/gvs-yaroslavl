@@ -14,6 +14,8 @@ const FETCH_RETRY_DELAY = GVS_CONFIG.FETCH_RETRY_DELAY;
 const MOBILE_BREAKPOINT = GVS_CONFIG.MOBILE_BREAKPOINT;
 const MAX_LIST_ITEMS    = GVS_CONFIG.MAX_LIST_ITEMS;
 
+const ico = (name, extra) => GVS_UI.icon(name, extra);
+
 // ─── Вспомогательная: fetch с таймаутом и retry ────────────────────────
 function fetchWithTimeout(url, timeoutMs, retryCount = 0) {
   const controller = new AbortController();
@@ -82,8 +84,9 @@ const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.pn
       'position:fixed;top:60px;left:50%;transform:translateX(-50%);' +
       'background:var(--surface);border:1px solid var(--border);color:var(--text);' +
       'padding:8px 18px;border-radius:8px;font-size:13px;z-index:9999;' +
+      'display:flex;align-items:center;gap:8px;' +
       'box-shadow:0 4px 16px rgba(0,0,0,.4);white-space:nowrap;';
-    toast.textContent = '⚠️ Не удалось загрузить карту — проверьте соединение';
+    toast.innerHTML = ico('alert') + '<span>Не удалось загрузить карту — проверьте соединение</span>';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 5000);
   });
@@ -102,7 +105,7 @@ const clusterGroup = L.markerClusterGroup({
       html: '<div style="background:' + color +
         ';opacity:.82;width:34px;height:34px;border-radius:50%;border:2.5px solid #0d1117;' +
         'box-shadow:0 2px 8px rgba(0,0,0,.55);line-height:30px;text-align:center;color:#fff;' +
-        'font-family:\'Unbounded\',sans-serif;font-size:11px;font-weight:700;">' + count + '</div>',
+        'font-family:var(--font-display);font-size:11px;">' + count + '</div>',
       className: '',
       iconSize:   [40, 40],
       iconAnchor: [20, 20],
@@ -163,7 +166,7 @@ function makePopup(pt) {
   if (!rows) rows = '<div class="popup-dates" style="color:var(--muted);font-style:italic">Нет данных</div>';
 
   const approxBadge = pt.approximate
-    ? '<div class="popup-approx-badge">⚠️ Координаты приблизительны</div>'
+    ? '<div class="popup-approx-badge">' + ico('alert') + ' Координаты приблизительны</div>'
     : '';
 
   return '<div class="popup-inner"><div class="popup-addr">' +
@@ -332,7 +335,7 @@ function renderAll() {
     listEl.appendChild(fragment);
   } else {
     listEl.innerHTML =
-      '<div class="empty-list"><span class="big">🔍</span>' +
+      '<div class="empty-list">' + ico('search-x', 'state-icon state-icon--muted') +
       'Ничего не найдено. Попробуйте другое написание или воспользуйтесь основным поиском</div>';
   }
 
@@ -439,10 +442,10 @@ document.getElementById('searchClear').addEventListener('click', () => {
 loadData().catch(err => {
   console.error('[map] loadData failed:', err);
   document.getElementById('addrList').innerHTML =
-    '<div class="empty-list"><span class="big">⚠️</span>' +
+    '<div class="empty-list">' + ico('error', 'state-icon state-icon--error') +
     'Ошибка загрузки данных.<br>' +
     '<small style="color:var(--muted)">Попробуйте обновить страницу или проверьте соединение.</small>' +
-    '<button id="mapRetryBtn" class="map-btn" type="button" style="margin-top:16px">🔄 Попробовать снова</button>' +
+    '<button id="mapRetryBtn" class="map-btn" type="button" style="margin-top:16px">' + ico('refresh') + ' Попробовать снова</button>' +
     '</div>';
   document.getElementById('counterChip').textContent = 'Ошибка';
   
@@ -451,7 +454,7 @@ loadData().catch(err => {
   if (retryBtn) {
     retryBtn.addEventListener('click', () => {
       document.getElementById('addrList').innerHTML =
-        '<div class="empty-list"><span class="big">⏳</span>Повторная загрузка...</div>';
+        '<div class="empty-list">' + ico('loader', 'state-icon icon--spin') + 'Повторная загрузка...</div>';
       loadData().catch(e => location.reload());
     });
   }

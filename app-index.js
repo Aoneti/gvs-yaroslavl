@@ -51,6 +51,22 @@ const statsBar     = document.getElementById('statsBar');
 const foundCount   = document.getElementById('foundCount');
 const paginationEl = document.getElementById('pagination');
 
+// ─── Иконки и служебные сообщения ───────────────────────────────────────
+const ico = (name, extra) => GVS_UI.icon(name, extra);
+
+/** Блок «пусто / загрузка / ошибка»: иконка, заголовок, пояснение (mod = 'idle' — подсказка до первого запроса). */
+function stateHtml(iconName, iconClass, title, text, mod, extra) {
+  return '<div class="state-message' + (mod ? ' state-message--' + mod : '') + '">' +
+    ico(iconName, 'state-icon ' + iconClass) +
+    '<h3>' + title + '</h3>' +
+    (text ? '<p>' + text + '</p>' : '') +
+    (extra || '') +
+    '</div>';
+}
+
+const idleHtml = () => stateHtml('map-pin', '', 'Найдите свой адрес',
+  'Введите улицу и номер дома — покажем даты отключения горячей воды', 'idle');
+
 // ─── Подсветка совпадений ───────────────────────────────────────────────
 function hl(text, tokens) {
   if (!tokens || !tokens.length) return GVS.escapeHtml(text);
@@ -147,7 +163,7 @@ function renderCard(d, tokens, today) {
       unifiedBadge +
     '</div>' +
     '<div class="periods-grid">' + periodsHtml + '</div>' +
-    (d.source ? '<div class="card-footer"><span class="source-tag">🏘️ ' + GVS.escapeHtml(d.source) + '</span></div>' : '') +
+    (d.source ? '<div class="card-footer"><span class="source-tag">' + ico('factory') + ' ' + GVS.escapeHtml(d.source) + '</span></div>' : '') +
     '</div>';
 }
 
@@ -159,11 +175,7 @@ function renderPage(tokens) {
 
   resultsEl.innerHTML = page.length
     ? page.map(d => renderCard(d, tokens, today)).join('')
-    : '<div class="state-message">' +
-        '<span class="emoji">🤔</span>' +
-        '<h3>Ничего не найдено</h3>' +
-        '<p>Попробуйте другое написание адреса</p>' +
-      '</div>';
+    : stateHtml('search-x', '', 'Ничего не найдено', 'Попробуйте другое написание адреса');
 
   renderPagination();
 }
@@ -186,14 +198,14 @@ function renderPagination() {
   }
 
   let html = '<button class="page-btn" type="button" data-page="' + (currentPage - 1) + '" ' +
-    (currentPage === 1 ? 'disabled' : '') + '>← Назад</button>';
+    (currentPage === 1 ? 'disabled' : '') + '>' + ico('arrow-left') + ' Назад</button>';
   for (const p of pages) {
     html += p === '…'
       ? '<span class="page-info">…</span>'
       : '<button class="page-btn ' + (p === currentPage ? 'active' : '') + '" type="button" data-page="' + p + '">' + p + '</button>';
   }
   html += '<button class="page-btn" type="button" data-page="' + (currentPage + 1) + '" ' +
-    (currentPage === total ? 'disabled' : '') + '>Вперёд →</button>';
+    (currentPage === total ? 'disabled' : '') + '>Вперёд ' + ico('arrow-right') + '</button>';
   html += '<span class="page-info">' + currentPage + ' / ' + total + '</span>';
   paginationEl.innerHTML = html;
 }
@@ -220,11 +232,7 @@ function applySearch() {
   if (!raw) {
     currentTokens = [];
     filtered = [];
-    resultsEl.innerHTML = '<div class="state-message">' +
-      '<span class="emoji">🏡</span>' +
-      '<h3>Найдите свой адрес</h3>' +
-      '<p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>' +
-      '</div>';
+    resultsEl.innerHTML = idleHtml();
     statsBar.style.display  = 'none';
     paginationEl.style.display = 'none';
     return;
@@ -263,11 +271,7 @@ clearBtn.addEventListener('click', () => {
 });
 
 // ─── Загрузка data.json ─────────────────
-resultsEl.innerHTML = '<div class="state-message">' +
-  '<span class="emoji">⏳</span>' +
-  '<h3>Загрузка данных…</h3>' +
-  '<p>Подождите секунду</p>' +
-  '</div>';
+resultsEl.innerHTML = stateHtml('loader', 'icon--spin', 'Загрузка данных…', 'Подождите секунду');
 
 fetchWithTimeout('data.json', GVS_CONFIG.FETCH_TIMEOUT_MS)
   .then(r => r.json())
@@ -293,30 +297,20 @@ fetchWithTimeout('data.json', GVS_CONFIG.FETCH_TIMEOUT_MS)
     if (searchInput.value.trim()) {
       applySearch();
     } else {
-      resultsEl.innerHTML = '<div class="state-message">' +
-        '<span class="emoji">🏡</span>' +
-        '<h3>Найдите свой адрес</h3>' +
-        '<p>Введите улицу и номер дома — покажем даты отключения горячей воды</p>' +
-        '</div>';
+      resultsEl.innerHTML = idleHtml();
     }
   })
   .catch(err => {
     console.error('[index] data.json load failed:', err);
-    resultsEl.innerHTML = '<div class="state-message">' +
-      '<span class="emoji">❌</span>' +
-      '<h3>Не удалось загрузить данные</h3>' +
-      '<p>Попробуйте обновить страницу. Если ошибка повторяется — проверьте соединение.</p>' +
-      '<button id="retryBtn" class="map-btn" type="button" style="margin-top:16px">🔄 Попробовать снова</button>' +
-      '</div>';
+    resultsEl.innerHTML = stateHtml('error', 'state-icon--error', 'Не удалось загрузить данные',
+      'Попробуйте обновить страницу. Если ошибка повторяется — проверьте соединение.', '',
+      '<button id="retryBtn" class="map-btn" type="button" style="margin-top:16px">' + ico('refresh') + ' Попробовать снова</button>');
     
     // Кнопка retry
     const retryBtn = document.getElementById('retryBtn');
     if (retryBtn) {
       retryBtn.addEventListener('click', () => {
-        resultsEl.innerHTML = '<div class="state-message">' +
-          '<span class="emoji">⏳</span>' +
-          '<h3>Повторная загрузка…</h3>' +
-          '</div>';
+        resultsEl.innerHTML = stateHtml('loader', 'icon--spin', 'Повторная загрузка…');
         location.reload();
       });
     }

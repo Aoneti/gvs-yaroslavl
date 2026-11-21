@@ -12,20 +12,53 @@
                connect-src 'self' https://mc.yandex.ru;
                frame-src 'none';">
 
-<title>Отключение горячей воды в Ярославле — 2026</title>
-<meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
+<title>Отключение горячей воды в Ярославле 2026 — график по адресам и карта</title>
+<meta name="description" content="Когда отключат и включат горячую воду в Ярославле в 2026 году: поиск по адресу, даты ремонта и гидравлических испытаний, карта отключений и аварии ЖКХ.">
 <meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="author" content="Арсений Дыбов">
 <link rel="canonical" href="https://aoneti.github.io/gvs-yaroslavl/">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💦</text></svg>">
+<link rel="alternate" hreflang="ru" href="https://aoneti.github.io/gvs-yaroslavl/">
+<link rel="alternate" hreflang="x-default" href="https://aoneti.github.io/gvs-yaroslavl/">
+
+<!-- Геопривязка: Ярославль -->
+<meta name="geo.region" content="RU-YAR">
+<meta name="geo.placename" content="Ярославль">
+<meta name="geo.position" content="57.6261;39.8845">
+<meta name="ICBM" content="57.6261, 39.8845">
+
+<!-- Соцсети и мессенджеры -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Отключение горячей воды в Ярославле">
+<meta property="og:title" content="Отключение горячей воды в Ярославле 2026 — график по адресам">
+<meta property="og:description" content="Введите улицу и дом — покажем даты ремонта, гидравлических испытаний и включения горячей воды. Карта, аварии и отключения ЖКХ.">
+<meta property="og:url" content="https://aoneti.github.io/gvs-yaroslavl/">
+<meta property="og:image" content="https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Отключение горячей воды в Ярославле: график по адресам, карта и аварии ЖКХ">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Отключение горячей воды в Ярославле 2026 — график по адресам">
+<meta name="twitter:description" content="Введите улицу и дом — покажем даты ремонта, гидравлических испытаний и включения горячей воды. Карта, аварии и отключения ЖКХ.">
+<meta name="twitter:image" content="https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png">
+
+<!-- Иконки, манифест, цвет браузера -->
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f5f0" media="(prefers-color-scheme: light)">
+
+<!-- Шрифты: кириллические начертания нужны сразу, поэтому грузим заранее -->
+<link rel="preload" href="fonts/dela-gothic-one-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/golos-text-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+
 <script src="theme-init.js"></script>
 <link rel="stylesheet" href="styles.css">
 
 <style>
-  html.light body::before {
-    background-image:
-      linear-gradient(rgba(232,93,47,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(232,93,47,0.06) 1px, transparent 1px);
-  }
 
   /* Theme toggle */
   .theme-toggle {
@@ -45,7 +78,10 @@
     user-select: none;
   }
   .theme-toggle:hover { border-color: var(--accent); }
-  .theme-emoji { font-size: 15px; line-height: 1; }
+  .theme-icon { width: 15px; height: 15px; color: var(--muted); transition: color .2s; }
+  .theme-icon--moon { color: var(--text); }
+  html.light .theme-icon--moon { color: var(--muted); }
+  html.light .theme-icon--sun  { color: var(--accent); }
   .theme-track {
     width: 36px; height: 20px;
     border-radius: 10px;
@@ -70,7 +106,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Golos Text', sans-serif;
+    font-family: var(--font-body);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -79,20 +115,8 @@
   :root { --warn: #e8b040; }
   html.light { --warn: #a07010; }
 
-  /* Background grid */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(232,93,47,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(232,93,47,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
   .container {
+    width: 100%;
     max-width: 1060px;
     margin: 0 auto;
     padding: 0 20px;
@@ -115,20 +139,22 @@
     background: linear-gradient(135deg, var(--accent), #c0392b);
     border-radius: 16px;
     margin-bottom: 24px;
-    font-size: 28px;
     box-shadow: 0 0 40px rgba(232,93,47,0.3);
+    color: #fff;
+    --logo-flame: #d9482b;
   }
+  .logo-icon .icon { width: 38px; height: 38px; }
   h1 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(20px, 5vw, 36px);
-    font-weight: 900;
-    line-height: 1.15;
-    letter-spacing: -0.5px;
-    margin-bottom: 12px;
+    font-family: var(--font-display);
+    font-size: clamp(20px, 4.6vw, 34px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0;
+    margin-bottom: 14px;
   }
   h1 span { color: var(--accent);
             text-shadow: 0 4px 16px rgba(232, 93, 47, 0.35);}
-  .subtitle { color: var(--muted); font-size: 15px; font-weight: 500; }
+  .subtitle { max-width: 640px; margin: 0 auto; color: var(--muted); font-size: 16px; font-weight: 400; line-height: 1.55; }
 
   .header-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
 
@@ -140,9 +166,10 @@
     border: none;
     border-radius: 10px;
     color: #fff;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: .2px;
     padding: 12px 24px;
     text-decoration: none;
     box-shadow: 0 4px 16px rgba(232,93,47,0.35);
@@ -155,19 +182,24 @@
     color: #fff;
   }
 
-  /* Вторая кнопка — «Аварии и отключения»: контурная, чтобы главной оставалась карта */
+  /* Вторая кнопка — «Аварии и отключения»: заливка поверхности и рамка с оттенком акцента,
+     чтобы она не терялась на фоне, но главной оставалась карта */
   .map-btn--ghost {
     padding: 10.5px 22.5px;               /* минус 1.5px рамки — высота как у основной кнопки */
-    background: transparent;
-    border: 1.5px solid var(--border);
+    background-color: var(--surface);     /* сплошная заливка — запас для браузеров без color-mix() */
+    background-image: linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));
+    border: 1.5px solid var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
     color: var(--text);
-    box-shadow: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
   }
   .map-btn--ghost:hover {
     border-color: var(--accent);
     color: var(--accent2);
-    box-shadow: none;
+    box-shadow: 0 6px 20px rgba(232,93,47,0.25);
   }
+  .map-btn .icon { width: 18px; height: 18px; }
+  .map-btn--ghost .icon { color: var(--accent); }
   /* Счётчик записей в работе (показывается, когда incidents-badge.js получил свежие данные) */
   .btn-count {
     display: inline-flex;
@@ -179,7 +211,7 @@
     border-radius: 12px;
     background: var(--accent);
     color: #fff;
-    font-family: 'Golos Text', sans-serif;
+    font-family: var(--font-body);
     font-size: 13px;
     font-weight: 600;
   }
@@ -192,10 +224,11 @@
     left: 20px; top: 50%;
     transform: translateY(-50%);
     color: var(--muted);
-    font-size: 20px;
+    display: flex;
     pointer-events: none;
     transition: color 0.2s;
   }
+  .search-icon .icon { width: 20px; height: 20px; }
   .search-wrap:focus-within .search-icon { color: var(--accent); }
   #searchInput {
     width: 100%;
@@ -203,7 +236,7 @@
     border: 2px solid var(--border);
     border-radius: 14px;
     color: var(--text);
-    font-family: 'Golos Text', sans-serif;
+    font-family: var(--font-body);
     font-size: 17px;
     padding: 18px 20px 18px 56px;
     outline: none;
@@ -230,6 +263,7 @@
     justify-content: center;
     transition: background 0.2s, color 0.2s;
   }
+  .clear-btn .icon { width: 14px; height: 14px; }
   .clear-btn:hover { background: var(--accent); color: white; }
   .clear-btn.visible { display: flex; }
 
@@ -273,11 +307,11 @@
   }
 
   .address-badge {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 17px;
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
     color: var(--text);
-    line-height: 1.3;
+    line-height: 1.35;
   }
 
   .district-tag {
@@ -341,6 +375,9 @@
 
   .card-footer { margin-top: 14px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -348,11 +385,11 @@
     font-size: 12px;
     color: var(--muted);
   }
+  .source-tag .icon { color: var(--muted); }
 
   /* Empty / initial states */
   .state-message { text-align: center; padding: 60px 20px; color: var(--muted); }
-  .state-message .emoji { font-size: 48px; display: block; margin-bottom: 16px; }
-  .state-message h3 { font-family: 'Unbounded', sans-serif; font-size: 18px; color: var(--text); margin-bottom: 8px; }
+  .state-message h3 { font-family: var(--font-display); font-size: 18px; font-weight: 400; color: var(--text); margin-bottom: 8px; }
   .state-message p { font-size: 15px; line-height: 1.6; }
 
   /* Pagination */
@@ -371,9 +408,9 @@
     border-radius: 8px;
     padding: 8px 16px;
     cursor: pointer;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 400;
     transition: all 0.2s;
   }
   .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent2); }
@@ -394,9 +431,9 @@
     text-align: right;
   }
   .status-num {
-    font-family: 'Unbounded', sans-serif;
+    font-family: var(--font-display);
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 400;
     line-height: 1;
   }
   .status-label {
@@ -435,75 +472,280 @@
     .header-actions { flex-direction: column; align-items: stretch; max-width: 360px; margin-left: auto; margin-right: auto; }
     .header-actions .map-btn { justify-content: center; }
   }
+
+  /* Пока видна панель статистики (она стоит под поиском), подсказку «Найдите свой адрес» не показываем */
+  #statsPanel:not([hidden]) ~ #results .state-message--idle { display: none; }
 </style>
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Отключение горячей воды в Ярославле 2026",
-  "description": "Поиск по адресу: даты плановых отключений горячего водоснабжения, ремонтных работ и гидравлических испытаний в Ярославле",
-  "url": "https://aoneti.github.io/gvs-yaroslavl/",
-  "applicationCategory": "UtilitiesApplication",
-  "operatingSystem": "Web",
-  "inLanguage": "ru",
-  "author": {
-    "@type": "Person",
-    "name": "Арсений Дыбов",
-    "url": "https://t.me/xoroshik"
-  },
-  "publisher": {
-    "@type": "NewsMediaOrganization",
-    "name": "Яркуб",
-    "url": "https://yarcube.ru"
-  },
-  "areaServed": {
-    "@type": "City",
-    "name": "Ярославль",
-    "addressCountry": "RU"
-  }
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/#website",
+      "url": "https://aoneti.github.io/gvs-yaroslavl/",
+      "name": "Отключение горячей воды в Ярославле",
+      "inLanguage": "ru",
+      "publisher": {
+        "@id": "https://yarcube.ru/#organization"
+      }
+    },
+    {
+      "@type": "NewsMediaOrganization",
+      "@id": "https://yarcube.ru/#organization",
+      "name": "Яркуб",
+      "url": "https://yarcube.ru"
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/#app",
+      "name": "Отключение горячей воды в Ярославле 2026",
+      "description": "Поиск по адресу: даты плановых отключений горячего водоснабжения, ремонтных работ и гидравлических испытаний в Ярославле",
+      "url": "https://aoneti.github.io/gvs-yaroslavl/",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "ru",
+      "isAccessibleForFree": true,
+      "featureList": [
+        "Поиск графика отключений горячей воды по адресу",
+        "Карта отключений",
+        "Календарь и статистика отключений по дням",
+        "Действующие аварии и плановые отключения ЖКХ"
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Арсений Дыбов",
+        "url": "https://t.me/xoroshik"
+      },
+      "publisher": {
+        "@id": "https://yarcube.ru/#organization"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Ярославль",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Ярославль",
+          "addressRegion": "Ярославская область",
+          "addressCountry": "RU"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 57.6261,
+          "longitude": 39.8845
+        }
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/#webpage",
+      "url": "https://aoneti.github.io/gvs-yaroslavl/",
+      "name": "Отключение горячей воды в Ярославле 2026 — график по адресам и карта",
+      "description": "Когда отключат и включат горячую воду в Ярославле: поиск по адресу, даты ремонта и гидравлических испытаний, карта отключений и аварии ЖКХ.",
+      "inLanguage": "ru",
+      "isPartOf": {
+        "@id": "https://aoneti.github.io/gvs-yaroslavl/#website"
+      },
+      "about": {
+        "@id": "https://aoneti.github.io/gvs-yaroslavl/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/#dataset",
+      "name": "График отключений горячей воды в Ярославле",
+      "description": "Адреса домов Ярославля с датами ремонтных работ, гидравлических испытаний и возобновления подачи горячей воды.",
+      "url": "https://aoneti.github.io/gvs-yaroslavl/",
+      "inLanguage": "ru",
+      "isAccessibleForFree": true,
+      "creator": {
+        "@type": "Person",
+        "name": "Арсений Дыбов",
+        "url": "https://t.me/xoroshik"
+      },
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "Ярославль",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 57.6261,
+          "longitude": 39.8845
+        }
+      },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://aoneti.github.io/gvs-yaroslavl/data.json"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Как узнать, когда отключат горячую воду по моему адресу?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Введите улицу и номер дома в поле поиска на этой странице. Для каждого адреса показаны даты ремонта и гидравлических испытаний, а также день, с которого горячая вода возвращается. Тот же график есть на карте — там дом можно найти визуально."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Когда включат горячую воду?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Дата включения указана у каждого этапа работ в строке «вода с …». Если у адреса стоит отметка «Завершено», все запланированные отключения уже закончились."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Зачем каждое лето отключают горячую воду?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Летом тепловые сети ремонтируют и проверяют: трубы испытывают на прочность и плотность повышенным давлением, чтобы выявить слабые места до начала отопительного сезона. На это время горячую воду в подключённых к сети домах отключают."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Что значат «Ремонт», «Гидроиспытания 1» и «Гидроиспытания 2»?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Это этапы работ, из-за которых для адреса может отключаться горячая вода: период ремонта и два этапа гидравлических испытаний. У каждого этапа свои даты и своя дата возвращения воды. Если какой-то этап для адреса не запланирован, он не показывается."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Где посмотреть аварии и внеплановые отключения?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "На странице «Аварии и отключения ЖКХ»: там собраны действующие аварии и плановые работы по воде, отоплению, электричеству и газу с телефонами служб. Данные обновляются автоматически, время последней проверки указано на странице."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Откуда берутся данные и можно ли им доверять?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "График отключений горячей воды — общедоступная информация коммунальных служб Ярославля; аварии и отключения ЖКХ — данные диспетчерской службы через сервис «Мой Дом». Сайт не является официальным ресурсом и носит информационный характер: для юридически значимых сведений обращайтесь в управляющую компанию."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Что делать, если моего адреса нет в списке?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Проверьте написание, например «Урицкого 45». Отсутствие адреса не гарантирует, что отключения не будет: уточните в управляющей компании или в аварийно-диспетчерской службе."
+          }
+        }
+      ]
+    }
+  ]
 }
 </script>
 
 </head>
-<body>
+<body class="bg-waves">
 
 <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему" type="button">
-  <span class="theme-emoji">🌑</span>
+  <svg class="icon theme-icon theme-icon--moon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-moon"></use></svg>
   <div class="theme-track"><div class="theme-thumb"></div></div>
-  <span class="theme-emoji" id="themeEmoji">🌕</span>
+  <svg class="icon theme-icon theme-icon--sun" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-sun"></use></svg>
 </button>
 
-<div class="container">
+<main class="container">
   <header>
-    <div class="logo-icon">🔥</div>
+    <div class="logo-icon" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-logo"></use></svg></div>
     <h1>Отключение <span>горячей воды</span> в Ярославле 2026</h1>
+    <p class="subtitle">График по адресам: ремонт, гидравлические испытания и дата включения горячей воды. Карта, аварии и отключения ЖКХ.</p>
     <div class="header-actions">
-      <a href="map.html" class="map-btn">Смотреть на карте</a>
+      <a href="map.html" class="map-btn"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-map"></use></svg> Смотреть на карте</a>
       <a href="incidents.html" class="map-btn map-btn--ghost" id="incidentsBtn"
          title="Аварии и плановые отключения воды, отопления, света и газа в Ярославле">
-        Аварии и отключения
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-siren"></use></svg> Аварии и отключения
         <span class="btn-count" id="incidentsCount" hidden></span>
       </a>
     </div>
   </header>
 
   <div class="search-wrap">
-    <span class="search-icon">🔍</span>
+    <span class="search-icon" aria-hidden="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-search"></use></svg></span>
     <input type="text" id="searchInput" placeholder="Введите улицу и дом..." autocomplete="off" spellcheck="false"
            autofocus aria-label="Поиск по адресу" aria-autocomplete="list">
-    <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска" type="button">✕</button>
+    <button class="clear-btn" id="clearBtn" title="Очистить" aria-label="Очистить поле поиска" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-x"></use></svg></button>
   </div>
 
   <div id="statsBar" class="stats" style="display:none" aria-live="polite">
     <div class="stat-chip">Найдено: <strong id="foundCount">0</strong></div>
   </div>
 
-  <div id="results" aria-live="polite"></div>
+  <div id="results" aria-live="polite">
+    <noscript>
+      <div class="state-message">
+        <svg class="icon state-icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-file"></use></svg>
+        <h3>Нужен JavaScript</h3>
+        <p>Поиск по адресу работает в браузере. Адреса и даты отключений собраны в файле <a href="data.json" style="color:var(--accent2)">data.json</a>.</p>
+      </div>
+    </noscript>
+  </div>
   <div class="pagination" id="pagination" style="display:none"></div>
-</div>
+
+  <section class="about" id="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Отключение горячей воды в Ярославле: вопросы и ответы</h2>
+    <p class="about-lead">Сервис собирает в одном месте график отключений горячей воды в Ярославле и действующие аварии ЖКХ. Ответы на частые вопросы — ниже.</p>
+    <div class="faq">
+      <details>
+        <summary>Как узнать, когда отключат горячую воду по моему адресу?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">Введите улицу и номер дома в поле поиска на этой странице. Для каждого адреса показаны даты ремонта и гидравлических испытаний, а также день, с которого горячая вода возвращается. Тот же график есть на <a href="map.html">карте</a> — там дом можно найти визуально.</p>
+      </details>
+      <details>
+        <summary>Когда включат горячую воду?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">Дата включения указана у каждого этапа работ в строке «вода с …». Если у адреса стоит отметка «Завершено», все запланированные отключения уже закончились.</p>
+      </details>
+      <details>
+        <summary>Зачем каждое лето отключают горячую воду?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">Летом тепловые сети ремонтируют и проверяют: трубы испытывают на прочность и плотность повышенным давлением, чтобы выявить слабые места до начала отопительного сезона. На это время горячую воду в подключённых к сети домах отключают.</p>
+      </details>
+      <details>
+        <summary>Что значат «Ремонт», «Гидроиспытания 1» и «Гидроиспытания 2»?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">Это этапы работ, из-за которых для адреса может отключаться горячая вода: период ремонта и два этапа гидравлических испытаний. У каждого этапа свои даты и своя дата возвращения воды. Если какой-то этап для адреса не запланирован, он не показывается.</p>
+      </details>
+      <details>
+        <summary>Где посмотреть аварии и внеплановые отключения?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">На странице «<a href="incidents.html">Аварии и отключения ЖКХ</a>»: там собраны действующие аварии и плановые работы по воде, отоплению, электричеству и газу с телефонами служб. Данные обновляются автоматически, время последней проверки указано на странице.</p>
+      </details>
+      <details>
+        <summary>Откуда берутся данные и можно ли им доверять?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">График отключений горячей воды — общедоступная информация коммунальных служб Ярославля; аварии и отключения ЖКХ — данные диспетчерской службы через сервис «Мой Дом». Сайт не является официальным ресурсом и носит информационный характер: для юридически значимых сведений обращайтесь в управляющую компанию.</p>
+      </details>
+      <details>
+        <summary>Что делать, если моего адреса нет в списке?<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chevron"></use></svg></summary>
+        <p class="faq-a">Проверьте написание, например «Урицкого 45». Отсутствие адреса не гарантирует, что отключения не будет: уточните в управляющей компании или в аварийно-диспетчерской службе.</p>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <nav class="footer-nav" aria-label="Разделы сайта">
+    <a href="./">Поиск по адресу</a>
+    <a href="map.html">Карта отключений</a>
+    <a href="incidents.html">Аварии и отключения ЖКХ</a>
+  </nav>
+  Автор: <a href="https://t.me/xoroshik" target="_blank" rel="noopener noreferrer">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" rel="noopener noreferrer">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener noreferrer" title="Исходный код"><svg height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, <span data-year>2026</span> год.
+</footer>
 
 <!-- Application scripts -->
+<script src="site.js"></script>
 <script src="config.js"></script>
 <script src="gvs-core.js"></script>
 <script src="app-index.js"></script>
@@ -511,16 +753,12 @@
 <script src="app-stats.js"></script>
 <script src="incidents-badge.js"></script>
 
-<footer style="text-align:center; padding: 24px 20px 40px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); position: relative; z-index: 1;">
-  Автор: <a href="https://t.me/xoroshik" target="_blank" rel="noopener noreferrer" style="color:var(--accent2);text-decoration:none;">Арсений Дыбов</a> специально для сетевого издания «<a href="https://yarcube.ru/" target="_blank" rel="noopener noreferrer" style="color:var(--accent2);text-decoration:none;">Яркуб</a>».&nbsp;<a href="https://github.com/Aoneti/gvs-yaroslavl" target="_blank" rel="noopener noreferrer" title="Исходный код" style="color:var(--accent2);text-decoration:none;"><svg height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:middle;margin-right:3px;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Исходный код</a>.&nbsp;Ярославль, 2026 год.
-</footer>
-
 <!-- Tracker widget -->
 <div id="tracker-widget" aria-hidden="true">
   <div class="notebook" role="region" aria-label="Аналитика сайта">
-    <button class="minimize" id="tracker-minimize-btn" aria-label="Свернуть" title="Свернуть" type="button">✕</button>
+    <button class="minimize" id="tracker-minimize-btn" aria-label="Свернуть" title="Свернуть" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-x"></use></svg></button>
     <div class="lines" aria-hidden="true"></div>
-    <h3>📊 Аналитика</h3>
+    <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-chart"></use></svg> Аналитика</h3>
     <p>Мы используем Яндекс.Метрику для анализа посещений и улучшения работы сайта.</p>
     <div class="actions">
       <button class="secondary" id="tracker-learn-btn" type="button">Подробнее</button>
@@ -532,9 +770,9 @@
 <!-- Social subscribe widget -->
 <div id="social-widget" aria-hidden="true">
   <div class="notebook" role="region" aria-label="Подписка на MAX">
-    <button class="minimize" id="social-minimize-btn" aria-label="Свернуть" title="Свернуть" type="button">✕</button>
+    <button class="minimize" id="social-minimize-btn" aria-label="Свернуть" title="Свернуть" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-x"></use></svg></button>
     <div class="lines" aria-hidden="true"></div>
-    <h3>🔥 Свежие новости Ярославля</h3>
+    <h3><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-flame"></use></svg> Свежие новости Ярославля</h3>
     <p>Подпишитесь, чтобы быть в курсе событий!</p>
     <div class="actions">
       <a href="https://max.ru/yarcube_ru" target="_blank" rel="noopener noreferrer" class="button">Подписаться</a>
@@ -544,7 +782,7 @@
 
 <!-- Мини-иконка -->
 <button id="social-mini" aria-label="Свежие новости Ярославля" title="Свежие новости Ярославля" type="button">
-  🔔
+  <svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-bell"></use></svg>
 </button>
 
 <script src="ui-widgets.js"></script>

@@ -1,5 +1,5 @@
 'use strict';
-// Блок статистики над поиском. Сам создаёт разметку и стили, данные берёт из data.json.
+// Блок статистики под поиском. Сам создаёт разметку и стили, данные берёт из data.json.
 (function () {
   const anchor = document.querySelector('.search-wrap');
   if (!anchor) return;
@@ -16,10 +16,11 @@
 
   const css = document.createElement('style');
   css.textContent =
+    '#statsPanel{margin-bottom:28px}' +
     '#statsPanel.st-loading{min-height:160px}' +
     '.st-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px}' +
     '.st-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}' +
-    ".st-num{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:700;line-height:1.1;overflow-wrap:anywhere}" +
+    '.st-num{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.1;overflow-wrap:anywhere}' +
     '.st-num.hot{color:var(--accent2)}.st-lbl{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.35}' +
     '.st-tabs{display:flex;gap:6px;margin-bottom:14px}' +
     '.st-tab{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font:inherit;font-size:13px;cursor:pointer}' +
@@ -35,7 +36,7 @@
     '.st-hit:hover{fill:rgba(128,128,128,.15)}.st-hit.sel{fill:rgba(232,93,47,.22)}' +
     '.st-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:8px}' +
     '.st-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}' +
-    '.st-tbl-wrap{max-height:360px;overflow:auto;border:1px solid var(--border);border-radius:12px}' +
+    '.st-tbl-wrap{max-height:360px;overflow:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface)}' +
     '.st-tbl{width:100%;border-collapse:collapse;font-size:13px}' +
     '.st-tbl th,.st-tbl td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)}' +
     '.st-tbl th:first-child,.st-tbl td:first-child{text-align:left}' +
@@ -51,7 +52,13 @@
   panel.id = 'statsPanel';
   panel.className = 'st-loading';
   panel.setAttribute('aria-label', 'Статистика отключений по городу');
-  anchor.parentNode.insertBefore(panel, anchor);
+  anchor.insertAdjacentElement('afterend', panel);          // сразу под полем поиска
+
+  // Пока в поиске что-то набрано, результаты занимают место панели — прячем её
+  const searchInput = document.getElementById('searchInput');
+  const syncVisibility = () => { panel.hidden = !!searchInput && searchInput.value.trim().length > 0; };
+  if (searchInput) searchInput.addEventListener('input', syncVisibility);
+  syncVisibility();
 
   fetch('data.json')
     .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))

@@ -10,6 +10,7 @@
   const LABEL_EMERGENCY = 'авария';
 
   const esc = GVS.escapeHtml;
+  const ico = (name, extra) => GVS_UI.icon(name, extra);
   const $   = (id) => document.getElementById(id);
   const el  = {
     lead:    $('lead'),
@@ -158,13 +159,11 @@
   }
 
   function blockHtml(group, index, tokens) {
-    // Огонёк — у разделов про горячую воду: сайт именно про неё
-    const flame = /горяч/i.test(group.name) ? '<span class="info-flame" aria-hidden="true">🔥</span>' : '';
     const head = ['Адрес', 'Вид', 'Срок', 'Контакты']
       .map((h) => '<th role="columnheader" scope="col">' + h + '</th>').join('');
 
     return '<section class="info-block" id="group-' + index + '">' +
-      '<h2>' + flame + esc(group.name) + ' <span class="info-muted">(' + group.items.length + ')</span></h2>' +
+      '<h2>' + esc(group.name) + ' <span class="info-muted">(' + group.items.length + ')</span></h2>' +
       '<div class="info-table-wrap"><table class="info-table" role="table">' +
         '<thead role="rowgroup"><tr role="row">' + head + '</tr></thead>' +
         '<tbody role="rowgroup">' + group.items.map((it) => rowHtml(it, tokens)).join('') + '</tbody>' +
@@ -173,24 +172,24 @@
 
   /** Почему пусто: в источнике ничего нет / запрос не нашёл / запрос нашёл, но в другой категории. */
   function emptyHtml(counts) {
-    const box = (emoji, title, text, btn) =>
-      '<div class="state-message"><span class="emoji">' + emoji + '</span><h3>' + title + '</h3><p>' + text + '</p>' + (btn || '') + '</div>';
+    const box = (icon, title, text, btn) =>
+      '<div class="state-message">' + icon + '<h3>' + title + '</h3><p>' + text + '</p>' + (btn || '') + '</div>';
     const button = (action, label) => '<button class="info-btn" type="button" data-action="' + action + '">' + label + '</button>';
 
     if (!data.total) {
-      return box('✅', 'Сейчас всё спокойно', 'В источнике нет действующих аварий и плановых отключений.');
+      return box(ico('check', 'state-icon state-icon--success'), 'Сейчас всё спокойно', 'В источнике нет действующих аварий и плановых отключений.');
     }
     const q = state.q ? '«' + esc(state.q) + '»' : '';
     // Запрос что-то находит, но не в выбранной категории — подскажем, где искать
     if (state.type !== 'all' && counts.all > 0) {
-      return box('🔎', 'В этой категории пусто',
+      return box(ico('search-x', 'state-icon'), 'В этой категории пусто',
         (q ? 'По запросу ' + q + ' ' : 'Здесь ') + 'ничего нет, но в другой категории записи есть (' + counts.all + ').',
         button('all-types', 'Показать все'));
     }
     if (!state.q) {
-      return box('🔎', 'В этой категории пусто', 'Сейчас здесь нет записей.', button('all-types', 'Показать все'));
+      return box(ico('search-x', 'state-icon'), 'В этой категории пусто', 'Сейчас здесь нет записей.', button('all-types', 'Показать все'));
     }
-    return box('🤔', 'Ничего не найдено',
+    return box(ico('search-x', 'state-icon'), 'Ничего не найдено',
       'По запросу ' + q + ' записей нет. Проверьте написание. Отсутствие адреса в списке не гарантирует, ' +
       'что отключений нет, — уточните в управляющей компании.',
       button('reset', 'Сбросить поиск'));
@@ -283,7 +282,7 @@
     console.error('[incidents] не удалось загрузить данные:', err);
     el.types.innerHTML = '';
     el.jump.hidden = true;
-    el.results.innerHTML = '<div class="state-message"><span class="emoji">❌</span>' +
+    el.results.innerHTML = '<div class="state-message">' + ico('error', 'state-icon state-icon--error') +
       '<h3>Не удалось загрузить данные</h3>' +
       '<p>Попробуйте обновить страницу. Актуальный список всегда есть на сайте «<a href="' + SOURCE_URL +
       '" target="_blank" rel="noopener noreferrer">Мой Дом</a>».</p>' +
@@ -291,7 +290,7 @@
   }
 
   function load() {
-    el.results.innerHTML = '<div class="state-message"><span class="emoji">⏳</span><h3>Загрузка данных…</h3><p>Подождите секунду</p></div>';
+    el.results.innerHTML = '<div class="state-message">' + ico('loader', 'state-icon icon--spin') + '<h3>Загрузка данных…</h3><p>Подождите секунду</p></div>';
     return fetchJson(DATA_URL)
       .then((json) => {
         data = prepare(json);

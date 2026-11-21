@@ -12,11 +12,49 @@
                connect-src 'self' https://mc.yandex.ru https://*.tile.openstreetmap.org;
                frame-src 'none';">
 
-<title>Карта отключений ГВС в Ярославле — 2026</title>
-<meta name="description" content="Проверьте график отключения горячей воды в Ярославле в 2026 году. Поиск по адресу: даты ремонта, гидравлических испытаний и включения ГВС">
-<meta name="keywords" content="отключение воды Ярославль, отключение горячей воды Ярославль 2026, график ГВС Ярославль, гидравлические испытания Ярославль, когда включат горячую воду Ярославль, ремонт теплосети Ярославль">
+<title>Карта отключений горячей воды в Ярославле 2026 — ГВС по адресам</title>
+<meta name="description" content="Интерактивная карта отключений горячей воды в Ярославле в 2026 году: найдите свой дом, посмотрите даты ремонта, гидравлических испытаний и включения ГВС.">
+<meta name="keywords" content="карта отключения горячей воды Ярославль, отключение ГВС Ярославль 2026, график ГВС по адресам, гидравлические испытания Ярославль, когда включат горячую воду Ярославль">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="author" content="Арсений Дыбов">
 <link rel="canonical" href="https://aoneti.github.io/gvs-yaroslavl/map.html">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<link rel="alternate" hreflang="ru" href="https://aoneti.github.io/gvs-yaroslavl/map.html">
+<link rel="alternate" hreflang="x-default" href="https://aoneti.github.io/gvs-yaroslavl/map.html">
+
+<!-- Геопривязка: Ярославль -->
+<meta name="geo.region" content="RU-YAR">
+<meta name="geo.placename" content="Ярославль">
+<meta name="geo.position" content="57.6261;39.8845">
+<meta name="ICBM" content="57.6261, 39.8845">
+
+<!-- Соцсети и мессенджеры -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Отключение горячей воды в Ярославле">
+<meta property="og:title" content="Карта отключений горячей воды в Ярославле 2026">
+<meta property="og:description" content="Найдите свой дом на карте и узнайте даты ремонта, гидравлических испытаний и включения горячей воды.">
+<meta property="og:url" content="https://aoneti.github.io/gvs-yaroslavl/map.html">
+<meta property="og:image" content="https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Отключение горячей воды в Ярославле: график по адресам, карта и аварии ЖКХ">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Карта отключений горячей воды в Ярославле 2026">
+<meta name="twitter:description" content="Найдите свой дом на карте и узнайте даты ремонта, гидравлических испытаний и включения горячей воды.">
+<meta name="twitter:image" content="https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png">
+
+<!-- Иконки, манифест, цвет браузера -->
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f5f0" media="(prefers-color-scheme: light)">
+
+<!-- Шрифты: кириллические начертания нужны сразу, поэтому грузим заранее -->
+<link rel="preload" href="fonts/dela-gothic-one-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/golos-text-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+
 <script src="theme-init.js"></script>
 <link rel="stylesheet" href="vendor/leaflet.css">
 <link rel="stylesheet" href="vendor/MarkerCluster.css">
@@ -34,7 +72,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     height: 100dvh;
     display: flex;
     flex-direction: column;
@@ -58,7 +96,7 @@
     background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text);
-    font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     font-size: 14px;
     font-weight: 500;
     padding: 7px 14px;
@@ -70,7 +108,7 @@
   }
   .back-btn:hover { border-color: var(--accent); color: var(--accent2); }
   .topbar-title {
-    font-family: 'Unbounded', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 700;
     color: var(--text);
@@ -118,7 +156,7 @@
     border: 1.5px solid var(--border);
     border-radius: 8px;
     color: var(--text);
-    font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     font-size: 13px;
     padding: 8px 32px 8px 10px;
     outline: none;
@@ -135,7 +173,8 @@
     border: none;
     color: var(--muted);
     cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 1;
     display: none;
     padding: 2px;
   }
@@ -171,9 +210,6 @@
   .filter-item input:checked ~ .filter-dot + .filter-text { color: var(--text); }
 
   .addr-list { flex: 1; overflow-y: auto; padding: 8px; }
-  .addr-list::-webkit-scrollbar { width: 4px; }
-  .addr-list::-webkit-scrollbar-track { background: transparent; }
-  .addr-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   /* Skeleton loader */
   .sk-item {
@@ -223,13 +259,31 @@
   }
 
   .empty-list { text-align: center; padding: 30px 12px; color: var(--muted); font-size: 13px; }
-  .empty-list .big { font-size: 28px; display: block; margin-bottom: 8px; }
+  .empty-list .state-icon { width: 36px; height: 36px; margin-bottom: 10px; }
+
+  /* Кнопка «Попробовать снова» (на главной такая же) */
+  .map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .map-btn:hover { opacity: .92; }
 
   #map { flex: 1; background: #0d1117; }
 
   /* Leaflet — единый шрифт Golos Text */
   .leaflet-container {
-    font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     background: #0d1117;
   }
   .leaflet-tile-pane { filter: brightness(.82) saturate(.7) hue-rotate(5deg); }
@@ -247,7 +301,7 @@
   .leaflet-popup-tip-container { display: none; }
   .leaflet-popup-content {
     margin: 0;
-    font-family: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     font-size: 13px;
     line-height: 1.5;
   }
@@ -276,7 +330,7 @@
 
   .popup-inner { padding: 16px; }
   .popup-addr {
-    font-family: 'Unbounded', system-ui, sans-serif;
+    font-family: var(--font-display);
     font-size: 13px;
     font-weight: 700;
     line-height: 1.3;
@@ -366,21 +420,54 @@
     .filter-dot { width: 8px; height: 8px; }
     .filter-text { font-size: 12px; }
     .search-wrap input { font-size: 15px; padding: 12px 36px 12px 12px; }
-    .search-clear { font-size: 16px; right: 10px; }
+    .search-clear { right: 10px; }
+    .search-clear .icon { width: 18px; height: 18px; }
   }
 </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/map.html#webpage",
+      "url": "https://aoneti.github.io/gvs-yaroslavl/map.html",
+      "name": "Карта отключений горячей воды в Ярославле 2026",
+      "description": "Интерактивная карта отключений горячей воды в Ярославле: даты ремонта, гидравлических испытаний и включения ГВС по каждому адресу.",
+      "inLanguage": "ru",
+      "isPartOf": { "@id": "https://aoneti.github.io/gvs-yaroslavl/#website" },
+      "breadcrumb": { "@id": "https://aoneti.github.io/gvs-yaroslavl/map.html#breadcrumb" },
+      "primaryImageOfPage": { "@type": "ImageObject", "url": "https://aoneti.github.io/gvs-yaroslavl/assets/og-image.png", "width": 1200, "height": 630 },
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "Ярославль",
+        "geo": { "@type": "GeoCoordinates", "latitude": 57.6261, "longitude": 39.8845 }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://aoneti.github.io/gvs-yaroslavl/map.html#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Отключение горячей воды в Ярославле", "item": "https://aoneti.github.io/gvs-yaroslavl/" },
+        { "@type": "ListItem", "position": 2, "name": "Карта отключений", "item": "https://aoneti.github.io/gvs-yaroslavl/map.html" }
+      ]
+    }
+  ]
+}
+</script>
 
 </head>
 <body>
 
-<div class="topbar">
-  <a href="index.html" class="back-btn">← Поиск</a>
-  <div class="topbar-title">Карта отключений <span>ГВС</span> · Ярославль 2026</div>
+<header class="topbar">
+  <a href="index.html" class="back-btn"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-arrow-left"></use></svg> Поиск</a>
+  <h1 class="topbar-title">Карта отключений <span>ГВС</span> · Ярославль 2026</h1>
   <div class="topbar-sep"></div>
   <div class="counter-chip" id="counterChip" title="">…</div>
-</div>
+</header>
 
-<div class="main">
+<main class="main">
   <div class="panel">
     <div class="sheet-handle" id="sheetHandle"></div>
 
@@ -389,7 +476,7 @@
       <div class="search-wrap">
         <input type="text" id="panelSearch" placeholder="Улица, дом…" autocomplete="off" spellcheck="false"
                aria-label="Поиск по адресу на карте" aria-expanded="false" aria-autocomplete="list">
-        <button class="search-clear" id="searchClear" title="Очистить" aria-label="Очистить поле поиска" type="button">✕</button>
+        <button class="search-clear" id="searchClear" title="Очистить" aria-label="Очистить поле поиска" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#i-x"></use></svg></button>
       </div>
     </div>
 
@@ -423,11 +510,19 @@
     </div>
   </div>
 
-  <div id="map"></div>
-</div>
+  <div id="map" role="application" aria-label="Карта Ярославля с адресами отключений горячей воды">
+    <noscript>
+      <div class="empty-list">
+        Для карты нужен JavaScript. Даты отключений по адресам можно найти
+        <a href="index.html" style="color:var(--accent2)">на главной странице</a>.
+      </div>
+    </noscript>
+  </div>
+</main>
 
 <script src="vendor/leaflet.js"></script>
 <script src="vendor/leaflet.markercluster.js"></script>
+<script src="site.js"></script>
 <script src="config.js"></script>
 <script src="gvs-core.js"></script>
 <script src="app-map.js"></script>
