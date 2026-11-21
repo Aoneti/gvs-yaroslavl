@@ -1,59 +1,31 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-20T16:38:16.890Z",
+  "fetchedAt": "2026-11-21T07:54:28.303Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 44,
-  "total": 44,
-  "emergency": 22,
-  "planned": 22,
+  "apiTotal": 37,
+  "total": 37,
+  "emergency": 20,
+  "planned": 17,
   "groups": [
     {
       "name": "Горячее водоснабжение",
       "items": [
         {
-          "id": 20402,
-          "address": "ул. Волгоградская: д. 47",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы на линии",
-          "dateInterval": "с 18 ноября, 23:40 по 20 ноября, 23:00",
-          "startTs": 1795034400,
-          "endTs": 1795204800,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-linii-20402"
-        },
-        {
-          "id": 20401,
-          "address": "ул. Волгоградская: д. 47",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы на линии",
-          "dateInterval": "с 18 ноября, 22:00 по 20 ноября, 23:00",
-          "startTs": 1795028400,
-          "endTs": 1795204800,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-linii-20401"
-        },
-        {
-          "id": 20407,
-          "address": "пр-кт Ленинградский: д. 62, к. 5",
+          "id": 20454,
+          "address": "ш. Тутаевское: д. 95",
           "typeLabel": "план",
-          "typeDescription": "Течь стояка (ГВС)",
-          "dateInterval": "с 18 ноября, 00:00 по 20 ноября, 23:55",
-          "startTs": 1794949200,
-          "endTs": 1795208100,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "typeDescription": "Ремонтные работы в котельной (ГВС)",
+          "dateInterval": "с 23 ноября, 09:00 по 23 ноября, 14:00",
+          "startTs": 1795413600,
+          "endTs": 1795431600,
+          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
           "phones": [
-            "+7 (485) 259-42-06"
+            "+7 (4852) 593-519"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/tech-stoyaka-20407"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnye-raboty-v-kotelnoj-20454"
         }
       ]
     },
@@ -61,18 +33,32 @@
       "name": "Холодное и горячее водоснабжение",
       "items": [
         {
-          "id": 20439,
-          "address": "пр-кт Ленинградский: д. 62, к. 5",
+          "id": 20457,
+          "address": "ул. Труфанова: д. 25, к. 2",
           "typeLabel": "план",
-          "typeDescription": "Ремонтные работы на водомерном узле",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
+          "typeDescription": "Засор стояка канализации",
+          "dateInterval": "с 20 ноября, 20:00 по 23 ноября, 23:00",
+          "startTs": 1795194000,
+          "endTs": 1795464000,
           "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
           "phones": [
             "+7 (485) 259-42-06"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnye-raboty-na-vodomernom-uzle-20439"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zasor-stoyaka-kanal-20457"
+        },
+        {
+          "id": 20458,
+          "address": "ул. Елены Колесовой: д. 56",
+          "typeLabel": "план",
+          "typeDescription": "Замена стояков",
+          "dateInterval": "с 20 ноября, 19:00 по 23 ноября, 23:00",
+          "startTs": 1795190400,
+          "endTs": 1795464000,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20458"
         },
         {
           "id": 20227,
@@ -122,6 +108,20 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/kotel-20441"
         },
         {
+          "id": 20455,
+          "address": "ул. Свердлова: д. 31",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-ремонтные работы в котельной",
+          "dateInterval": "с 23 ноября, 09:30 по 23 ноября, 15:30",
+          "startTs": 1795415400,
+          "endTs": 1795437000,
+          "contacts": "АО «Ярославские энергосистемы»: +7 (4852) 593-519",
+          "phones": [
+            "+7 (4852) 593-519"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/kotel-20455"
+        },
+        {
           "id": 20440,
           "address": "ул. Щепкина: д. 3, д. 4",
           "typeLabel": "авария",
@@ -166,6 +166,21 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/kotel-20448"
         },
         {
+          "id": 20450,
+          "address": "ул. Труфанова: д. 34, к. 4, д. 31/53, д. 29, д. 21, к. 2, д. 36, д. 30, к. 1, д. 30, к. 2, д. 27, д. 30, к. 4, д. 32, д. 32а, д. 30, д. 29, к. 5, д. 26, д. 21, д. 34, к. 3, д. 25б, д. 25, к. 4, д. 34а, д. 38, к. 2, д. 25, д. 36, к. 2, д. 25, к. 5, д. 25а, д. 29, к. 4, д. 21а, д. 23, д. 21, к. 3, д. 29, к. 3, д. 21, к. 4, д. 28а, д. 17, к. 2, д. 30, к. 3, д. 29, к. 2, д. 34, к. 2, д. 25, к. 2, д. 25, к. 3",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-ремонтные работы в котельной",
+          "dateInterval": "с 23 ноября, 08:30 по 23 ноября, 19:00",
+          "startTs": 1795411800,
+          "endTs": 1795449600,
+          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
+          "phones": [
+            "+7 (4852) 797-321",
+            "+7 (4852) 253-895"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/kotel-20450"
+        },
+        {
           "id": 20449,
           "address": "ул. Туманова: д. 7",
           "typeLabel": "авария",
@@ -181,6 +196,21 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/kotel-20449"
         },
         {
+          "id": 20452,
+          "address": "ул. Доронина: д. 12",
+          "typeLabel": "план",
+          "typeDescription": "Ремонтные работы",
+          "dateInterval": "с 23 ноября, 09:00 по 23 ноября, 16:00",
+          "startTs": 1795413600,
+          "endTs": 1795438800,
+          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
+          "phones": [
+            "+7 (4852) 797-321",
+            "+7 (4852) 253-895"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnie-raboti-20452"
+        },
+        {
           "id": 20443,
           "address": "ул. Доронина: д. 14, д. 10, д. 12",
           "typeLabel": "план",
@@ -194,6 +224,20 @@
             "+7 (4852) 253-895"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnie-raboti-20443"
+        },
+        {
+          "id": 20453,
+          "address": "ул. Волгоградская: д. 49",
+          "typeLabel": "план",
+          "typeDescription": "Ремонт стояков",
+          "dateInterval": "с 23 ноября, 08:30 по 23 ноября, 19:00",
+          "startTs": 1795411800,
+          "endTs": 1795449600,
+          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
+          "phones": [
+            "+7 (4852) 797-086"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20453"
         },
         {
           "id": 20446,
@@ -231,36 +275,6 @@
       "name": "Холодное водоснабжение",
       "items": [
         {
-          "id": 20436,
-          "address": "ул. Блюхера: д. 84а",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
-          "contacts": "АО «Ярославльводоканал»: +7 (4852) 734-477, +7 (4852) 736-631",
-          "phones": [
-            "+7 (4852) 734-477",
-            "+7 (4852) 736-631"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20436"
-        },
-        {
-          "id": 20438,
-          "address": "ул. Панина: д. 14",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
-          "contacts": "АО «Ярославльводоканал»: +7 (4852) 734-477, +7 (4852) 736-631",
-          "phones": [
-            "+7 (4852) 734-477",
-            "+7 (4852) 736-631"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-20438"
-        },
-        {
           "id": 20360,
           "address": "пр-кт Ленинградский: д. 32",
           "typeLabel": "авария",
@@ -280,32 +294,18 @@
       "name": "Отопление",
       "items": [
         {
-          "id": 20437,
-          "address": "ул. Батова: д. 3, к. 2",
+          "id": 20451,
+          "address": "ул. Добрынина: д. 23",
           "typeLabel": "авария",
           "typeDescription": "Аварийно-восстановительные работы на линии",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
+          "dateInterval": "с 23 ноября, 09:00 по 23 ноября, 16:00",
+          "startTs": 1795413600,
+          "endTs": 1795438800,
           "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
           "phones": [
             "+7 (4852) 797-086"
           ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-linii-20437"
-        },
-        {
-          "id": 20433,
-          "address": "ул. Труфанова: д. 21, к. 2",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы на линии",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-linii-20433"
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-linii-20451"
         },
         {
           "id": 20385,
@@ -366,76 +366,6 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20444"
         },
         {
-          "id": 20430,
-          "address": "пр-кт Ленинградский: д. 63",
-          "typeLabel": "план",
-          "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20430"
-        },
-        {
-          "id": 20431,
-          "address": "пр-кт Ленинградский: д. 63",
-          "typeLabel": "план",
-          "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20431"
-        },
-        {
-          "id": 20432,
-          "address": "ул. Громова: д. 52, к. 2",
-          "typeLabel": "план",
-          "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20432"
-        },
-        {
-          "id": 20435,
-          "address": "ул. Урицкого: д. 7",
-          "typeLabel": "план",
-          "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20435"
-        },
-        {
-          "id": 20434,
-          "address": "ш. Тутаевское: д. 65",
-          "typeLabel": "план",
-          "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 20 ноября, 09:00 по 20 ноября, 23:55",
-          "startTs": 1795154400,
-          "endTs": 1795208100,
-          "contacts": "ПАО «Территориальная генерирующая компания №2» (ТГК-2): +7 (4852) 797-086",
-          "phones": [
-            "+7 (4852) 797-086"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20434"
-        },
-        {
           "id": 20428,
           "address": "ул. Труфанова: д. 21, к. 2",
           "typeLabel": "план",
@@ -448,48 +378,6 @@
             "+7 (485) 259-42-06"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20428"
-        },
-        {
-          "id": 20426,
-          "address": "ул. Громова: д. 52, к. 2",
-          "typeLabel": "план",
-          "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 19 ноября, 00:00 по 20 ноября, 23:55",
-          "startTs": 1795035600,
-          "endTs": 1795208100,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20426"
-        },
-        {
-          "id": 20414,
-          "address": "ул. Урицкого: д. 7",
-          "typeLabel": "план",
-          "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 19 ноября, 00:00 по 20 ноября, 23:55",
-          "startTs": 1795035600,
-          "endTs": 1795208100,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20414"
-        },
-        {
-          "id": 20415,
-          "address": "ш. Тутаевское: д. 47",
-          "typeLabel": "план",
-          "typeDescription": "Ремонт стояков",
-          "dateInterval": "с 19 ноября, 00:00 по 20 ноября, 23:55",
-          "startTs": 1795035600,
-          "endTs": 1795208100,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remont-stoyakov-20415"
         },
         {
           "id": 20310,
@@ -552,6 +440,22 @@
     {
       "name": "Электроснабжение",
       "items": [
+        {
+          "id": 20456,
+          "address": "пер. Минина: д. 8, д. 30, д. 22, д. 6, д. 26, д. 10, д. 24, д. 18, д. 16, д. 34, д. 28, д. 12, д. 36, д. 14, д. 32, д. 12, к. 2, д. 36а, д. 20; ул. 2-я Путевая: д. 3а, д. 15а/3, д. 29, д. 27а, д. 33, д. 7а, д. 33а, д. 17а, д. 9а, д. 5а, д. 25, д. 13а, д. 35, д. 11, д. 19а, д. 17/2, д. 23а, д. 29а, д. 31а, д. 3, д. 31, д. 11а, д. 2, д. 25а, д. 9, д. 19, д. 27, д. 21а, д. 7, д. 5, д. 21, д. 13, д. 23; ул. 3-я Путевая: д. 24, д. 21, д. 39, д. 15, д. 14, д. 19, д. 19а, д. 43, д. 17, д. 25, д. 13, д. 29/13, д. 5, д. 41, д. 47, д. 49, д. 1/15, д. 40, д. 26, д. 37, д. 23, д. 11, д. 51, д. 30, д. 10, д. 20, д. 31/16, д. 22, д. 6, д. 28, д. 9, д. 16, д. 18, д. 7; ул. 4-я Путевая: д. 10, д. 30, д. 19, д. 36, д. 34, д. 17, д. 38, д. 14, д. 9, д. 12, д. 28, д. 8, д. 18/34, д. 13, д. 20, д. 38б, д. 21, д. 32, д. 4, д. 3, д. 38а, д. 22, д. 6, д. 7, д. 5, д. 23, д. 11, д. 26; ул. 5-я Путевая: д. 40, д. 12, д. 8, д. 16, д. 34/2, д. 52, д. 42, д. 6, д. 24, д. 20а, д. 14, д. 30, д. 44, д. 18, д. 22, д.",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийное отключение электроэнергии",
+          "dateInterval": "с 21.11.2026 09:00 до устранения",
+          "startTs": 1795240800,
+          "endTs": null,
+          "contacts": "Филиал ПАО «Россети Центр Ярэнерго»: +7 (4852) 744-008, +7 (4852) 301-947, +7 (4852) 307-525 (Диспетчерская)",
+          "phones": [
+            "+7 (4852) 744-008",
+            "+7 (4852) 301-947",
+            "+7 (4852) 307-525"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/Avarijnoe-otklyuchenie-elektroenergii-20456"
+        },
         {
           "id": 20303,
           "address": "ул. Бабича: д. 17, к. 3; ул. Громова: д. 2а/82",
