@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-21T15:50:15.825Z",
+  "fetchedAt": "2026-11-22T07:39:41.991Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 35,
-  "total": 35,
-  "emergency": 19,
-  "planned": 16,
+  "apiTotal": 39,
+  "total": 39,
+  "emergency": 20,
+  "planned": 19,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -26,12 +26,54 @@
             "+7 (4852) 593-519"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/remontnye-raboty-v-kotelnoj-20454"
+        },
+        {
+          "id": 20460,
+          "address": "пр-кт Ленинградский: д. 74",
+          "typeLabel": "план",
+          "typeDescription": "Замена стояков",
+          "dateInterval": "с 21 ноября, 17:00 по 23 ноября, 23:00",
+          "startTs": 1795269600,
+          "endTs": 1795464000,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20460"
+        },
+        {
+          "id": 20461,
+          "address": "проезд Моторостроителей: д. 8",
+          "typeLabel": "план",
+          "typeDescription": "Замена стояков",
+          "dateInterval": "с 21 ноября, 14:00 по 23 ноября, 23:00",
+          "startTs": 1795258800,
+          "endTs": 1795464000,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20461"
         }
       ]
     },
     {
       "name": "Холодное и горячее водоснабжение",
       "items": [
+        {
+          "id": 20463,
+          "address": "ул. Урицкого: д. 69, к. 3",
+          "typeLabel": "план",
+          "typeDescription": "Замена стояков",
+          "dateInterval": "с 22 ноября, 03:00 по 23 ноября, 23:00",
+          "startTs": 1795305600,
+          "endTs": 1795464000,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20463"
+        },
         {
           "id": 20459,
           "address": "ул. Труфанова: д. 21, к. 2",
@@ -306,6 +348,20 @@
             "+7 (4852) 797-086"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-na-linii-20451"
+        },
+        {
+          "id": 20462,
+          "address": "пр-кт Дзержинского: д. 36",
+          "typeLabel": "авария",
+          "typeDescription": "Аварийно-восстановительные работы в тепловой камере",
+          "dateInterval": "с 21 ноября, 11:00 по 23 ноября, 23:00",
+          "startTs": 1795248000,
+          "endTs": 1795464000,
+          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
+          "phones": [
+            "+7 (485) 259-42-06"
+          ],
+          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avarijno-vosstanovitelnie-raboti-v-teplovoj-kamere-20462"
         },
         {
           "id": 20385,
