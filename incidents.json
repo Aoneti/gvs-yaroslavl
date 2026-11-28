@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "fetchedAt": "2026-11-27T23:06:49.911Z",
+  "fetchedAt": "2026-11-28T08:36:44.022Z",
   "source": {
     "name": "Мой Дом — Ярославль",
     "url": "https://moydom-yaroslavl.ru/incident"
   },
-  "apiTotal": 43,
-  "total": 43,
-  "emergency": 25,
-  "planned": 18,
+  "apiTotal": 41,
+  "total": 40,
+  "emergency": 23,
+  "planned": 17,
   "groups": [
     {
       "name": "Горячее водоснабжение",
@@ -75,20 +75,6 @@
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avar-vosst-raboti-na-linii-20605"
         },
         {
-          "id": 20464,
-          "address": "ул. Громова: д. 52, к. 3",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-восстановительные работы на линии",
-          "dateInterval": "с 22.11.2026 11:00 до устранения",
-          "startTs": 1795334400,
-          "endTs": null,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/avar-vosst-raboti-na-linii-20464"
-        },
-        {
           "id": 20630,
           "address": "ул. Труфанова: д. 21, к. 2",
           "typeLabel": "план",
@@ -115,20 +101,6 @@
             "+7 (485) 259-42-06"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zamena-stoyakov-20628"
-        },
-        {
-          "id": 20459,
-          "address": "ул. Труфанова: д. 21, к. 2",
-          "typeLabel": "план",
-          "typeDescription": "Засор стояка канализации",
-          "dateInterval": "с 20 ноября, 20:00 по 26 ноября, 23:00",
-          "startTs": 1795194000,
-          "endTs": 1795723200,
-          "contacts": "АО «УПРАВДОМ ДЗЕРЖИНСКОГО РАЙОНА»: +7 (485) 259-42-06",
-          "phones": [
-            "+7 (485) 259-42-06"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/zasor-stoyaka-kanal-20459"
         },
         {
           "id": 20227,
@@ -235,21 +207,6 @@
             "+7 (4852) 253-895"
           ],
           "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/teplo-set-20608"
-        },
-        {
-          "id": 20540,
-          "address": "ул. Добрынина: д. 12",
-          "typeLabel": "авария",
-          "typeDescription": "Аварийно-ремонтные работы в котельной",
-          "dateInterval": "с 25.11.2026 09:00 до устранения",
-          "startTs": 1795586400,
-          "endTs": null,
-          "contacts": "Ярославские тепловые сети ПАО «ТГК-2»: +7 (4852) 797-321, +7 (4852) 253-895",
-          "phones": [
-            "+7 (4852) 797-321",
-            "+7 (4852) 253-895"
-          ],
-          "url": "https://moydom-yaroslavl.ru/incident/yaroslavl/kotel-20540"
         },
         {
           "id": 20538,
